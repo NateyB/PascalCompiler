@@ -2,9 +2,6 @@ program fib(input, output);
 var n, p: integer;
 var q: real;
 var useless_array : array [1..12] of integer;
-  (*Strangely, the above type can simply be "array of integer", and the
-  "setLength" function can be used letter to define its length. I wonder why
-  this syntactical construct wasn't included.*)
 
 function fib(a : integer; b, c : real) : real;
 begin
@@ -34,8 +31,6 @@ begin
   n := 12;
   p := 12;
   useless_array[3] := 15;
-(* setLength(memoization, n);
-  Strangely, this feature only works if the data above is changed. Hmm.*)
   q := 12
 end;
 
