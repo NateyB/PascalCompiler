@@ -12,28 +12,31 @@ int fib(int n) {
     return sum;
 }
 
-void copyFile(FILE *sourceFile) {
+void copyFile(FILE *sourceFile, FILE *outputFile) {
     int ln = 1;
     int c = 0;
+    fprintf(outputFile, "%6d    ", ln++);
     while ((c = fgetc(sourceFile)) != EOF) {
-        printf("%c", c);
+        fprintf(outputFile, "%c", c);
         if (c == '\n')
         {
-            printf("%6d    ", ln++);
+            fprintf(outputFile, "%6d    ", ln++);
         }
     }
 }
 
 int main() {
     FILE *sourceFile = fopen("tests/fib.pas", "r");
+    FILE *outputFile = fopen("out/copy.txt", "w+");
     if (sourceFile != NULL)
     {
-        copyFile(sourceFile);
+        copyFile(sourceFile, outputFile);
         fclose(sourceFile);
     } else
     {
         printf("%s\n", "It was null?");
     }
+    fclose(outputFile);
     printf("\n");
 
     printf("%d\n", fib(12));
