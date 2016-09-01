@@ -1,18 +1,5 @@
 #include<stdio.h>
 
-// This function was just for testing purposes.
-int fib(int n) {
-    int sum = 0;
-    int last = 1;
-    int placeholder = 0;
-    for (int i = 0; i < n; i++) {
-        placeholder = sum;
-        sum += last;
-        last = placeholder;
-    }
-    return sum;
-}
-
 // This function outputs a copy of the source file with line numbers to the
 // output file.
 void copyFile(FILE *sourceFile, FILE *outputFile) {
@@ -28,7 +15,7 @@ void copyFile(FILE *sourceFile, FILE *outputFile) {
 
 int main() {
     FILE *sourceFile = fopen("tests/fib.pas", "r");
-    FILE *outputFile = fopen("out/copy.txt", "w+");
+    FILE *outputFile = fopen("out/listing.txt", "w+");
     if (sourceFile != NULL)
     {
         copyFile(sourceFile, outputFile);
@@ -39,6 +26,5 @@ int main() {
     }
     fclose(outputFile);
 
-    printf("%d\n", fib(12));
     return 0;
 }
