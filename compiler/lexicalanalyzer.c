@@ -19,6 +19,7 @@ void outToListing(struct Listing* entry, FILE *listingFile) {
         case LNNUM:
             fprintf(listingFile, "%7d   %s", entry -> ln, entry -> message);
             break;
+            
         case ERROR:
             fprintf(listingFile, "%7s   %s", entry -> error, entry -> message);
             break;
