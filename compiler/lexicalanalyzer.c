@@ -41,7 +41,7 @@ void copyFile(FILE *sourceFile, FILE *listingFile) {
 
 }
 
-// Returns 0 on failure, 1 on success.
+// Returns 1 on failure, 0 on success.
 int init() {
     FILE *sourceFile = fopen("tests/fib.pas", "r");
     FILE *listingFile = fopen("out/listing.txt", "w+");
@@ -49,20 +49,20 @@ int init() {
     {
         printf("%s\n", "It was null?");
         fclose(listingFile);
-        return 0;
+        return 1;
     }
     copyFile(sourceFile, listingFile);
     fclose(sourceFile);
     fclose(listingFile);
 
-    return 1;
+    return 0;
 }
 
 int main() {
-    if (init()) {
+    if (init() == 0) {
 
     } else {
-        return 1;
+        fprintf(stderr, "%s\n", "Initialization process failed in lexical analyzer.");
     }
     return 0;
 }
