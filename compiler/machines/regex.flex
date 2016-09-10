@@ -16,10 +16,31 @@ REAL        {digit}+\.{digit}+
 INT         {digit}+
 UNREC       [^\n \t]
 
+%{
+enum TokenType {ASSIGNOP, RELOP, IDRES, LONGREAL, REAL, INT};
 
+typedef struct T_Type {
+    enum TokenType category;
+    union {
+        int type;
+        int* location;
+    };
+} Token;
+
+
+Token manageAssignOp(char* op) {
+    printf("Found an ASSIGNOP! It's %s. ", yytext);
+
+    Token* token = malloc(sizeof(*token));
+    token -> category = ASSIGNOP;
+    token -> type = 0;
+
+    return *token;
+}
+%}
 
 %%
-{ASSIGNOP}  printf("Found an ASSIGNOP! It's %s. ", yytext);
+{ASSIGNOP}  manageAssignOp(yytext);
 {RELOP}     printf("Found a RELOP! It's %s. ", yytext);
 {IDRES}     printf("Found an ID! It's %s. ", yytext);
 
@@ -31,8 +52,21 @@ UNREC       [^\n \t]
 .           printf("");
 %%
 
-main()
+
+
+
+
+int run()
 {
-  printf("Give me your input:\n");
-  yylex();
+    printf("%s\n", "Beginning machine parsing...");
+    extern FILE* yyin;
+    yyin=fopen("fileYouWantOpen","r");
+    yylex();
+
+    return 0;
+}
+
+int main()
+{
+    return run();
 }
