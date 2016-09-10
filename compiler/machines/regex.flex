@@ -17,30 +17,37 @@ INT         {digit}+
 UNREC       [^\n \t]
 
 %{
-enum TokenType {ASSIGNOP, RELOP, IDRES, LONGREAL, REAL, INT};
+static const char TOKEN_PATH[] = "out/tokens.dat"; // The constant token file path
 
+FILE* tokenFile = NULL; // The token file pointer; opened at the beginning
+
+// The valid token types in our subset of Pascal
+enum TokenType {ASSIGNOP, RELOP, IDRES, LONGREAL, REAL, INT};
+// The token data type (essentially a tuple :: (TokenType, int))
 typedef struct T_Type {
     enum TokenType category;
-    union {
-        int type;
-        int* location;
-    };
+    int type;
 } Token;
 
 
-Token manageAssignOp(char* op) {
-    printf("Found an ASSIGNOP! It's %s. ", yytext);
-
+Token* manageAssignOp(char* op)
+{
     Token* token = malloc(sizeof(*token));
     token -> category = ASSIGNOP;
     token -> type = 0;
 
-    return *token;
+    return token;
+}
+
+void applyToken(Token* token)
+{
+    printf("Applying token.\n");
+    fprintf(tokenFile, "%2d %2d", token -> category, token -> type);
 }
 %}
 
 %%
-{ASSIGNOP}  manageAssignOp(yytext);
+{ASSIGNOP}  applyToken(manageAssignOp(yytext));
 {RELOP}     printf("Found a RELOP! It's %s. ", yytext);
 {IDRES}     printf("Found an ID! It's %s. ", yytext);
 
@@ -53,17 +60,21 @@ Token manageAssignOp(char* op) {
 %%
 
 
-
-
-
+// Returns 1 on success, 0 on failure.
 int run()
 {
+    tokenFile = fopen(TOKEN_PATH, "w+");
+    if (tokenFile == NULL) {
+        printf("%s%s%s\n", "Could not create token file in ", TOKEN_PATH, " - aborting.");
+        return 0;
+    }
+
     printf("%s\n", "Beginning machine parsing...");
-    extern FILE* yyin;
-    yyin=fopen("fileYouWantOpen","r");
+//    extern FILE* yyin;
+//    yyin=fopen("fileYouWantOpen","r");
     yylex();
 
-    return 0;
+    return 1;
 }
 
 int main()

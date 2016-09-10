@@ -19,7 +19,7 @@ void outToListing(struct Listing* entry, FILE *listingFile) {
         case LNNUM:
             fprintf(listingFile, "%7d   %s", entry -> ln, entry -> message);
             break;
-            
+
         case ERROR:
             fprintf(listingFile, "%7s   %s", entry -> error, entry -> message);
             break;
@@ -45,15 +45,14 @@ void copyFile(FILE *sourceFile, FILE *listingFile) {
 int init() {
     FILE *sourceFile = fopen("tests/fib.pas", "r");
     FILE *listingFile = fopen("out/listing.txt", "w+");
-    if (sourceFile != NULL)
-    {
-        copyFile(sourceFile, listingFile);
-        fclose(sourceFile);
-    } else
+    if (sourceFile == NULL)
     {
         printf("%s\n", "It was null?");
+        fclose(listingFile);
         return 0;
     }
+    copyFile(sourceFile, listingFile);
+    fclose(sourceFile);
     fclose(listingFile);
 
     return 1;
