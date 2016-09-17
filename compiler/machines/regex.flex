@@ -79,6 +79,8 @@ void manageIdRes(char* symbol)
     // add it and create a new symbol.
 }
 
+
+
 %}
 
 %%

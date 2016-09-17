@@ -1,5 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include "dataStructures/linkedList/linkedlist.h"
+#include "machines/processor.h"
 
 enum ListingType {LNNUM, ERROR};
 
@@ -51,6 +53,9 @@ int init() {
         fclose(listingFile);
         return 1;
     }
+
+    initializeTokens(sourceFile);
+
     copyFile(sourceFile, listingFile);
     fclose(sourceFile);
     fclose(listingFile);
@@ -58,9 +63,60 @@ int init() {
     return 0;
 }
 
+
+void printInts(LinkedList* list)
+{
+    struct node* node = list->head;
+    while (node != NULL)
+    {
+        printf("%d ", *(int *) node->data);
+        node = node -> next;
+    }
+    printf("\n");
+}
+
+void printChars(LinkedList* list)
+{
+    struct node* node = list->head;
+    while (node != NULL)
+    {
+        printf("%c", *(int *) node->data);
+        node = node -> next;
+    }
+    printf("\n");
+}
+
 int main() {
     if (init() == 0) {
+        Token* next = malloc(sizeof(*next));
+        while ((next = getNextToken()))
+        {
+            switch (next -> category) {
+                case RELOP:
+                    printf("\n%d\n", next -> type);
+                    break;
 
+                case UNREC:
+                    printf("", next -> type);
+                    break;
+
+                default:
+                    printf("");
+                    break;
+            }
+        }
+
+
+
+        LinkedList* list = malloc(sizeof(*list));
+        list -> size = 0;
+        list -> head = NULL;
+        int contents[] = {65, 66, 67, 68, 69};
+        for (int i = 0; i < sizeof(contents)/sizeof(0); i++)
+        {
+            add(list, &contents[i], sizeof('a'));
+        }
+        printChars(list);
     } else {
         fprintf(stderr, "%s\n", "Initialization process failed in lexical analyzer.");
     }
