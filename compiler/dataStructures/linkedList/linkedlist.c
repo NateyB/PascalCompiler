@@ -6,7 +6,7 @@
 
 int add(LinkedList* list, void *data, size_t size)
 {
-    struct node* addition = (struct node*) malloc(sizeof(*addition));
+    struct node* addition = malloc(sizeof(*addition));
     addition -> data = malloc(size);
     addition -> next = (list -> head);
     // Do a byte-by-byte copy of the data

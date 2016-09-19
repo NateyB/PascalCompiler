@@ -47,6 +47,9 @@ void copyFile(FILE *sourceFile, FILE *listingFile) {
 int init() {
     FILE *sourceFile = fopen("tests/fib.pas", "r");
     FILE *listingFile = fopen("out/listing.txt", "w+");
+    FILE *resFile = fopen("compiler/reswords.dat", "r");
+    initializeTokens(sourceFile, resFile);
+    fclose(resFile);
     if (sourceFile == NULL)
     {
         printf("%s\n", "It was null?");
@@ -54,7 +57,6 @@ int init() {
         return 1;
     }
 
-    initializeTokens(sourceFile);
 
     copyFile(sourceFile, listingFile);
     fclose(sourceFile);
@@ -93,11 +95,11 @@ int main() {
         {
             switch (next -> category) {
                 case RELOP:
-                    printf("\n%d\n", next -> type);
+                    printf("");
                     break;
 
                 case UNREC:
-                    printf("", next -> type);
+                    printf("");
                     break;
 
                 default:
@@ -108,7 +110,7 @@ int main() {
 
 
 
-        LinkedList* list = malloc(sizeof(*list));
+        /*LinkedList* list = malloc(sizeof(*list));
         list -> size = 0;
         list -> head = NULL;
         int contents[] = {65, 66, 67, 68, 69};
@@ -116,7 +118,7 @@ int main() {
         {
             add(list, &contents[i], sizeof('a'));
         }
-        printChars(list);
+        printChars(list);*/
     } else {
         fprintf(stderr, "%s\n", "Initialization process failed in lexical analyzer.");
     }
