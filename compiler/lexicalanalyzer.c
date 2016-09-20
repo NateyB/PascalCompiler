@@ -1,9 +1,19 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include "dataStructures/linkedList/linkedlist.h"
 #include "machines/processor.h"
 
 enum ListingType {LNNUM, ERROR};
+const static char* catNames[] = {"ASSIGNOP", "FILEEND", "RELOP", "IDRES",
+                            "ADDOP", "MULOP", "WS", "ARRAYINIT", "TYPE",
+                            "INT", "REAL", "PUNCTUATION", "GROUPING", "UNREC"};
+
+const static char RESWORD_PATH[] = "compiler/reswords.dat";
+const static char TOKEN_PATH[] = "out/tokens.dat";
+const static char LISTING_PATH[] = "out/listing.txt";
+char TEST_PATH[256];
+FILE* tokenFile;
 
 struct Listing {
     enum ListingType type;
@@ -43,12 +53,49 @@ void copyFile(FILE *sourceFile, FILE *listingFile) {
 
 }
 
+void writeToken(Token* token)
+{
+    switch (token -> category)
+    {
+        case FILEEND:
+            fprintf(tokenFile, "%15s %20d\n", catNames[token -> category], token -> type);
+            break;
+
+        case IDRES:
+            fprintf(tokenFile, "%15s %20s\n", catNames[token -> category], token -> id);
+            break;
+
+        case REAL:
+            fprintf(tokenFile, "%15s %20f\n", catNames[token -> category], token -> val);
+            break;
+
+        case UNREC:
+            fprintf(tokenFile, "%15s %c\n", catNames[token -> category], token -> type);
+            break;
+
+        default:
+            fprintf(tokenFile, "%15s %20d\n", catNames[token -> category], token -> type);
+            break;
+    }
+}
+
+int initTokenFile()
+{
+    tokenFile = fopen(TOKEN_PATH, "w+");
+    if (tokenFile == NULL) {
+        fprintf(stderr, "%s%s%s\n", "Could not create token file at ", TOKEN_PATH, " - aborting.");
+        return 1;
+    }
+    return 0;
+}
+
 // Returns 1 on failure, 0 on success.
 int init() {
     FILE *sourceFile = fopen("tests/fib.pas", "r");
-    FILE *listingFile = fopen("out/listing.txt", "w+");
-    FILE *resFile = fopen("compiler/reswords.dat", "r");
+    FILE *listingFile = fopen(LISTING_PATH, "w+");
+    FILE *resFile = fopen(TOKEN_PATH, "r");
     initializeTokens(sourceFile, resFile);
+    initTokenFile();
     fclose(resFile);
     if (sourceFile == NULL)
     {
@@ -82,43 +129,22 @@ void printChars(LinkedList* list)
     struct node* node = list->head;
     while (node != NULL)
     {
-        printf("%c", *(int *) node->data);
+        printf("%c", *(char *) node->data);
         node = node -> next;
     }
     printf("\n");
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     if (init() == 0) {
         Token* next = malloc(sizeof(*next));
         while ((next = getNextToken()))
         {
-            switch (next -> category) {
-                case RELOP:
-                    printf("");
-                    break;
-
-                case UNREC:
-                    printf("");
-                    break;
-
-                default:
-                    printf("");
-                    break;
-            }
+            int cat = next -> category;
+            writeToken(next);
+            if (next -> category == FILEEND)
+                return 0;
         }
-
-
-
-        /*LinkedList* list = malloc(sizeof(*list));
-        list -> size = 0;
-        list -> head = NULL;
-        int contents[] = {65, 66, 67, 68, 69};
-        for (int i = 0; i < sizeof(contents)/sizeof(0); i++)
-        {
-            add(list, &contents[i], sizeof('a'));
-        }
-        printChars(list);*/
     } else {
         fprintf(stderr, "%s\n", "Initialization process failed in lexical analyzer.");
     }
