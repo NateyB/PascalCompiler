@@ -6,33 +6,21 @@
 
 #include "processor.h"
 #include "../dataStructures/linkedList/linkedlist.h"
-/*
+#include "../lexicalanalyzer.h"
 
-RELOP       (<(=|>)?)|=|>=?
-ASSIGNOP    :=
-IDRES       {letter}({letter}|{digit})*
-WS          {whitespace}+
-LONGREAL    {digit}+\.{digit}+\E(\+|\-)?{digit}+
-REAL        {digit}+\.{digit}+
-INT         {digit}+
-UNREC       [^\n \t]
-*/
-
-static const char TOKEN_PATH[] = "out/tokens.dat";
-static int LINE = 1;
-
+static char* buffer;
 // Begin machine listings
-
 /**************************************************************
 *                           ID/RES                            *
 ***************************************************************/
-// The constant file paths.
-static const char RESWORD_PATH[] = "compiler/reswords.dat";
 
 // The tables & arrays and stuff
 char** reservedWords;
 int numReserved;
 LinkedList* symbolTable;
+
+static bool ERROR;
+static Token* errToken;
 
 // Initialization stuff
 int initResWords(FILE* resFile)
@@ -85,6 +73,7 @@ char* knownID(char* word)
 // TODO Sanitize input
 int idres(Token* storage, char* str, int start)
 {
+    int initial = start;
     LinkedList* id = malloc(sizeof(*id));
     storage -> category = IDRES;
     storage -> type = 0;
@@ -117,6 +106,16 @@ int idres(Token* storage, char* str, int start)
             add(symbolTable, name, (wordSize + 1)*sizeof(char));
             storage -> id = name;
         }
+
+    }
+    if (start - initial > 10) // ID Too long err
+    {
+        ERROR = true;
+        errToken = malloc(sizeof(*errToken));
+        errToken -> category = LEXERR;
+        errToken -> type = 1;
+        errToken -> start = initial;
+        errToken -> length = start - initial;
 
     }
     return start;
@@ -171,38 +170,15 @@ int relop(Token* storage, char* str, int start)
 int whitespace(Token* storage, char* str, int start)
 {
     storage -> category = WS;
-    char next = str[start];
-    while (isspace(next))
+    if (isspace(str[start]))
     {
-        if (next == '\n')
-            LINE++;
+        storage -> type = 0;
+        if (str[start] == '\n')
+            storage -> type = 1;
         start++;
-        next = str[start];
     }
     return start;
 }
-
-// // This is weird witchcraft. Will deal with later.
-// int longreal(Token* storage, char* str, int start)
-// {
-//     // We'll have to backtrack if there's no E!
-//     int initial = start;
-//
-//     int sign = 1;
-//     char next = str[start];
-//     if (isdigit(x))
-//     {
-//
-//     }
-//     else if (next == '-')
-//         sign = -1;
-//     else if (next == '+')
-//         sign = 1;
-//     else // Not a number.
-//         return initial;
-//
-//
-// }
 
 // TODO: Figure out how to handle the mulop/addop keywords; also, spaces.
 int addop(Token* storage, char* str, int start)
@@ -423,33 +399,41 @@ typedef int (*machine)(Token*, char*, int);
 const static machine machines[] = {whitespace, idres, numMachine, grouping, catchall, relop, addop, mulop};
 
 bool initialized = false;
-int length = 0;
-char* buffer = 0;
 int start;
+
+int passLine(char* newLine)
+{
+    strcpy(buffer, newLine);
+    start = 0;
+    initialized = true;
+    return 0;
+}
 
 Token* getNextToken()
 {
     if (initialized) {
-        Token* current = malloc(sizeof(*current));
-        if (start == length - 1)
-        {
-            current -> category = FILEEND;
-            current -> type = 0;
-            // free(buffer);
-            return current;
+        if (ERROR) {
+            ERROR = false;
+            passError(errToken, buffer);
         }
+        Token* current = malloc(sizeof(*current));
         int end;
+        current -> start = start;
         for (int i = 0; i < sizeof(machines)/sizeof(machine); i++)
         {
             current -> type = 0;
             end = (*machines[i])(current, buffer, start);
             if (end > start) {
+                current -> length = end - start;
                 start = end;
                 return current;
             }
         }
-        current -> category = UNREC;
-        current -> type = buffer[start];
+        current -> category = LEXERR;
+        current -> type = 0;
+        current -> start = start;
+        current -> length = 1;
+        passError(current, buffer);
         start++;
         return current;
     } else {
@@ -458,30 +442,14 @@ Token* getNextToken()
     }
 }
 
-int initializeTokens(FILE* sourceFile, FILE* resFile)
+int initializeTokens(FILE* resFile)
 {
-    if (sourceFile) {
+    if (resFile) {
+        buffer = malloc(sizeof(char)*73);
         initResWords(resFile);
         initSymbolTable();
-        // Get the file's size
-        fseek(sourceFile, 0, SEEK_END);
-        long size = ftell(sourceFile);
-        fseek(sourceFile, 0, SEEK_SET);
-
-        buffer = (char*) malloc((size + 1)*sizeof(char));
-        if (buffer)
-        {
-            fread(buffer, 1, size + 1, sourceFile);
-            buffer[size] = 0;
-            length = size;
-            initialized = true;
-            start = 0;
-            return 0;
-        } else {
-            fprintf(stderr, "%s\n", "Memory for buffer not allocated properly!");
-        }
     } else {
-        fprintf(stderr, "%s\n", "Source file for analyzer null!");
+        fprintf(stderr, "%s\n", "Reserved words file for analyzer null!");
     }
     return 1;
 }

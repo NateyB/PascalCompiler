@@ -3,12 +3,14 @@
 
 enum TokenType {ASSIGNOP, FILEEND, RELOP, IDRES,
                     ADDOP, MULOP, WS, ARRAYINIT, TYPE,
-                    INT, REAL, PUNCTUATION, GROUPING, UNREC};
+                    INT, REAL, PUNCTUATION, GROUPING, LEXERR};
 
 
 // The token data type (essentially a tuple :: (TokenType, int/id))
 typedef struct T_Type {
     enum TokenType category;
+    int start;
+    int length;
     union {
         int type;
         double val;
@@ -17,6 +19,7 @@ typedef struct T_Type {
 } Token;
 
 Token* getNextToken();
-int initializeTokens(FILE* sourceFile, FILE* resFile);
+int passLine(char* newLine);
+int initializeTokens(FILE* resFile);
 
 #endif // PROCESSOR_H_

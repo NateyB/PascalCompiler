@@ -1,152 +1,140 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<string.h>
 #include "dataStructures/linkedList/linkedlist.h"
 #include "machines/processor.h"
 
-enum ListingType {LNNUM, ERROR};
-const static char* catNames[] = {"ASSIGNOP", "FILEEND", "RELOP", "IDRES",
-                            "ADDOP", "MULOP", "WS", "ARRAYINIT", "TYPE",
-                            "INT", "REAL", "PUNCTUATION", "GROUPING", "UNREC"};
+// Global file constants
+static const char* catNames[] = {"ASSIGNOP", "FILEEND", "RELOP", "IDRES",
+                    "ADDOP", "MULOP", "WS", "ARRAYINIT", "TYPE",
+                    "INT", "REAL", "PUNCTUATION", "GROUPING", "LEXERR"};
 
-const static char RESWORD_PATH[] = "compiler/reswords.dat";
-const static char TOKEN_PATH[] = "out/tokens.dat";
-const static char LISTING_PATH[] = "out/listing.txt";
-char TEST_PATH[256];
-FILE* tokenFile;
+static const char* lexErrs[] = {"Unrecognized symbol:",
+                                "ID length exceeded 10 character maximum:"};
 
-struct Listing {
-    enum ListingType type;
-    char message[72];
+static const char TOKEN_PATH[] = "out/tokens.dat";
+static const char RESWORD_PATH[] = "compiler/reswords.dat";
 
-    union {
-        int ln;
-        char error[7];
-    };
-};
+static const int TokenLineSpace = 10;
+static const int TokenTypeSpace = 15;
+static const int TokenAttrSpace = 20;
+static const int  TokenLexSpace = 20;
 
-void outToListing(struct Listing* entry, FILE *listingFile) {
-    switch (entry -> type)
-    {
-        case LNNUM:
-            fprintf(listingFile, "%7d   %s", entry -> ln, entry -> message);
-            break;
+static const int ListingLineSpace = 10;
+static const int ListingErrSpace = 50;
+static const int ListingLexSpace = 20;
 
-        case ERROR:
-            fprintf(listingFile, "%7s   %s", entry -> error, entry -> message);
-            break;
-    }
-}
-
-// This function outputs a copy of the source file with line numbers to the
-// output file.
-void copyFile(FILE *sourceFile, FILE *listingFile) {
-    int ln = 1;
-    int c = 0;
-    struct Listing* list = malloc(sizeof(*list));
-
-    while (fgets(list->message, 73, sourceFile))
-    {
-        list->ln++;
-        outToListing(list, listingFile);
-    }
-
-}
-
-void writeToken(Token* token)
-{
-    switch (token -> category)
-    {
-        case FILEEND:
-            fprintf(tokenFile, "%15s %20d\n", catNames[token -> category], token -> type);
-            break;
-
-        case IDRES:
-            fprintf(tokenFile, "%15s %20s\n", catNames[token -> category], token -> id);
-            break;
-
-        case REAL:
-            fprintf(tokenFile, "%15s %20f\n", catNames[token -> category], token -> val);
-            break;
-
-        case UNREC:
-            fprintf(tokenFile, "%15s %c\n", catNames[token -> category], token -> type);
-            break;
-
-        default:
-            fprintf(tokenFile, "%15s %20d\n", catNames[token -> category], token -> type);
-            break;
-    }
-}
-
-int initTokenFile()
-{
-    tokenFile = fopen(TOKEN_PATH, "w+");
-    if (tokenFile == NULL) {
-        fprintf(stderr, "%s%s%s\n", "Could not create token file at ", TOKEN_PATH, " - aborting.");
-        return 1;
-    }
-    return 0;
-}
+static int LINE = 1;
+static FILE* sourceFile;
+static FILE* listingFile;
+static FILE* tokenFile;
 
 // Returns 1 on failure, 0 on success.
 int init() {
-    FILE *sourceFile = fopen("tests/fib.pas", "r");
-    FILE *listingFile = fopen(LISTING_PATH, "w+");
-    FILE *resFile = fopen(TOKEN_PATH, "r");
-    initializeTokens(sourceFile, resFile);
-    initTokenFile();
+    sourceFile = fopen("tests/fib.pas", "r");
+    listingFile = fopen("out/listing.txt", "w+");
+    tokenFile = fopen(TOKEN_PATH, "w+");
+    FILE* resFile = fopen(RESWORD_PATH, "r");
+    initializeTokens(resFile);
     fclose(resFile);
+
     if (sourceFile == NULL)
     {
-        printf("%s\n", "It was null?");
+        fprintf(stderr, "%s\n", "Source was null?");
         fclose(listingFile);
         return 1;
     }
+    if (tokenFile == NULL)
+    {
+        fprintf(stderr, "%s\n", "Token file could not be created.");
+        fclose(listingFile);
+        return 1;
+    }
+    fprintf(tokenFile, "%*s%*s%*s%*s\n", TokenLineSpace, "Line",
+                                            TokenTypeSpace, "Token Type",
+                                            TokenAttrSpace, "Token Attribute",
+                                            TokenLexSpace, "Lexeme");
 
-
-    copyFile(sourceFile, listingFile);
-    fclose(sourceFile);
-    fclose(listingFile);
 
     return 0;
 }
 
-
-void printInts(LinkedList* list)
+int passError(Token* description, char* line)
 {
-    struct node* node = list->head;
-    while (node != NULL)
-    {
-        printf("%d ", *(int *) node->data);
-        node = node -> next;
-    }
-    printf("\n");
+    fprintf(tokenFile, "%*d%*s%*d%*.*s\n", TokenLineSpace, LINE,
+                                            TokenTypeSpace, catNames[description -> category],
+                                            TokenAttrSpace, description -> type,
+                                            TokenLexSpace, description -> length, &line[description -> start]);
+    fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1, catNames[description -> category],
+                                            ListingErrSpace, lexErrs[description -> type],
+                                            ListingLexSpace, description -> length, &line[description -> start]);
+    return 0;
 }
 
-void printChars(LinkedList* list)
+void writeEOFToken()
 {
-    struct node* node = list->head;
-    while (node != NULL)
-    {
-        printf("%c", *(char *) node->data);
-        node = node -> next;
-    }
-    printf("\n");
+    fprintf(tokenFile, "%*d%*s%*d%*s\n", TokenLineSpace, LINE, TokenTypeSpace, catNames[FILEEND], TokenAttrSpace, 0, TokenLexSpace, "EOF");
 }
 
-int main(int argc, char *argv[]) {
-    if (init() == 0) {
-        Token* next = malloc(sizeof(*next));
-        while ((next = getNextToken()))
+void updateLine(char* line)
+{
+    passLine(line);
+    fprintf(listingFile, "%*d\t\t%s", ListingLineSpace, LINE, line);
+}
+
+void writeToken(Token* token, char* line)
+{
+    if (token -> category == WS) // Don't bother including in the output file.
+        return;
+
+
+    fprintf(tokenFile, "%*d%*s", TokenLineSpace, LINE, TokenTypeSpace, catNames[token -> category]);
+    switch (token -> category) {
+        case REAL:
+            fprintf(tokenFile, "%*f", TokenAttrSpace, token -> val);
+            break;
+
+        case IDRES:
+            fprintf(tokenFile, "%*p", TokenAttrSpace, token -> id);
+            break;
+
+        default:
+            fprintf(tokenFile, "%*d", TokenAttrSpace, token -> type);
+            break;
+    }
+    fprintf(tokenFile, "%*.*s\n", TokenLexSpace, token -> length, &line[token -> start]);
+}
+
+int run()
+{
+    char line[72];
+    if (fgets(line, sizeof(line), sourceFile) != NULL)
+        updateLine(line);
+    Token* next = malloc(sizeof(*next));
+    while ((next = getNextToken()))
+    {
+        if (next -> category == WS && next -> type == 1)
         {
-            int cat = next -> category;
-            writeToken(next);
-            if (next -> category == FILEEND)
+            LINE++;
+            if (fgets(line, sizeof(line), sourceFile) != NULL)
+            {
+                updateLine(line);
+            } else { // Error or end of file (assume the latter)
+                writeEOFToken();
                 return 0;
+            }
         }
+        writeToken(next, line);
+    }
+    return 1;
+}
+
+int main() {
+    if (init() == 0) {
+        if (run() != 0)
+            fprintf(stderr, "%s\n", "Run failed. Could not terminate properly.");
     } else {
         fprintf(stderr, "%s\n", "Initialization process failed in lexical analyzer.");
     }
+    fclose(listingFile);
     return 0;
 }
