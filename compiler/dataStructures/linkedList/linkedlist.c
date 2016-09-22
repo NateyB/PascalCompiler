@@ -18,3 +18,16 @@ int add(LinkedList* list, void *data, size_t size)
 
     return list -> size;
 }
+
+void* pop(LinkedList* list)
+{
+    struct node* head = list -> head;
+    struct node* next = head -> next;
+
+    void* data = head -> data;
+    list -> head = next;
+    list -> size--;
+
+    free(head);
+    return data;
+}

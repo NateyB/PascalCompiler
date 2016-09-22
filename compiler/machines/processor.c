@@ -14,6 +14,17 @@ const char* catNames[] = {"ASSIGNOP", "FILEEND", "RELOP", "ID", "CONTROL",
 
 static char* buffer;
 // Begin machine listings
+
+/* TODO Include the following errors:
+ * 0. Symbol not recognized √
+ * 1. ID too long (10 char maximum) √
+ * 2. Int too long (10 digit maximum)
+ * 3. Int part of real too long (5 digits maximum)
+ * 4. Fraction part of real too long (5 digits maximum)
+ * 5. Exponent part of real too long (2 digits maximum)
+ * 6. Missing exponent on real
+ *
+*/
 /**************************************************************
 *                           ID/RES                            *
 ***************************************************************/
@@ -31,14 +42,25 @@ int getIndex(const char** array, size_t arr_size, char* item)
 
 // The tables & arrays and stuff
 char** reservedWords;
+int numReserved;
 static enum TokenType* categories;
 static int* attributes;
 
-int numReserved;
 LinkedList* symbolTable;
 
-static bool ERROR;
-static Token* errToken;
+static LinkedList* errorList;
+static struct node* errorHead;
+
+void throwError(enum TokenType category, int type, int start, int length)
+{
+    Token* errToken = malloc(sizeof(*errToken));
+    errToken -> category = category;
+    errToken -> type = type;
+    errToken -> start = start;
+    errToken -> length = length;
+    
+    add(errorList, errToken, sizeof(*errToken));
+}
 
 // Initialization stuff
 int initResWords(FILE* resFile)
@@ -127,7 +149,6 @@ char* knownID(char* word)
     return NULL;
 }
 
-// TODO Sanitize input
 int idres(Token* storage, char* str, int start)
 {
     int initial = start;
@@ -171,15 +192,7 @@ int idres(Token* storage, char* str, int start)
 
     }
     if (start - initial > 10) // ID Too long err
-    {
-        ERROR = true;
-        errToken = malloc(sizeof(*errToken));
-        errToken -> category = LEXERR;
-        errToken -> type = 1;
-        errToken -> start = initial;
-        errToken -> length = start - initial;
-
-    }
+        throwError(LEXERR, 1, initial, start - initial);
     return start;
 }
 /**************************************************************
@@ -242,7 +255,6 @@ int whitespace(Token* storage, char* str, int start)
     return start;
 }
 
-// TODO: Figure out how to handle the mulop/addop keywords; also, spaces.
 int addop(Token* storage, char* str, int start)
 {
     storage -> category = ADDOP;
@@ -385,6 +397,11 @@ int numMachine(Token* storage, char* str, int start)
 {
     bool real = false;
     int sign = 1;
+
+    int intLen = 0;
+    int fractionLen = 0;
+    int expLen = 0;
+
     if (str[start] == '-' && isdigit(str[start + 1]))
     {
         start++;
@@ -398,6 +415,7 @@ int numMachine(Token* storage, char* str, int start)
     {
         add(digits, &str[start], sizeof(char*));
         start++;
+        intLen++;
     }
     if (str[start] == '.' && isdigit(str[start + 1])) // Match the real
     {
@@ -408,6 +426,7 @@ int numMachine(Token* storage, char* str, int start)
         {
             add(digits, &str[start], sizeof(char*));
             start++;
+            fractionLen++;
         }
     }
     if (str[start] == 'E') // Match the long real
@@ -419,7 +438,9 @@ int numMachine(Token* storage, char* str, int start)
         {
             add(digits, &str[start], sizeof(char*));
             start++;
+            expLen++;
         }
+
     }
     if (real)
     {
@@ -452,10 +473,9 @@ int passLine(char* newLine)
 Token* getNextToken()
 {
     if (initialized) {
-        if (ERROR) {
-            ERROR = false;
-            passError(errToken, buffer);
-        }
+        while (errorList -> size > 0)
+            passError((Token *) pop(errorList), buffer);
+
         Token* current = malloc(sizeof(*current));
         int end;
         current -> start = start;
@@ -469,6 +489,9 @@ Token* getNextToken()
                 return current;
             }
         }
+
+        // Unrecognized symbol error. This error is manual because it takes
+        // the place of a lexeme, rather than being processed during one.
         current -> category = LEXERR;
         current -> type = 0;
         current -> start = start;
@@ -487,6 +510,7 @@ int initializeTokens(FILE* resFile)
         buffer = malloc(sizeof(char)*73);
         initResWords(resFile);
         initSymbolTable();
+        errorList = malloc(sizeof(*errorList));
     } else {
         fprintf(stderr, "%s\n", "Reserved words file for analyzer null!");
     }

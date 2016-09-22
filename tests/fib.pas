@@ -39,4 +39,4 @@ begin
     writeln(+fib(n, 0, 1)*q/p + 4);
     writeln(fib2(n));
     writeln(uselessArray23[3])
-end.
+end.#

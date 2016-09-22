@@ -8,7 +8,9 @@ static const char* lexErrs[] = {"Unrecognized symbol:",
                                 "ID length exceeded 10 character maximum:"};
 
 static const char TOKEN_PATH[] = "out/tokens.dat";
+static const char LISTING_PATH[] = "out/listing.txt";
 static const char RESWORD_PATH[] = "compiler/reswords.dat";
+static const char* TEST_PATH;
 
 static const int TokenLineSpace = 10;
 static const int TokenTypeSpace = 15;
@@ -27,7 +29,7 @@ static FILE* tokenFile;
 // Returns 1 on failure, 0 on success.
 int init() {
     sourceFile = fopen("tests/fib.pas", "r");
-    listingFile = fopen("out/listing.txt", "w+");
+    listingFile = fopen(LISTING_PATH, "w+");
     tokenFile = fopen(TOKEN_PATH, "w+");
     FILE* resFile = fopen(RESWORD_PATH, "r");
     initializeTokens(resFile);
@@ -133,6 +135,7 @@ int run()
                 updateLine(line);
             } else { // Error or end of file (assume the latter)
                 writeEOFToken();
+                LINE++;
                 return 0;
             }
         }
@@ -140,7 +143,12 @@ int run()
     return 1;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "%s\n", "Expected exactly one file to compile!");
+    } else {
+        TEST_PATH = argv[1];
+    }
     if (init() == 0) {
         if (run() != 0)
             fprintf(stderr, "%s\n", "Run failed. Could not terminate properly.");

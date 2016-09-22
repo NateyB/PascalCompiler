@@ -1,9 +1,7 @@
 #ifndef LINKED_H_
 #define LINKED_H_
 
-// Because, at least in its current form, nothing will ever be removed
-// from this list, it's very straightforward to implement ;)
-
+// Behaves like a stack
 struct node {
     void* data;
     struct node* next;
@@ -14,6 +12,10 @@ typedef struct LinkedNodes {
     int size;
 } LinkedList;
 
+// Add an item to the front of the linked list
 int add(LinkedList* list, void* data, size_t size);
+
+// Pop an item from the front of the linked list
+void* pop(LinkedList* list);
 
 #endif // LINKED_H_
