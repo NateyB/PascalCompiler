@@ -9,7 +9,7 @@ letter		[a-zA-Z]
 whitespace  [\n \t]
 RELOP       (<(=|>)?)|=|>=?
 ASSIGNOP    :=
-IDRES       {letter}({letter}|{digit})*
+ID       {letter}({letter}|{digit})*
 WS          {whitespace}+
 LONGREAL    {digit}+\.{digit}+\E(\+|\-)?{digit}+
 REAL        {digit}+\.{digit}+
@@ -26,7 +26,7 @@ FILE* tokenFile = NULL;
 char ** reservedWords;
 
 // The valid token types in our subset of Pascal
-enum TokenType {ASSIGNOP, RELOP, IDRES, LONGREAL, REAL, INT, UNREC};
+enum TokenType {ASSIGNOP, RELOP, ID, LONGREAL, REAL, INT, UNREC};
 // The token data type (essentially a tuple :: (TokenType, int))
 typedef struct T_Type {
     enum TokenType category;
@@ -70,7 +70,7 @@ void manageRelOp(char* op)
     applyToken(RELOP, kind);
 }
 
-//IDRES management
+//ID management
 void manageIdRes(char* symbol)
 {
     // TODO Implement
@@ -86,7 +86,7 @@ void manageIdRes(char* symbol)
 %%
 {ASSIGNOP}  manageAssignOp(yytext);
 {RELOP}     manageRelOp(yytext);
-{IDRES}     printf("Found an ID! It's %s. ", yytext);
+{ID}     printf("Found an ID! It's %s. ", yytext);
 
 {LONGREAL}  printf("Found a long real! It's %s. ", yytext);
 {REAL}      printf("Found a real! It's %s. ", yytext);

@@ -4,10 +4,6 @@
 #include "machines/processor.h"
 
 // Global file constants
-static const char* catNames[] = {"ASSIGNOP", "FILEEND", "RELOP", "IDRES",
-                    "ADDOP", "MULOP", "WS", "ARRAYINIT", "TYPE",
-                    "INT", "REAL", "PUNCTUATION", "GROUPING", "LEXERR"};
-
 static const char* lexErrs[] = {"Unrecognized symbol:",
                                 "ID length exceeded 10 character maximum:"};
 
@@ -50,9 +46,9 @@ int init() {
         return 1;
     }
     fprintf(tokenFile, "%*s%*s%*s%*s\n", TokenLineSpace, "Line",
+                                            TokenLexSpace, "Lexeme",
                                             TokenTypeSpace, "Token Type",
-                                            TokenAttrSpace, "Token Attribute",
-                                            TokenLexSpace, "Lexeme");
+                                            TokenAttrSpace, "Token Attribute");
 
 
     return 0;
@@ -60,10 +56,10 @@ int init() {
 
 int passError(Token* description, char* line)
 {
-    fprintf(tokenFile, "%*d%*s%*d%*.*s\n", TokenLineSpace, LINE,
+    fprintf(tokenFile, "%*d%*.*s%*s%*d\n", TokenLineSpace, LINE,
+                                            TokenLexSpace, description -> length, &line[description -> start],
                                             TokenTypeSpace, catNames[description -> category],
-                                            TokenAttrSpace, description -> type,
-                                            TokenLexSpace, description -> length, &line[description -> start]);
+                                            TokenAttrSpace, description -> type);
     fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1, catNames[description -> category],
                                             ListingErrSpace, lexErrs[description -> type],
                                             ListingLexSpace, description -> length, &line[description -> start]);
@@ -72,7 +68,7 @@ int passError(Token* description, char* line)
 
 void writeEOFToken()
 {
-    fprintf(tokenFile, "%*d%*s%*d%*s\n", TokenLineSpace, LINE, TokenTypeSpace, catNames[FILEEND], TokenAttrSpace, 0, TokenLexSpace, "EOF");
+    fprintf(tokenFile, "%*d%*.*s%*s%*d\n", TokenLineSpace, LINE, TokenLexSpace, 3, "EOF", TokenTypeSpace, catNames[FILEEND], TokenAttrSpace, 0);
 }
 
 void updateLine(char* line)
@@ -85,15 +81,20 @@ void writeToken(Token* token, char* line)
 {
     if (token -> category == WS) // Don't bother including in the output file.
         return;
+    if (token -> category == LEXERR) // For catching the unrecognized symbol error
+    {
+        passError(token, line);
+        return;
+    }
 
 
-    fprintf(tokenFile, "%*d%*s", TokenLineSpace, LINE, TokenTypeSpace, catNames[token -> category]);
+    fprintf(tokenFile, "%*d%*.*s%*s", TokenLineSpace, LINE, TokenLexSpace, token -> length, &line[token -> start], TokenTypeSpace, catNames[token -> category]);
     switch (token -> category) {
         case REAL:
             fprintf(tokenFile, "%*f", TokenAttrSpace, token -> val);
             break;
 
-        case IDRES:
+        case ID:
             fprintf(tokenFile, "%*p", TokenAttrSpace, token -> id);
             break;
 
@@ -101,8 +102,19 @@ void writeToken(Token* token, char* line)
             fprintf(tokenFile, "%*d", TokenAttrSpace, token -> type);
             break;
     }
-    fprintf(tokenFile, "%*.*s\n", TokenLexSpace, token -> length, &line[token -> start]);
+    fprintf(tokenFile, "\n");
 }
+
+// void printWords(LinkedList* list)
+// {
+//     struct node* node = list->head;
+//     while (node)
+//     {
+//         printf("Printing symbol: %s\n", (char *) node->data);
+//         node = node -> next;
+//     }
+// }
+
 
 int run()
 {
@@ -112,18 +124,18 @@ int run()
     Token* next = malloc(sizeof(*next));
     while ((next = getNextToken()))
     {
+        writeToken(next, line);
         if (next -> category == WS && next -> type == 1)
         {
-            LINE++;
             if (fgets(line, sizeof(line), sourceFile) != NULL)
             {
+                LINE++;
                 updateLine(line);
             } else { // Error or end of file (assume the latter)
                 writeEOFToken();
                 return 0;
             }
         }
-        writeToken(next, line);
     }
     return 1;
 }

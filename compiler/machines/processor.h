@@ -1,9 +1,11 @@
 #ifndef PROCESSOR_H_
 #define PROCESSOR_H_
 
-enum TokenType {ASSIGNOP, FILEEND, RELOP, IDRES,
-                    ADDOP, MULOP, WS, ARRAYINIT, TYPE,
-                    INT, REAL, PUNCTUATION, GROUPING, LEXERR};
+enum TokenType {ASSIGNOP, FILEEND, RELOP, ID, CONTROL,
+                    ADDOP, MULOP, WS, ARRAY, TYPE, VAR,
+                    INT, REAL, PUNC, GROUP, INVERSE, LEXERR};
+
+extern const char* catNames[];
 
 
 // The token data type (essentially a tuple :: (TokenType, int/id))

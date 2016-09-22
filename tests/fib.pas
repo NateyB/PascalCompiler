@@ -30,7 +30,7 @@ procedure init();
 begin
   n := 12;
   p := 12;
-  uselessArray23[3] := 15;
+  uselessArray23[3] := 15.56;
   q := 12
 end;
 

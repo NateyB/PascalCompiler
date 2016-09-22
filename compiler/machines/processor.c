@@ -8,14 +8,32 @@
 #include "../dataStructures/linkedList/linkedlist.h"
 #include "../lexicalanalyzer.h"
 
+const char* catNames[] = {"ASSIGNOP", "FILEEND", "RELOP", "ID", "CONTROL",
+                    "ADDOP", "MULOP", "WS", "ARRAY", "TYPE", "VAR",
+                    "INT", "REAL", "PUNC", "GROUP", "INVERSE", "LEXERR"};
+
 static char* buffer;
 // Begin machine listings
 /**************************************************************
 *                           ID/RES                            *
 ***************************************************************/
+int getIndex(const char** array, size_t arr_size, char* item)
+{
+    while (arr_size > 0)
+    {
+        if (strcmp(array[arr_size - 1], item) == 0)
+            return arr_size - 1;
+        arr_size--;
+    }
+    return -1;
+}
+
 
 // The tables & arrays and stuff
 char** reservedWords;
+static enum TokenType* categories;
+static int* attributes;
+
 int numReserved;
 LinkedList* symbolTable;
 
@@ -27,12 +45,26 @@ int initResWords(FILE* resFile)
 {
     static const int length = 11;
     LinkedList* resWords = malloc(sizeof(*resWords));
+    LinkedList* cats = malloc(sizeof(*cats));
+    LinkedList* attrs = malloc(sizeof(*attrs));
+
     char word[length] = {0};
-    while (fgets(word, length, resFile))
+    char category[length] = {0};
+    int attr = 0;
+    //while (fgets(word, length, resFile))
+    while (true)
     {
-        word[strcspn(word, "\n")] = 0;
+        fscanf(resFile, "%s", word);
+        if (feof(resFile))
+            break;
+        fscanf(resFile, "%s", category); // The actual name.
+        fscanf(resFile, "%d", &attr);
         numReserved = add(resWords, &word, length*sizeof(char));
+        add(cats, &category, length*sizeof(char));
+        add(attrs, &attr, sizeof(int));
     }
+
+    // Initialize the lexeme table
     reservedWords = malloc(numReserved*sizeof(char*));
     struct node* node = resWords -> head;
 
@@ -40,6 +72,26 @@ int initResWords(FILE* resFile)
         reservedWords[i] = (char *) node -> data;
         node = node -> next;
     }
+
+    // Initialize the category table
+    categories = malloc(numReserved*sizeof(enum TokenType));
+    node = cats -> head;
+
+    for (size_t i = 0; i < numReserved; i++) {
+        categories[i] = (enum TokenType) getIndex(catNames, 17, (char *) node -> data);
+        node = node -> next;
+    }
+
+    // Initialize the attribute table
+    attributes = malloc(numReserved*sizeof(int));
+    node = attrs -> head;
+
+    for (size_t i = 0; i < numReserved; i++) {
+        attributes[i] = *(int *) node -> data;
+        node = node -> next;
+    }
+
+
     return 0;
 }
 
@@ -50,14 +102,19 @@ int initSymbolTable()
     return 0;
 }
 
-char* knownID(char* word)
+int isReserved(char* word)
 {
     // Check the reserved words table for a match first
     for (size_t i = 0; i < numReserved; i++) {
         if (!reservedWords[i] || strcmp(reservedWords[i], word) == 0) // Match
-            return reservedWords[i];
+            return i;
     }
 
+    return -1;
+}
+
+char* knownID(char* word)
+{
     // Then check the symbol table
     struct node* node = symbolTable -> head;
     while (node)
@@ -75,7 +132,7 @@ int idres(Token* storage, char* str, int start)
 {
     int initial = start;
     LinkedList* id = malloc(sizeof(*id));
-    storage -> category = IDRES;
+    storage -> category = ID;
     storage -> type = 0;
     char next = str[start];
     if (isalpha(next)) // Can actually be an id/reserved
@@ -96,9 +153,14 @@ int idres(Token* storage, char* str, int start)
             node = node -> next;
         }
 
+        int index = -1;
         char* address = 0;
-
-        if ((address = knownID(name)))// || ((address = inList(reservedWords, name))))
+        if ((index = isReserved(name)) >= 0)
+        { // It's a reserved word!
+            storage -> category = categories[index];
+            storage -> type = attributes[index];
+        }
+        else if ((address = knownID(name)))
         {
             storage -> id = address;
         } else
@@ -196,16 +258,6 @@ int addop(Token* storage, char* str, int start)
             start++;
             return start;
 
-        case 'o':
-            if (str[start + 1] == 'r' && isspace(str[start + 2]))
-            {
-                storage -> type = 2;
-                start = start + 2;
-                return start;
-            }
-            return start;
-
-
         default: break;
     }
 
@@ -223,18 +275,6 @@ int mulop(Token* storage, char* str, int start)
     {
         storage -> type = 1;
         start++;
-    } else if (strncmp(&str[start], "div ", 4) == 0)
-    {
-        storage -> type = 2;
-        start += 3;
-    } else if (strncmp(&str[start], "mod ", 4) == 0)
-    {
-        storage -> type = 3;
-        start += 3;
-    } else if (strncmp(&str[start], "and ", 4) == 0)
-    {
-        storage -> type = 4;
-        start += 3;
     }
 
     return start;
@@ -250,8 +290,8 @@ int catchall(Token* storage, char* str, int start)
         start += 2;
     } else if (strncmp(&str[start], "..", 2) == 0)
     {
-        storage -> category = ARRAYINIT;
-        storage -> type = 0;
+        storage -> category = ARRAY;
+        storage -> type = 1;
         start += 2;
     } else if (str[start] == ':'){
         storage -> category = TYPE;
@@ -259,17 +299,17 @@ int catchall(Token* storage, char* str, int start)
         start++;
     } else if (str[start] == ',')
     {
-        storage -> category = PUNCTUATION;
+        storage -> category = PUNC;
         storage -> type = 0;
         start++;
     } else if (str[start] == ';')
     {
-        storage -> category = PUNCTUATION;
+        storage -> category = PUNC;
         storage -> type = 1;
         start++;
     } else if (str[start] == '.')
     {
-        storage -> category = PUNCTUATION;
+        storage -> category = PUNC;
         storage -> type = 2;
         start++;
     }
@@ -295,7 +335,7 @@ char* parseNum(LinkedList* chars, bool real)
 
 int grouping(Token* storage, char* str, int start)
 {
-    storage -> category = GROUPING;
+    storage -> category = GROUP;
     switch (str[start])
     {
         case '(':
@@ -433,7 +473,6 @@ Token* getNextToken()
         current -> type = 0;
         current -> start = start;
         current -> length = 1;
-        passError(current, buffer);
         start++;
         return current;
     } else {
@@ -453,14 +492,3 @@ int initializeTokens(FILE* resFile)
     }
     return 1;
 }
-
-
-// void printWords(LinkedList* list) // TODO DELETE OR MOVE
-// {
-//     struct node* node = list->head;
-//     while (node)
-//     {
-//         printf("Printing symbol: %s\n", (char *) node->data);
-//         node = node -> next;
-//     }
-// }
