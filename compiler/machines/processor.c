@@ -18,11 +18,11 @@ static char* buffer;
 /* TODO Include the following errors:
  * 0. Symbol not recognized √
  * 1. ID too long (10 char maximum) √
- * 2. Int too long (10 digit maximum)
- * 3. Int part of real too long (5 digits maximum)
- * 4. Fraction part of real too long (5 digits maximum)
- * 5. Exponent part of real too long (2 digits maximum)
- * 6. Missing exponent on real
+ * 2. Int too long (10 digit maximum) √
+ * 3. Int part of real too long (5 digits maximum) √
+ * 4. Fraction part of real too long (5 digits maximum) √
+ * 5. Exponent part of real too long (2 digits maximum) √
+ * 6. Missing exponent on real √
  *
 */
 /**************************************************************
@@ -58,7 +58,7 @@ void throwError(enum TokenType category, int type, int start, int length)
     errToken -> type = type;
     errToken -> start = start;
     errToken -> length = length;
-    
+
     add(errorList, errToken, sizeof(*errToken));
 }
 
@@ -100,7 +100,7 @@ int initResWords(FILE* resFile)
     node = cats -> head;
 
     for (size_t i = 0; i < numReserved; i++) {
-        categories[i] = (enum TokenType) getIndex(catNames, 17, (char *) node -> data);
+        categories[i] = (enum TokenType) getIndex(catNames, sizeof(catNames)/sizeof(char*), (char *) node -> data);
         node = node -> next;
     }
 
@@ -395,7 +395,9 @@ int parseInt(LinkedList* digits)
 
 int numMachine(Token* storage, char* str, int start)
 {
+    int initial = start; // For keeping track
     bool real = false;
+    bool hasE = false;
     int sign = 1;
 
     int intLen = 0;
@@ -431,6 +433,7 @@ int numMachine(Token* storage, char* str, int start)
     }
     if (str[start] == 'E') // Match the long real
     {
+        hasE = true;
         add(digits, &str[start], sizeof(char*));
         real = true;
         start++;
@@ -444,10 +447,20 @@ int numMachine(Token* storage, char* str, int start)
     }
     if (real)
     {
+        if (intLen > 5)
+            throwError(LEXERR, 3, initial, start - initial);
+        if (fractionLen > 5)
+            throwError(LEXERR, 4, initial, start - initial);
+        if (expLen > 2)
+            throwError(LEXERR, 5, initial, start - initial);
+        if (hasE && expLen == 0)
+            throwError(LEXERR, 6, initial, start - initial);
         storage -> val = parseReal(digits);
         storage -> category = REAL;
     } else
     {
+        if (intLen > 10)
+            throwError(LEXERR, 2, initial, start - initial);
         storage -> type = parseInt(digits);
         storage -> category = INT;
     }
@@ -474,7 +487,7 @@ Token* getNextToken()
 {
     if (initialized) {
         while (errorList -> size > 0)
-            passError((Token *) pop(errorList), buffer);
+            passError((Token *) pop(errorList), buffer); // NOTE: Pop may cause memory management error.
 
         Token* current = malloc(sizeof(*current));
         int end;

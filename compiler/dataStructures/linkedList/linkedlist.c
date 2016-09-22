@@ -28,6 +28,6 @@ void* pop(LinkedList* list)
     list -> head = next;
     list -> size--;
 
-    free(head);
+    //free(head); // TODO this is necessary; should fix
     return data;
 }

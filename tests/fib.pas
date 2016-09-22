@@ -1,7 +1,7 @@
 program fib(input, output);
 var n, p: integer;
 var q: real;
-var uselessArray23 : array [1..12] of integer;
+var numsArray : array [1..12] of integer;
 
 function fib(a : integer; b, c : real) : real;
 begin
@@ -30,7 +30,7 @@ procedure init();
 begin
   n := 12;
   p := 12;
-  uselessArray23[3] := 15.56;
+  numsArray[3] := 15.56;
   q := 12
 end;
 
@@ -38,5 +38,5 @@ begin
     init;
     writeln(+fib(n, 0, 1)*q/p + 4);
     writeln(fib2(n));
-    writeln(uselessArray23[3])
-end.#
+    writeln(numsArray[3])
+end.

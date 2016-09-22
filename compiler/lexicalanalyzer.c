@@ -5,7 +5,12 @@
 
 // Global file constants
 static const char* lexErrs[] = {"Unrecognized symbol:",
-                                "ID length exceeded 10 character maximum:"};
+                                "ID length exceeded 10 characters:",
+                                "Int length exceeded 10 characters:",
+                                "Integer part of real exceeded 5 characters:",
+                                "Fractional part of real exceeded 5 characters:",
+                                "Exponent part of long real exceeded 2 characters:",
+                                "Missing exponent part of long real:"};
 
 static const char TOKEN_PATH[] = "out/tokens.dat";
 static const char LISTING_PATH[] = "out/listing.txt";
@@ -28,7 +33,7 @@ static FILE* tokenFile;
 
 // Returns 1 on failure, 0 on success.
 int init() {
-    sourceFile = fopen("tests/fib.pas", "r");
+    sourceFile = fopen(TEST_PATH, "r");
     listingFile = fopen(LISTING_PATH, "w+");
     tokenFile = fopen(TOKEN_PATH, "w+");
     FILE* resFile = fopen(RESWORD_PATH, "r");
@@ -129,9 +134,9 @@ int run()
         writeToken(next, line);
         if (next -> category == WS && next -> type == 1)
         {
+            LINE++;
             if (fgets(line, sizeof(line), sourceFile) != NULL)
             {
-                LINE++;
                 updateLine(line);
             } else { // Error or end of file (assume the latter)
                 writeEOFToken();
