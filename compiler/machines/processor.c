@@ -23,7 +23,10 @@ static char* buffer;
  * 4. Fraction part of real too long (5 digits maximum) √
  * 5. Exponent part of real too long (2 digits maximum) √
  * 6. Missing exponent on real √
- *
+ * 7. Leading 0 for ints (when not equal to 0) √
+ * 8. Leading 0 for reals (when not 0.x) √
+ * 9. Trailing 0 for reals √
+ *10. Leading 0 for exponent. √
 */
 /**************************************************************
 *                           ID/RES                            *
@@ -398,8 +401,12 @@ int numMachine(Token* storage, char* str, int start)
     int initial = start; // For keeping track
     bool real = false;
     bool hasE = false;
-    int sign = 1;
+    bool started = false;
+    bool leadZero = false;
+    bool expLeadZero = false;
+    bool trailZero = false;
 
+    int sign = 1;
     int intLen = 0;
     int fractionLen = 0;
     int expLen = 0;
@@ -415,7 +422,10 @@ int numMachine(Token* storage, char* str, int start)
     LinkedList* digits = malloc(sizeof(*digits));
     while (isdigit(str[start])) // Match the beginning integer
     {
+        if (str[start] == '0' && !started)
+            leadZero = true;
         add(digits, &str[start], sizeof(char*));
+        started = true;
         start++;
         intLen++;
     }
@@ -427,6 +437,10 @@ int numMachine(Token* storage, char* str, int start)
         while (isdigit(str[start])) // The fraction part of the decimal
         {
             add(digits, &str[start], sizeof(char*));
+            if (str[start] == '0')
+                trailZero = true;
+            else
+                trailZero = false;
             start++;
             fractionLen++;
         }
@@ -436,9 +450,13 @@ int numMachine(Token* storage, char* str, int start)
         hasE = true;
         add(digits, &str[start], sizeof(char*));
         real = true;
+        bool initialRun = true;
         start++;
         while (isdigit(str[start])) // The exponent part (if applicable)
         {
+            if (str[start] == '0' && initialRun)
+                expLeadZero = true;
+            initialRun = false;
             add(digits, &str[start], sizeof(char*));
             start++;
             expLen++;
@@ -447,21 +465,31 @@ int numMachine(Token* storage, char* str, int start)
     }
     if (real)
     {
-        if (intLen > 5)
+        if (intLen > 5) // Too long.
             throwError(LEXERR, 3, initial, start - initial);
-        if (fractionLen > 5)
+        if (fractionLen > 5) // Nope. Too long.
             throwError(LEXERR, 4, initial, start - initial);
-        if (expLen > 2)
+        if (expLen > 2) // Too long again.
             throwError(LEXERR, 5, initial, start - initial);
-        if (hasE && expLen == 0)
+        if (hasE && expLen == 0) // 3.4E what???
             throwError(LEXERR, 6, initial, start - initial);
+
         storage -> val = parseReal(digits);
+
+        if (leadZero && intLen > 1) // Leading zero error!
+            throwError(LEXERR, 8, initial, start - initial);
+        if (expLeadZero)
+            throwError(LEXERR, 10, initial, start - initial);
+        if (trailZero) // Trailing zero error!
+            throwError(LEXERR, 9, initial, start - initial);
         storage -> category = REAL;
     } else
     {
         if (intLen > 10)
             throwError(LEXERR, 2, initial, start - initial);
         storage -> type = parseInt(digits);
+        if (leadZero && !(storage -> type == 0))
+            throwError(LEXERR, 7, initial, start - initial);
         storage -> category = INT;
     }
 
@@ -487,7 +515,7 @@ Token* getNextToken()
 {
     if (initialized) {
         while (errorList -> size > 0)
-            passError((Token *) pop(errorList), buffer); // NOTE: Pop may cause memory management error.
+            passError((Token *) pop(errorList), buffer);
 
         Token* current = malloc(sizeof(*current));
         int end;

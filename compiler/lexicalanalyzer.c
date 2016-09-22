@@ -10,7 +10,11 @@ static const char* lexErrs[] = {"Unrecognized symbol:",
                                 "Integer part of real exceeded 5 characters:",
                                 "Fractional part of real exceeded 5 characters:",
                                 "Exponent part of long real exceeded 2 characters:",
-                                "Missing exponent part of long real:"};
+                                "Missing exponent part of long real:",
+                                "Leading 0 in int:",
+                                "Excessive leading 0 in real:",
+                                "Trailing 0 in real:",
+                                "Leading 0 in exponent:"};
 
 static const char TOKEN_PATH[] = "out/tokens.dat";
 static const char LISTING_PATH[] = "out/listing.txt";
