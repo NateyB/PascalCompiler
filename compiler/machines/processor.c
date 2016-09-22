@@ -14,20 +14,6 @@ const char* catNames[] = {"ASSIGNOP", "FILEEND", "RELOP", "ID", "CONTROL",
 
 static char* buffer;
 // Begin machine listings
-
-/* TODO Include the following errors:
- * 0. Symbol not recognized √
- * 1. ID too long (10 char maximum) √
- * 2. Int too long (10 digit maximum) √
- * 3. Int part of real too long (5 digits maximum) √
- * 4. Fraction part of real too long (5 digits maximum) √
- * 5. Exponent part of real too long (2 digits maximum) √
- * 6. Missing exponent on real √
- * 7. Leading 0 for ints (when not equal to 0) √
- * 8. Leading 0 for reals (when not 0.x) √
- * 9. Trailing 0 for reals √
- *10. Leading 0 for exponent. √
-*/
 /**************************************************************
 *                           ID/RES                            *
 ***************************************************************/
@@ -103,7 +89,9 @@ int initResWords(FILE* resFile)
     node = cats -> head;
 
     for (size_t i = 0; i < numReserved; i++) {
-        categories[i] = (enum TokenType) getIndex(catNames, sizeof(catNames)/sizeof(char*), (char *) node -> data);
+        categories[i] = (enum TokenType) getIndex(catNames,
+                                                 sizeof(catNames)/sizeof(char*),
+                                                 (char *) node -> data);
         node = node -> next;
     }
 
@@ -169,7 +157,8 @@ int idres(Token* storage, char* str, int start)
             next = str[start];
         } while(isalpha(next) || isdigit(next)); // Match ID
 
-        char* name = malloc((wordSize + 1)*sizeof(char)); // The string of the id name
+        // The string of the id name
+        char* name = malloc((wordSize + 1)*sizeof(char));
         name[wordSize] = '\0';
         struct node* node = id -> head;
         for (size_t i = 0; i < wordSize; i++) {
@@ -498,7 +487,8 @@ int numMachine(Token* storage, char* str, int start)
 
 // The processing
 typedef int (*machine)(Token*, char*, int);
-const static machine machines[] = {whitespace, idres, numMachine, grouping, catchall, relop, addop, mulop};
+const static machine machines[] = {whitespace, idres, numMachine, grouping,
+                                    catchall, relop, addop, mulop};
 
 bool initialized = false;
 int start;

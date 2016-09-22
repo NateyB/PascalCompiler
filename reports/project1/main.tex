@@ -1,0 +1,70 @@
+\documentclass[titlepage]{article}
+\usepackage{fancyvrb}
+
+\newcommand{\ShowSourceFile}[2]
+{
+\VerbatimInput[fontsize=\footnotesize{}, frame=lines,label=#2]{#1}
+}
+% \RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}%
+% {
+% fontsize=\footnotesize{},
+%
+%  frame=lines,  % top and bottom rule only
+%  framesep=2em, % separation between frame and text
+%  % rulecolor=\color{Gray},
+%
+%  % label=\fbox{\color{Black}data.txt},
+%  labelposition=topline
+% }
+
+\author{Nate Beckemeyer}
+\title{\textbf{CS 4013: Compiler Construction: Project 1}}
+\date{September 2016}
+
+
+
+\begin{document}
+    \maketitle
+    \section*{Introduction}
+    For project 1, I wrote a lexical analyzer in C for Pascal. The user can
+    specify a source document for the analyzer, and the analyzer will create
+    a listing file and a token file. The listing file contains the source
+    program, line-by-line, but points out any lexical errors that occur.
+    The token file contains the line number, the lexeme corresponding to
+    the token, the type of the token, and the attribute value of the token.
+
+    The purpose of the lexical analyzer is to
+
+    \section{Methodology}
+    The lexical analyzer is an
+
+    \section{Implementation}
+    The implementation.
+
+    \section{Discussion \& Conclusions}
+    The discussions \& conclusions.
+
+    \clearpage{}
+    \section*{Appendix 1: Sample Inputs and Outputs} % Input and output files.
+    \ShowSourceFile{../../compiler/reswords.dat}{Reserved Words}
+    \subsection{Error-Filled Source File}
+    \ShowSourceFile{appendix1/error/errors.pas}{Error Source Code}
+    \ShowSourceFile{appendix1/error/listing.txt}{Error Listing File}
+    \ShowSourceFile{appendix1/error/tokens.dat}{Error Token File}
+
+    \clearpage{}
+    \subsection{Error-Free Source File}
+    \ShowSourceFile{appendix1/correct/fib.pas}{Correct Source Code}
+    \ShowSourceFile{appendix1/correct/listing.txt}{Correct Listing File}
+    \ShowSourceFile{appendix1/correct/tokens.dat}{Correct Token File}
+
+    \clearpage{}
+    \section*{Appendix 2: Program Listings}
+    \ShowSourceFile{../../compiler/dataStructures/linkedList/linkedList.c}{LinkedList.c}
+    \ShowSourceFile{../../compiler/dataStructures/linkedList/linkedList.h}{LinkedList.h}
+    \ShowSourceFile{../../compiler/machines/processor.h}{Processor.h}
+    \ShowSourceFile{../../compiler/machines/processor.c}{Processor.c}
+    \ShowSourceFile{../../compiler/lexicalanalyzer.h}{LexicalAnalyzer.h}
+    \ShowSourceFile{../../compiler/lexicalanalyzer.c}{LexicalAnalyzer.c}
+
+\end{document}

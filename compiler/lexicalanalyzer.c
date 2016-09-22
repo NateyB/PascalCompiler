@@ -68,18 +68,20 @@ int init() {
 int passError(Token* description, char* line)
 {
     fprintf(tokenFile, "%*d%*.*s%*s%*d\n", TokenLineSpace, LINE,
-                                            TokenLexSpace, description -> length, &line[description -> start],
-                                            TokenTypeSpace, catNames[description -> category],
-                                            TokenAttrSpace, description -> type);
-    fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1, catNames[description -> category],
-                                            ListingErrSpace, lexErrs[description -> type],
-                                            ListingLexSpace, description -> length, &line[description -> start]);
+            TokenLexSpace, description -> length, &line[description -> start],
+            TokenTypeSpace, catNames[description -> category], TokenAttrSpace,
+            description -> type);
+    fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1,
+            catNames[description -> category], ListingErrSpace,
+            lexErrs[description -> type], ListingLexSpace, description -> length,
+            &line[description -> start]);
     return 0;
 }
 
 void writeEOFToken()
 {
-    fprintf(tokenFile, "%*d%*.*s%*s%*d\n", TokenLineSpace, LINE, TokenLexSpace, 3, "EOF", TokenTypeSpace, catNames[FILEEND], TokenAttrSpace, 0);
+    fprintf(tokenFile, "%*d%*.*s%*s%*d\n", TokenLineSpace, LINE, TokenLexSpace,
+            3, "EOF", TokenTypeSpace, catNames[FILEEND], TokenAttrSpace, 0);
 }
 
 void updateLine(char* line)
@@ -99,7 +101,9 @@ void writeToken(Token* token, char* line)
     }
 
 
-    fprintf(tokenFile, "%*d%*.*s%*s", TokenLineSpace, LINE, TokenLexSpace, token -> length, &line[token -> start], TokenTypeSpace, catNames[token -> category]);
+    fprintf(tokenFile, "%*d%*.*s%*s", TokenLineSpace, LINE, TokenLexSpace,
+            token -> length, &line[token -> start], TokenTypeSpace,
+            catNames[token -> category]);
     switch (token -> category) {
         case REAL:
             fprintf(tokenFile, "%*f", TokenAttrSpace, token -> val);
@@ -144,7 +148,6 @@ int run()
                 updateLine(line);
             } else { // Error or end of file (assume the latter)
                 writeEOFToken();
-                LINE++;
                 return 0;
             }
         }
