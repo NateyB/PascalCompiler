@@ -5,8 +5,13 @@ begin
     init;
     writeln(123456789012345);
     writeln(123456.123456E003);
-    writeln(23.47E);
-    writeln(037);
-    writeln(0.4562E23);
+    23.47E
+    037E-2
     writeln(01.45620E02);
+
+    4E+.
+    3.4E+
+    34E.
+    E4.3
+    $@
 end.?
