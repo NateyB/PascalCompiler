@@ -10,7 +10,7 @@
 
 const char* catNames[] = {"ASSIGNOP", "FILEEND", "RELOP", "ID", "CONTROL",
                     "ADDOP", "MULOP", "WS", "ARRAY", "TYPE", "VAR",
-                    "INT", "REAL", "PUNC", "GROUP", "INVERSE", "LEXERR"};
+                    "INT", "REAL", "PUNC", "GROUP", "INVERSE", "NOOP", "LEXERR"};
 
 static char* buffer;
 // Begin machine listings
@@ -184,7 +184,10 @@ int idres(Token* storage, char* str, int start)
 
     }
     if (start - initial > 10) // ID Too long err
+    {
+        storage -> category = NOOP;
         throwError(LEXERR, 1, initial, start - initial);
+    }
     return start;
 }
 /**************************************************************
@@ -452,34 +455,66 @@ int numMachine(Token* storage, char* str, int start)
         }
 
     }
+    bool errored = false;
     if (real)
     {
         if (intLen > 5) // Too long.
+        {
             throwError(LEXERR, 3, initial, start - initial);
+            errored = true;
+        }
         if (fractionLen > 5) // Nope. Too long.
+        {
             throwError(LEXERR, 4, initial, start - initial);
+            errored = true;
+        }
         if (expLen > 2) // Too long again.
+        {
             throwError(LEXERR, 5, initial, start - initial);
+            errored = true;
+        }
         if (hasE && expLen == 0) // 3.4E what???
+        {
             throwError(LEXERR, 6, initial, start - initial);
+            errored = true;
+        }
 
         storage -> val = parseReal(digits);
 
         if (leadZero && intLen > 1) // Leading zero error!
+        {
             throwError(LEXERR, 8, initial, start - initial);
+            errored = true;
+        }
         if (expLeadZero)
+        {
             throwError(LEXERR, 10, initial, start - initial);
+            errored = true;
+        }
         if (trailZero) // Trailing zero error!
+        {
             throwError(LEXERR, 9, initial, start - initial);
+            errored = true;
+        }
         storage -> category = REAL;
     } else
     {
         if (intLen > 10)
+        {
             throwError(LEXERR, 2, initial, start - initial);
+            errored = true;
+        }
         storage -> type = parseInt(digits);
         if (leadZero && !(storage -> type == 0))
+        {
             throwError(LEXERR, 7, initial, start - initial);
+            errored = true;
+        }
         storage -> category = INT;
+    }
+    if (errored)
+    {
+        storage -> category = NOOP;
     }
 
     return start;

@@ -56,6 +56,9 @@ int init() {
         fclose(listingFile);
         return 1;
     }
+    for (size_t i = ASSIGNOP; i <= LEXERR; i++) {
+        fprintf(tokenFile, "%-5zu%s\n", i, catNames[i]);
+    }
     fprintf(tokenFile, "%*s%*s%*s%*s\n", TokenLineSpace, "Line",
                                             TokenLexSpace, "Lexeme",
                                             TokenTypeSpace, "Token Type",
@@ -67,9 +70,9 @@ int init() {
 
 int passError(Token* description, char* line)
 {
-    fprintf(tokenFile, "%*d%*.*s%*s%*d\n", TokenLineSpace, LINE,
+    fprintf(tokenFile, "%*d%*.*s%*d%*d\n", TokenLineSpace, LINE,
             TokenLexSpace, description -> length, &line[description -> start],
-            TokenTypeSpace, catNames[description -> category], TokenAttrSpace,
+            TokenTypeSpace, description -> category, TokenAttrSpace,
             description -> type);
     fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1,
             catNames[description -> category], ListingErrSpace,
@@ -80,8 +83,8 @@ int passError(Token* description, char* line)
 
 void writeEOFToken()
 {
-    fprintf(tokenFile, "%*d%*.*s%*s%*d\n", TokenLineSpace, LINE, TokenLexSpace,
-            3, "EOF", TokenTypeSpace, catNames[FILEEND], TokenAttrSpace, 0);
+    fprintf(tokenFile, "%*d%*.*s%*d%*d\n", TokenLineSpace, LINE, TokenLexSpace,
+            3, "EOF", TokenTypeSpace, FILEEND, TokenAttrSpace, 0);
 }
 
 void updateLine(char* line)
@@ -92,7 +95,7 @@ void updateLine(char* line)
 
 void writeToken(Token* token, char* line)
 {
-    if (token -> category == WS) // Don't bother including in the output file.
+    if (token -> category == WS || token -> category == NOOP) // Don't bother including in the output file.
         return;
     if (token -> category == LEXERR) // For catching the unrecognized symbol error
     {
@@ -101,9 +104,9 @@ void writeToken(Token* token, char* line)
     }
 
 
-    fprintf(tokenFile, "%*d%*.*s%*s", TokenLineSpace, LINE, TokenLexSpace,
+    fprintf(tokenFile, "%*d%*.*s%*d", TokenLineSpace, LINE, TokenLexSpace,
             token -> length, &line[token -> start], TokenTypeSpace,
-            catNames[token -> category]);
+            token -> category);
     switch (token -> category) {
         case REAL:
             fprintf(tokenFile, "%*f", TokenAttrSpace, token -> val);

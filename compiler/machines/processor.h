@@ -3,7 +3,7 @@
 
 enum TokenType {ASSIGNOP, FILEEND, RELOP, ID, CONTROL,
                     ADDOP, MULOP, WS, ARRAY, TYPE, VAR,
-                    INT, REAL, PUNC, GROUP, INVERSE, LEXERR};
+                    INT, REAL, PUNC, GROUP, INVERSE, NOOP, LEXERR};
 
 extern const char* catNames[];
 

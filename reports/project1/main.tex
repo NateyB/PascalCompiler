@@ -89,18 +89,9 @@
     The analyzer involved learning a lot about C. I'm glad that I took the
     opportunity to try to do this project in this language.
 
-    The project has one unique aspect: The analyzer will attempt to match a
-    lexeme that it knows is invalid, and will most likely return a valid token
-    (even if the ID exceeds the maximum length, or whatever the error may be).
-    However, the lexical analyzer will still throw an error---or, rather, as
-    many errors as the lexeme has. While it may seem confusing to have a valid
-    token (albeit one followed immediately by errors) generated from an invalid
-    lexeme, the computer will still see the invalid tokens and stop, so it is
-    not inconvenient for the computer. Additionally, if a human sees the invalid
-    token immediately followed by errors, it just demonstrates the power of the
-    compiler to handle more data than it allows to make development easier.
-    Overall, I think that this anomaly is acceptable (and even useful), although
-    it is a bit different.
+    One aspect of this project that I'm particularly proud of is that it will
+    identify all errors in a single lexeme, rather than just one. Ultimately,
+    that difference will make life much easier for the programmer.
 
     I wrote this compiler in C, with no external code of any kind. It was
     compiled with clang on macOS Sierra.

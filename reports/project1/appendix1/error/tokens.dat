@@ -1,69 +1,81 @@
+0    ASSIGNOP
+1    FILEEND
+2    RELOP
+3    ID
+4    CONTROL
+5    ADDOP
+6    MULOP
+7    WS
+8    ARRAY
+9    TYPE
+10   VAR
+11   INT
+12   REAL
+13   PUNC
+14   GROUP
+15   INVERSE
+16   NOOP
+17   LEXERR
       Line              Lexeme     Token Type     Token Attribute
-         1             program        CONTROL                   7
-         1                 fib             ID      0x7fdb2bd00b50
-         1                   (          GROUP                   0
-         1               input             ID      0x7fdb2bd00c90
-         1                   ,           PUNC                   0
-         1              output             ID      0x7fdb2bd00e10
-         1                   )          GROUP                   1
-         1                   ;           PUNC                   1
-         2                 var            VAR                   0
-         2excessivelyLongIntegerArrayName             ID      0x7fdb2bd013b0
-         2excessivelyLongIntegerArrayName         LEXERR                   1
-         2                   :           TYPE                   0
-         2               array          ARRAY                   0
-         2                   [          GROUP                   2
-         2                   1            INT                   1
-         2                  ..          ARRAY                   1
-         2                  12            INT                  12
-         2                   ]          GROUP                   3
-         2                  of          ARRAY                   2
-         2             integer           TYPE                   1
-         2                   ;           PUNC                   1
-         4               begin        CONTROL                   0
-         5                init             ID      0x7fdb2bd01c00
-         5                   ;           PUNC                   1
-         6             writeln             ID      0x7fdb2bd01e20
-         6                   (          GROUP                   0
-         6     123456789012345            INT         -2045911175
-         6     123456789012345         LEXERR                   2
-         6                   )          GROUP                   1
-         6                   ;           PUNC                   1
-         7             writeln             ID      0x7fdb2bd01e40
-         7                   (          GROUP                   0
-         7   123456.123456E003           REAL    123456123.456000
-         7   123456.123456E003         LEXERR                  10
-         7   123456.123456E003         LEXERR                   5
-         7   123456.123456E003         LEXERR                   4
-         7   123456.123456E003         LEXERR                   3
-         7                   )          GROUP                   1
-         7                   ;           PUNC                   1
-         8             writeln             ID      0x7fdb2bd01e40
-         8                   (          GROUP                   0
-         8              23.47E           REAL           23.470000
-         8              23.47E         LEXERR                   6
-         8                   )          GROUP                   1
-         8                   ;           PUNC                   1
-         9             writeln             ID      0x7fdb2bd01e40
-         9                   (          GROUP                   0
-         9                 037            INT                  37
-         9                 037         LEXERR                   7
-         9                   )          GROUP                   1
-         9                   ;           PUNC                   1
-        10             writeln             ID      0x7fdb2bd01e40
-        10                   (          GROUP                   0
-        10           0.4562E23           REAL45620000000000003145728.000000
-        10                   )          GROUP                   1
-        10                   ;           PUNC                   1
-        11             writeln             ID      0x7fdb2bd01e40
-        11                   (          GROUP                   0
-        11         01.45620E02           REAL          145.620000
-        11         01.45620E02         LEXERR                   9
-        11         01.45620E02         LEXERR                  10
-        11         01.45620E02         LEXERR                   8
-        11                   )          GROUP                   1
-        11                   ;           PUNC                   1
-        12                 end        CONTROL                   3
-        12                   .           PUNC                   2
-        12                   ?         LEXERR                   0
-        13                 EOF        FILEEND                   0
+         1             program              4                   7
+         1                 fib              3      0x7f806ad005f0
+         1                   (             14                   0
+         1               input              3      0x7f806ad00730
+         1                   ,             13                   0
+         1              output              3      0x7f806ad008b0
+         1                   )             14                   1
+         1                   ;             13                   1
+         2                 var             10                   0
+         2excessivelyLongIntegerArrayName             17                   1
+         2                   :              9                   0
+         2               array              8                   0
+         2                   [             14                   2
+         2                   1             11                   1
+         2                  ..              8                   1
+         2                  12             11                  12
+         2                   ]             14                   3
+         2                  of              8                   2
+         2             integer              9                   1
+         2                   ;             13                   1
+         4               begin              4                   0
+         5                init              3      0x7f806ad016a0
+         5                   ;             13                   1
+         6             writeln              3      0x7f806ad018c0
+         6                   (             14                   0
+         6     123456789012345             17                   2
+         6                   )             14                   1
+         6                   ;             13                   1
+         7             writeln              3      0x7f806ad018e0
+         7                   (             14                   0
+         7   123456.123456E003             17                  10
+         7   123456.123456E003             17                   5
+         7   123456.123456E003             17                   4
+         7   123456.123456E003             17                   3
+         7                   )             14                   1
+         7                   ;             13                   1
+         8             writeln              3      0x7f806ad018e0
+         8                   (             14                   0
+         8              23.47E             17                   6
+         8                   )             14                   1
+         8                   ;             13                   1
+         9             writeln              3      0x7f806ad018e0
+         9                   (             14                   0
+         9                 037             17                   7
+         9                   )             14                   1
+         9                   ;             13                   1
+        10             writeln              3      0x7f806ad018e0
+        10                   (             14                   0
+        10           0.4562E23             1245620000000000003145728.000000
+        10                   )             14                   1
+        10                   ;             13                   1
+        11             writeln              3      0x7f806ad018e0
+        11                   (             14                   0
+        11         01.45620E02             17                   9
+        11         01.45620E02             17                  10
+        11         01.45620E02             17                   8
+        11                   )             14                   1
+        11                   ;             13                   1
+        12                 end              4                   3
+        12                   .             13                   2
+        12                   ?             17                   0
+        13                 EOF              1                   0
