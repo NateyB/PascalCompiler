@@ -16,7 +16,7 @@
         16		  b := 0;
         17		  sum := 1;
         18		  c := b;
-        19		  while (not a < -1) do
+        19		  while (a > 0) do
         20		    begin
         21		      a := a - 1;
         22		      b := sum;

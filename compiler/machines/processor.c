@@ -388,150 +388,200 @@ int parseInt(LinkedList* digits)
     return val;
 }
 
-int numMachine(Token* storage, char* str, int start)
+int intMachine(Token* storage, char* str, int start)
 {
-    int initial = start; // For keeping track
-    bool real = false;
-    bool hasE = false;
-    bool started = false;
-    bool leadZero = false;
-    bool expLeadZero = false;
-    bool trailZero = false;
+    storage -> category = INT;
 
-    int sign = 1;
-    int intLen = 0;
-    int fractionLen = 0;
-    int expLen = 0;
     bool errored = false;
+    int initial = start;
 
     LinkedList* digits = malloc(sizeof(*digits));
-    if (str[start] == '-' && isdigit(str[start + 1]))
-    {
-        add(digits, &str[start], sizeof(char*));
-        start++;
-    }
-    else if (str[start] == '+' && isdigit(str[start + 1]))
-        start++;
+    while (isdigit(str[start]))
+        add(digits, &str[start++], sizeof(char*));
 
-    while (isdigit(str[start])) // Match the beginning integer
+    if (start - initial > 10)
     {
-        if (str[start] == '0' && !started)
-            leadZero = true;
-        add(digits, &str[start], sizeof(char*));
-        started = true;
-        start++;
-        intLen++;
+        errored = true;
+        throwError(LEXERR, 2, initial, start - initial);
     }
-    if (str[start] == '.' && isdigit(str[start + 1])) // Match the real
+    if (start > initial + 1 && str[initial] == '0')
     {
-        add(digits,&str[start], sizeof(char*));
-        real = true;
-        start++;
-        while (isdigit(str[start])) // The fraction part of the decimal
-        {
-            add(digits, &str[start], sizeof(char*));
-            if (str[start] == '0')
-                trailZero = true;
-            else
-                trailZero = false;
-            start++;
-            fractionLen++;
-        }
-    }
-    if (str[start] == 'E') // Match the long real
-    {
-        hasE = true;
-        add(digits, &str[start], sizeof(char*));
-        real = true;
-        bool initialRun = true;
-        start++;
-        if (str[start] == '+' || str[start] == '-') // Sign in the exponent
-            add(digits, &str[start++], sizeof(char*));
-        if (str[start] == '.')
-        {
-            start++;
-            errored = true;
-        }
-        while (isdigit(str[start])) // The exponent part (if applicable)
-        {
-            if (str[start] == '0' && initialRun)
-                expLeadZero = true;
-            initialRun = false;
-            add(digits, &str[start], sizeof(char*));
-            start++;
-            expLen++;
-        }
-    }
-    if (errored) // TODO Fix up, if necessary.
-        throwError(LEXERR, 11, initial, start - initial);
-    if (real)
-    {
-        if (intLen > 5) // Too long.
-        {
-            throwError(LEXERR, 3, initial, start - initial);
-            errored = true;
-        }
-        if (fractionLen > 5) // Nope. Too long.
-        {
-            throwError(LEXERR, 4, initial, start - initial);
-            errored = true;
-        }
-        if (expLen > 2) // Too long again.
-        {
-            throwError(LEXERR, 5, initial, start - initial);
-            errored = true;
-        }
-        if (hasE && expLen == 0) // 3.4E what???
-        {
-            throwError(LEXERR, 6, initial, start - initial);
-            errored = true;
-        }
-
-        storage -> val = parseReal(digits);
-
-        if (leadZero && intLen > 1) // Leading zero error!
-        {
-            throwError(LEXERR, 8, initial, start - initial);
-            errored = true;
-        }
-        if (expLeadZero)
-        {
-            throwError(LEXERR, 10, initial, start - initial);
-            errored = true;
-        }
-        if (trailZero) // Trailing zero error!
-        {
-            throwError(LEXERR, 9, initial, start - initial);
-            errored = true;
-        }
-        storage -> category = REAL;
-    } else
-    {
-        if (intLen > 10)
-        {
-            throwError(LEXERR, 2, initial, start - initial);
-            errored = true;
-        }
-        storage -> type = parseInt(digits);
-        if (leadZero && !(storage -> type == 0))
-        {
-            throwError(LEXERR, 7, initial, start - initial);
-            errored = true;
-        }
-        storage -> category = INT;
+        errored = true;
+        throwError(LEXERR, 7, initial, start - initial);
     }
     if (errored)
-    {
         storage -> category = NOOP;
+    else if (start > initial) // It's a proper integer!
+        storage -> type = parseInt(digits);
+
+    return start;
+}
+
+// NOTE: Pay attention to memory stuff here (the linked list takes up space).
+int realMachine(Token* storage, char* str, int start)
+{
+    storage -> category = REAL;
+
+    int initial = start;
+    bool errored = false;
+
+    int intPart = 0;
+    int fracPart = 0;
+
+    LinkedList* digits = malloc(sizeof(*digits));
+    while (isdigit(str[start]))
+        add(digits, &str[start++], sizeof(char*));
+
+    intPart = start - initial;
+    if (intPart == 0) // Not a real. Must start with a digit.
+        return initial;
+
+    if (str[start] == '.')
+        add(digits, &str[start++], sizeof(char*));
+    else // Not a real
+        return initial;
+
+
+    while (isdigit(str[start]))
+        add(digits, &str[start++], sizeof(char*));
+
+    fracPart = start - (initial + intPart + 1);
+
+    if (fracPart == 0) // Not a real
+        return initial;
+
+    // Now, we check for errors.
+    if (intPart > 5)
+    {
+        throwError(LEXERR, 3, initial, start - initial);
+        errored = true;
     }
+    if (fracPart > 5)
+    {
+        throwError(LEXERR, 4, initial, start - initial);
+        errored = true;
+    }
+    if (str[initial] == '0' && intPart > 1) // Leading zero!
+    {
+        throwError(LEXERR, 8, initial, start - initial);
+        errored = true;
+    }
+    if (str[start - 1] == '0') // Trailing zero!
+    {
+        throwError(LEXERR, 9, initial, start - initial);
+        errored = true;
+    }
+
+    if (errored)
+        storage -> category = NOOP;
+    else
+        storage -> val = parseReal(digits);
+
+    return start;
+}
+
+int longRealMachine(Token* storage, char* str, int start)
+{
+    storage -> category = REAL;
+
+    int initial = start;
+    bool errored = false;
+
+    int intPart = 0;
+    int fracPart = 0;
+    int expPart = 0;
+
+    LinkedList* digits = malloc(sizeof(*digits));
+    while (isdigit(str[start]))
+        add(digits, &str[start++], sizeof(char*));
+
+    intPart = start - initial;
+    if (intPart == 0) // Not a real. Must start with a digit.
+        return initial;
+
+    // REAL part
+    if (str[start] == '.')
+        add(digits, &str[start++], sizeof(char*));
+    else // Not a real
+        return initial;
+
+
+    while (isdigit(str[start]))
+        add(digits, &str[start++], sizeof(char*));
+
+    fracPart = start - (initial + intPart + 1);
+
+    if (fracPart == 0) // Not a real
+        return initial;
+
+
+    // LONG REAL part
+    int signum = 0;
+
+    if (str[start] == 'E')
+        add(digits, &str[start++], sizeof(char*));
+    else // Not a long real
+        return initial;
+
+    if (str[start] == '+' || str[start] == '-')
+    {
+        signum++;
+        add(digits, &str[start++], sizeof(char*));
+    }
+
+    while (isdigit(str[start]))
+        add(digits, &str[start++], sizeof(char*));
+
+    expPart = start - (initial + fracPart + intPart + signum + 2);
+
+    if (expPart == 0) // Not a long real
+        return initial;
+
+
+    // Now, we check for errors.
+    if (intPart > 5)
+    {
+        throwError(LEXERR, 3, initial, start - initial);
+        errored = true;
+    }
+    if (fracPart > 5)
+    {
+        throwError(LEXERR, 4, initial, start - initial);
+        errored = true;
+    }
+    if (str[initial] == '0' && intPart > 1) // Leading zero!
+    {
+        throwError(LEXERR, 8, initial, start - initial);
+        errored = true;
+    }
+    if (str[start - expPart - 2] == '0') // Trailing zero in real!
+    {
+        throwError(LEXERR, 9, initial, start - initial);
+        errored = true;
+    }
+    if (expPart > 2) // Exponent too long!
+    {
+        throwError(LEXERR, 5, initial, start - initial);
+        errored = true;
+    }
+    if (str[start - expPart] == '0') // Leading zero in exponent!
+    {
+        throwError(LEXERR, 10, initial, start - initial);
+        errored = true;
+    }
+
+    if (errored)
+        storage -> category = NOOP;
+    else
+        storage -> val = parseReal(digits);
 
     return start;
 }
 
 // The processing
 typedef int (*machine)(Token*, char*, int);
-const static machine machines[] = {whitespace, idres, numMachine, grouping,
-                                    catchall, relop, addop, mulop};
+const static machine machines[] = {whitespace, idres, longRealMachine,
+        realMachine, intMachine, grouping, catchall, relop, addop, mulop};
 
 bool initialized = false;
 int start;

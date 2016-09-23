@@ -11,23 +11,17 @@
    LEXERR: Exponent part of long real exceeded 2 characters:   123456.123456E003
    LEXERR:    Fractional part of real exceeded 5 characters:   123456.123456E003
    LEXERR:       Integer part of real exceeded 5 characters:   123456.123456E003
-         8		    23.47E
-   LEXERR:               Missing exponent part of long real:              23.47E
-         9		    037E-2
-   LEXERR:                      Excessive leading 0 in real:              037E-2
-        10		    writeln(01.45620E02);
-   LEXERR:                               Trailing 0 in real:         01.45620E02
-   LEXERR:                            Leading 0 in exponent:         01.45620E02
-   LEXERR:                      Excessive leading 0 in real:         01.45620E02
+         8		    2.5E-2
+         9		    23.47E
+        10		    writeln(01.456200E02);
+   LEXERR:                            Leading 0 in exponent:        01.456200E02
+   LEXERR:                               Trailing 0 in real:        01.456200E02
+   LEXERR:                      Excessive leading 0 in real:        01.456200E02
+   LEXERR:    Fractional part of real exceeded 5 characters:        01.456200E02
         11		
         12		    4E+.
-   LEXERR:               Missing exponent part of long real:                4E+.
-   LEXERR:                     Attempt to use real exponent:                4E+.
         13		    3.4E+
-   LEXERR:               Missing exponent part of long real:               3.4E+
         14		    34E.
-   LEXERR:               Missing exponent part of long real:                34E.
-   LEXERR:                     Attempt to use real exponent:                34E.
         15		    E4.3
         16		    $@
    LEXERR:                              Unrecognized symbol:                   $

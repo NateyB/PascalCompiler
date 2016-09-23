@@ -43,10 +43,11 @@
 
     \section{Methodology}
     The lexical analyzer is simply a series of machines that parse the file.
-    The machines are Whitespace, ID/RES, NumMachine, Grouping, CatchAll,
-    RELOP, ADDOP, and MULOP\@. These machines break down the file into its
-    corresponding tokens, which are output to a file. A loop repeats this
-    process until an end of file token is encountered.
+    The machines are Whitespace, ID/RES, LongRealMachine, RealMachine,
+    IntMachine, Grouping, CatchAll, RELOP, ADDOP, and MULOP\@.
+    These machines break down the file into its corresponding tokens, which are
+    output to a file. A loop repeats this process until an end of file token is
+    encountered.
 
     If errors in the source program are encountered while parsing, the machines
     will send an error. The error will be displayed beneath the corresponding

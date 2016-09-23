@@ -5,9 +5,9 @@ begin
     init;
     writeln(123456789012345);
     writeln(123456.123456E003);
+    2.5E-2
     23.47E
-    037E-2
-    writeln(01.45620E02);
+    writeln(01.456200E02);
 
     4E+.
     3.4E+
