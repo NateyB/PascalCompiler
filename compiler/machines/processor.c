@@ -466,7 +466,7 @@ int realMachine(Token* storage, char* str, int start)
         throwError(LEXERR, 8, initial, start - initial);
         errored = true;
     }
-    if (str[start - 1] == '0') // Trailing zero!
+    if (str[start - 1] == '0' && fracPart > 1) // Trailing zero!
     {
         throwError(LEXERR, 9, initial, start - initial);
         errored = true;
@@ -554,7 +554,7 @@ int longRealMachine(Token* storage, char* str, int start)
         throwError(LEXERR, 8, initial, start - initial);
         errored = true;
     }
-    if (str[start - expPart - 2] == '0') // Trailing zero in real!
+    if (str[start - expPart - 2] == '0' && fracPart > 1) // Trailing zero in real!
     {
         throwError(LEXERR, 9, initial, start - initial);
         errored = true;
