@@ -1,6 +1,7 @@
 and         MULOP       2
 array       ARRAY       0
 begin       CONTROL     0
+call        CONTROL     10
 div         MULOP       3
 do          CONTROL     1
 else        CONTROL     2

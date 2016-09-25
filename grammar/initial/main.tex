@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=.93in]{geometry}
 \usepackage{array}
 \usepackage{bm}
 
@@ -20,7 +20,7 @@
                                                     ##3
                                                 \end{tabular}} \\
     }
-    \begin{tabular}{R{1cm}R{4cm}cl}
+    \begin{tabular}{lR{4cm}cl}
 }{
     \end{tabular}
 }
@@ -36,8 +36,8 @@
                                 }
         \production{2.1}{identifier\_list}{\tm{id}}
         \production{2.2}{identifier\_list}{identifier\_list , \tm{id}}
-        \production{3.1}{declarations}{declarations \tm{var} identifier\_list
-                                                               : type ;}
+        \production{3.1}{declarations}{declarations \tm{var} \tm{id :} type
+                                        \tm{;}}
         \production{3.2}{declarations}{$\epsilon{}$}
         \production{4.1}{type}{standard\_type}
         \production{4.2}{type}{\tm{array [ num ..\ num ] of} standard\_type}
@@ -48,16 +48,14 @@
                                                    subprogram\_declaration
                                                    \tm{;}}
         \production{6.2}{subprogram\_declarations}{$\epsilon{}$}
-        \production{7}{subprogram\_declaration}{subprogram\_head declarations
+        \production{7}{subprogram\_declaration}{subprogram\_head declarations \\
+                                                subprogram\_declarations
                                                 compound\_statement}
-        \production{8.1}{subprogram\_head}{\tm{function id} arguments
-                                           \tm{:} standard\_type \tm{;}}
-        \production{8.2}{subprogram\_head}{\tm{procedure id} arguments \tm{;}}
+        \production{8}{subprogram\_head}{\tm{procedure id} arguments \tm{;}}
         \production{9.1}{arguments}{\tm{(} parameter\_list \tm{)}}
         \production{9.2}{arguments}{$\epsilon{}$}
-        \production{10.1}{parameter\_list}{identifier\_list \tm{:} type}
-        \production{10.2}{parameter\_list}{parameter\_list \tm{;}
-                                           identifier\_list \tm{:} type}
+        \production{10.1}{parameter\_list}{\tm{id :} type}
+        \production{10.2}{parameter\_list}{parameter\_list \tm{; id :} type}
 
         \production{11}{compound\_statement}{\tm{begin} \\
                                              optional\_statements \\
@@ -69,14 +67,15 @@
         \production{14.1}{statement}{variable \tm{assignop} expression}
         \production{14.2}{statement}{procedure\_statement}
         \production{14.3}{statement}{compound\_statement}
-        \production{14.4}{statement}{\tm{if} expression \tm{then} statement
+        \production{14.4}{statement}{\tm{if} expression \tm{then} statement}
+        \production{14.5}{statement}{\tm{if} expression \tm{then} statement
                                      \tm{else} statement}
-        \production{14.5}{statement}{\tm{while} expression \tm{do} statement}
+        \production{14.6}{statement}{\tm{while} expression \tm{do} statement}
 
         \production{15.1}{variable}{\tm{id}}
         \production{15.2}{variable}{\tm{id [} expression \tm{]}}
-        \production{16.1}{procedure\_statement}{\tm{id}}
-        \production{16.2}{procedure\_statement}{\tm{id (} expression\_list
+        \production{16.1}{procedure\_statement}{\tm{call id}}
+        \production{16.2}{procedure\_statement}{\tm{call id (} expression\_list
                                                 \tm{)}}
         \production{17.1}{expression\_list}{expression}
         \production{17.2}{expression\_list}{expression\_list \tm{,} expression}
@@ -91,7 +90,7 @@
         \production{20.1}{term}{factor}
         \production{20.2}{term}{term \tm{mulop} factor}
         \production{21.1}{factor}{\tm{id}}
-        \production{21.2}{factor}{\tm{id (} expression\_list \tm{)}}
+        \production{21.2}{factor}{\tm{id [} expression \tm{]}}
         \production{21.3}{factor}{\tm{num}}
         \production{21.4}{factor}{\tm{(} expression \tm{)}}
         \production{21.5}{factor}{\tm{not} factor}
@@ -100,5 +99,4 @@
 
 
     \end{productions}
-
 \end{document}
