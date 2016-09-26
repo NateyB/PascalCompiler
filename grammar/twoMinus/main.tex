@@ -76,17 +76,17 @@
                                                 compound\_statement}
         \production{7.4}{subprogram\_declaration}{subprogram\_head
                                                  compound\_statement}
-        \production{8.1}{subprogram\_head}{\tm{procedure id ;}}
-        \production{8.2}{subprogram\_head}{\tm{procedure id} arguments \tm{;}}
+        \production{8}{subprogram\_head}{\tm{procedure id} arguments \tm{;}}
         \production{9.1}{arguments}{\tm{(} parameter\_list \tm{)}}
+        \production{9.2}{arguments}{$\epsilon{}$}
         \production{10.1}{parameter\_list}{\tm{id :} type}
         \production{10.2}{parameter\_list}{parameter\_list \tm{; id :} type}
 
-        \production{11.1}{compound\_statement}{\tm{begin} \\
+        \production{11}{compound\_statement}{\tm{begin} \\
                                              optional\_statements \\
                                              \tm{end}}
-        \production{11.2}{compound\_statement}{\tm{begin} \\ \tm{end}}
-        \production{12}{optional\_statements}{statement\_list}
+        \production{12.1}{optional\_statements}{statement\_list}
+        \production{12.2}{optional\_statements}{$\epsilon{}$}
         \production{13.1}{statement\_list}{statement}
         \production{13.2}{statement\_list}{statement\_list \tm{;} statement}
         \production{14.1}{statement}{variable \tm{assignop} expression}
