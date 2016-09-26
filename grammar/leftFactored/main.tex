@@ -1,0 +1,130 @@
+\documentclass{article}
+\usepackage[margin=.90in]{geometry}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{bm}
+
+\pagenumbering{gobble}
+
+%chktex-file 9
+%chktex-file 26
+%chktex-file 37
+
+\newenvironment{productions}[0]{
+    \let\oldepsilon\epsilon{}
+    \renewcommand{\epsilon}[0]{\bm{\oldepsilon{}}}
+    \newcommand{\tm}[1]{\textbf{\emph{##1}}} % Short for term
+    \newcolumntype{R}[1]{>{\raggedleft\hspace{0pt}}m{##1}}
+    \newcommand{\production}[3]
+    {
+        ##1. & \emph{##2} & $\rightarrow{}$ & \emph{\begin{tabular}[t]{l}
+                                                    ##3
+                                                \end{tabular}} \\
+    }
+    \begin{longtable}{lR{4cm}cl}
+}{
+    \end{longtable}
+}
+
+\begin{document}
+    \begin{productions}
+        \production{1}{program}{\tm{program id} \tm{(} identifier\_list
+                                                                \tm{)  ;} \\
+                                declarations$'$ \\
+                                subprogram\_declarations$'$ \\
+                                compound\_statement \\
+                                \tm{.}
+                                }
+        \production{2.1}{identifier\_list}{\tm{id} identifier\_list$'$}
+        \production{2.2.1}{identifier\_list$'$}{\tm{, id} identifier\_list$'$}
+        \production{2.2.2}{identifier\_list$'$}{$\epsilon{}$}
+        \production{3.1}{declarations}{\tm{var id :} type \tm{;}
+                                        declarations$'$}
+        \production{3.2.1}{declarations$'$}{\tm{var id :} type \tm{;}
+                                            declarations$'$}
+        \production{3.2.2}{declarations$'$}{$\epsilon{}$}
+        \production{4.1}{type}{standard\_type}
+        \production{4.2}{type}{\tm{array [ num ..\ num ] of} standard\_type}
+        \production{5.1}{standard\_type}{\tm{integer}}
+        \production{5.2}{standard\_type}{\tm{real}}
+
+
+        \production{6.1}{subprogram\_declarations}{subprogram\_declaration
+                                                   \tm{;}
+                                                   subprogram\_declarations$'$}
+        \production{6.2.1}{subprogram\_declarations$'$}{subprogram\_declaration
+                                                    \tm{;}
+                                                    subprogram\_declarations$'$}
+        \production{6.2.2}{subprogram\_declarations$'$}{$\epsilon{}$}
+        \production{7}{subprogram\_declaration}{subprogram\_head
+                                                declarations$'$ \\
+                                                subprogram\_declarations$'$
+                                                compound\_statement}
+        \production{8}{subprogram\_head}{\tm{procedure id} arguments \tm{;}}
+        \production{9.1}{arguments}{\tm{(} parameter\_list \tm{)}}
+        \production{9.2}{arguments}{$\epsilon{}$}
+        \production{10.1}{parameter\_list}{\tm{id :} type parameter\_list$'$}
+        \production{10.2.1}{parameter\_list$'$}{\tm{; id :} type
+                                                parameter\_list$'$}
+        \production{10.2.2}{parameter\_list$'$}{$\epsilon{}$}
+
+
+        \production{11}{compound\_statement}{\tm{begin} \\
+                                             optional\_statements \\
+                                             \tm{end}}
+        \production{12.1}{optional\_statements}{statement\_list}
+        \production{12.2}{optional\_statements}{$\epsilon{}$}
+        \production{13.1}{statement\_list}{statement statement\_list$'$}
+        \production{13.2.1}{statement\_list$'$}{\tm{;} statement
+                                            statement\_list$'$}
+        \production{13.2.2}{statement\_list$'$}{$\epsilon{}$}
+        \production{14.1}{statement}{variable \tm{assignop} expression}
+        \production{14.2}{statement}{procedure\_statement}
+        \production{14.3}{statement}{compound\_statement}
+        \production{14.4}{statement}{\tm{while} expression \tm{do} statement}
+        \production{14.5}{statement}{\tm{if} expression \tm{then} statement
+                                    else$'$}
+        \production{15.1}{else$'$}{\tm{else} statement}
+        \production{15.2}{else$'$}{$\epsilon{}$}
+
+
+        \production{16}{variable}{\tm{id} array\_access}
+        \production{17.1}{array\_access}{\tm{id [} expression \tm{]}}
+        \production{17.2}{array\_access}{$\epsilon{}$}
+        \production{18}{procedure\_statement}{\tm{call id
+                                                optional\_expressions}}
+        \production{19.1}{optional\_expressions}{\tm{(} expression\_list \tm{)}}
+        \production{19.2}{optional\_expressions}{$\epsilon{}$}
+
+        \production{20.1}{expression\_list}{expression expression\_list$'$}
+        \production{20.2.1}{expression\_list$'$}{\tm{,} expression
+                                                expression\_list$'$}
+        \production{20.2.2}{expression\_list$'$}{$\epsilon{}$}
+
+
+        \production{21.1}{expression}{simple\_expression}
+        \production{21.2}{expression}{simple\_expression \tm{relop}
+                                      simple\_expression}
+        \production{23.1}{related\_expression}{\tm{relop} simple\_expression}
+        \production{23.2}{related\_expression}{$\epsilon{}$}
+        \production{23.1}{simple\_expression}{term simple\_expression$'$}
+        \production{23.2}{simple\_expression}{sign term simple\_expression$'$}
+        \production{23.3.1}{simple\_expression$'$}{\tm{addop} term
+                                                   simple\_expression$'$}
+        \production{23.3.2}{simple\_expression$'$}{$\epsilon{}$}
+
+        \production{24.1}{term}{factor term$'$}
+        \production{24.2.1}{term$'$}{\tm{mulop} factor term$'$}
+        \production{24.2.2}{term$'$}{$\epsilon{}$}
+
+        
+        \production{25.1}{factor}{variable}
+        \production{25.2}{factor}{\tm{num}}
+        \production{25.3}{factor}{\tm{(} expression \tm{)}}
+        \production{25.4}{factor}{\tm{not} factor}
+        \production{26.1}{sign}{\bm{$+$}}
+        \production{26.2}{sign}{\bm{$-$}}
+
+
+    \end{productions}
+\end{document}
