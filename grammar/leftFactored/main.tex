@@ -91,8 +91,8 @@
         \production{16}{variable}{\tm{id} array\_access}
         \production{17.1}{array\_access}{\tm{[} expression \tm{]}}
         \production{17.2}{array\_access}{$\epsilon{}$}
-        \production{18}{procedure\_statement}{\tm{call id
-                                                optional\_expressions}}
+        \production{18}{procedure\_statement}{\tm{call id}
+                                            optional\_expressions}
         \production{19.1}{optional\_expressions}{\tm{(} expression\_list \tm{)}}
         \production{19.2}{optional\_expressions}{$\epsilon{}$}
 
@@ -102,11 +102,9 @@
         \production{20.2.2}{expression\_list$'$}{$\epsilon{}$}
 
 
-        \production{21.1}{expression}{simple\_expression}
-        \production{21.2}{expression}{simple\_expression \tm{relop}
-                                      simple\_expression}
-        \production{23.1}{related\_expression}{\tm{relop} simple\_expression}
-        \production{23.2}{related\_expression}{$\epsilon{}$}
+        \production{21}{expression}{simple\_expression related\_expression}
+        \production{22.1}{related\_expression}{\tm{relop} simple\_expression}
+        \production{22.2}{related\_expression}{$\epsilon{}$}
         \production{23.1}{simple\_expression}{term simple\_expression$'$}
         \production{23.2}{simple\_expression}{sign term simple\_expression$'$}
         \production{23.3.1}{simple\_expression$'$}{\tm{addop} term
