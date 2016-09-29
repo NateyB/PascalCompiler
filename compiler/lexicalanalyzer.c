@@ -19,7 +19,7 @@ static const char* lexErrs[] = {"Unrecognized symbol:",
 
 static const char TOKEN_PATH[] = "out/tokens.dat";
 static const char LISTING_PATH[] = "out/listing.txt";
-static const char RESWORD_PATH[] = "compiler/reswords.dat";
+static const char RESWORD_PATH[] = "compiler/data/reswords.dat";
 static const char* TEST_PATH;
 
 static const int TokenLineSpace = 10;
