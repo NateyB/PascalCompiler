@@ -30,8 +30,8 @@
     \begin{productions}
         \production{1}{program}{\tm{program id} \tm{(} identifier\_list
                                                                 \tm{)  ;} \\
-                                declarations$'$ \\
-                                subprogram\_declarations$'$ \\
+                                declarations \\
+                                subprogram\_declarations \\
                                 compound\_statement \\
                                 \tm{.}
                                 }
@@ -39,10 +39,8 @@
         \production{2.2.1}{identifier\_list$'$}{\tm{, id} identifier\_list$'$}
         \production{2.2.2}{identifier\_list$'$}{$\epsilon{}$}
         \production{3.1}{declarations}{\tm{var id :} type \tm{;}
-                                        declarations$'$}
-        \production{3.2.1}{declarations$'$}{\tm{var id :} type \tm{;}
-                                            declarations$'$}
-        \production{3.2.2}{declarations$'$}{$\epsilon{}$}
+                                        declarations}
+        \production{3.2}{declarations}{$\epsilon{}$}
         \production{4.1}{type}{standard\_type}
         \production{4.2}{type}{\tm{array [ num ..\ num ] of} standard\_type}
         \production{5.1}{standard\_type}{\tm{integer}}
@@ -51,14 +49,11 @@
 
         \production{6.1}{subprogram\_declarations}{subprogram\_declaration
                                                    \tm{;}
-                                                   subprogram\_declarations$'$}
-        \production{6.2.1}{subprogram\_declarations$'$}{subprogram\_declaration
-                                                    \tm{;}
-                                                    subprogram\_declarations$'$}
-        \production{6.2.2}{subprogram\_declarations$'$}{$\epsilon{}$}
+                                                   subprogram\_declarations}
+        \production{6.2}{subprogram\_declarations}{$\epsilon{}$}
         \production{7}{subprogram\_declaration}{subprogram\_head
-                                                declarations$'$ \\
-                                                subprogram\_declarations$'$
+                                                declarations \\
+                                                subprogram\_declarations
                                                 compound\_statement}
         \production{8}{subprogram\_head}{\tm{procedure id} arguments \tm{;}}
         \production{9.1}{arguments}{\tm{(} parameter\_list \tm{)}}
