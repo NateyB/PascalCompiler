@@ -100,21 +100,21 @@
         \production{21}{expression}{simple\_expression related\_expression}
         \production{22.1}{related\_expression}{\tm{relop} simple\_expression}
         \production{22.2}{related\_expression}{$\epsilon{}$}
-        \production{23.1}{simple\_expression}{term simple\_expression$'$}
-        \production{23.2}{simple\_expression}{sign term simple\_expression$'$}
-        \production{23.3.1}{simple\_expression$'$}{\tm{addop} term
+        \production{23.1.1}{simple\_expression}{term simple\_expression$'$}
+        \production{23.1.2}{simple\_expression}{sign term simple\_expression$'$}
+        \production{23.2.1}{simple\_expression$'$}{\tm{addop} term
                                                    simple\_expression$'$}
-        \production{23.3.2}{simple\_expression$'$}{$\epsilon{}$}
+        \production{23.2.2}{simple\_expression$'$}{$\epsilon{}$}
 
         \production{24.1}{term}{factor term$'$}
         \production{24.2.1}{term$'$}{\tm{mulop} factor term$'$}
         \production{24.2.2}{term$'$}{$\epsilon{}$}
 
-
-        \production{25.1}{factor}{variable}
-        \production{25.2}{factor}{\tm{num}}
-        \production{25.3}{factor}{\tm{(} expression \tm{)}}
-        \production{25.4}{factor}{\tm{not} factor}
+        \production{25.1}{factor}{\tm{id}}
+        \production{25.2}{factor}{\tm{id [} expression \tm{]}}
+        \production{25.3}{factor}{\tm{num}}
+        \production{25.4}{factor}{\tm{(} expression \tm{)}}
+        \production{25.5}{factor}{\tm{not} factor}
         \production{26.1}{sign}{\bm{$+$}}
         \production{26.2}{sign}{\bm{$-$}}
 
