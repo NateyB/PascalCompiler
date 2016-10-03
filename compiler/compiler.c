@@ -124,17 +124,6 @@ void writeToken(Token* token, char* line)
     fprintf(tokenFile, "\n");
 }
 
-// void printWords(LinkedList* list)
-// {
-//     struct node* node = list->head;
-//     while (node)
-//     {
-//         printf("Printing symbol: %s\n", (char *) node->data);
-//         node = node -> next;
-//     }
-// }
-
-
 int run()
 {
     char line[72];
