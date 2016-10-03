@@ -1,0 +1,121 @@
+\documentclass{article}
+\usepackage[margin=.50in]{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{bm}
+
+\pagenumbering{gobble}
+
+%chktex-file 9
+%chktex-file 26
+%chktex-file 37
+%chktex-file 10
+
+\newenvironment{productions}[0]{
+    \let\oldepsilon\epsilon{}
+    \renewcommand{\epsilon}[0]{\bm{\oldepsilon{}}}
+    \newcommand{\tm}[1]{\textbf{\emph{##1}}} % Short for term
+    \newcommand{\ra}[1]{$\rightarrow{}$}
+    \newcolumntype{R}[1]{>{\raggedleft\hspace{0pt}}m{##1}}
+    \newcommand{\production}[5]
+    {
+        ##1. & \emph{##2} & \textbf{##3} & ##4 & \textbf{##5} \\
+    }
+    \begin{longtable}{lrlcl}
+        ID & Name & First & Leads & Follows \\ \toprule
+}{
+    \end{longtable}
+}
+
+\begin{document}
+    \begin{productions}
+        \production{1}{program}{program}{}{$\$$}
+        \production{2.1}{identifier\_list}{id}{}{)}
+        \production{2.2.1}{identifier\_list$'$}{,}{}{)}
+        \production{2.2.2}{identifier\_list$'$}{$\epsilon{}$}{\ra{}}{)}
+        \production{3.1}{declarations}{var}{}{procedure begin}
+        \production{3.2}{declarations}{$\epsilon{}$}{\ra{}}{procedure begin}
+        \production{4.1}{type}{integer real}{}{; )}
+        \production{4.2}{type}{array}{}{; )}
+        \production{5.1}{standard\_type}{integer}{}{; )}
+        \production{5.2}{standard\_type}{real}{}{; )}
+
+
+        \production{6.1}{subprogram\_declarations}{procedure}{}{begin}
+        \production{6.2}{subprogram\_declarations}{$\epsilon{}$}{\ra{}}{begin}
+        \production{7}{subprogram\_declaration}{procedure}{}{;}
+        \production{8}{subprogram\_head}{procedure}{}{var procedure begin}
+        \production{9.1}{arguments}{(}{}{;}
+        \production{9.2}{arguments}{$\epsilon{}$}{}{;}
+        \production{10.1}{parameter\_list}{id}{}{)}
+        \production{10.2.1}{parameter\_list$'$}{;}{}{)}
+        \production{10.2.2}{parameter\_list$'$}{$\epsilon{}$}{\ra{}}{)}
+
+
+        \production{11}{compound\_statement}{begin}{}{; .\ end else}
+        \production{12.1}{optional\_statements}{id call begin while if}{}{end}
+        \production{12.2}{optional\_statements}{$\epsilon{}$}{\ra{}}{end}
+        \production{13.1}{statement\_list}{id call begin while if}{}{end}
+        \production{13.2.1}{statement\_list$'$}{;}{}{end}
+        \production{13.2.2}{statement\_list$'$}{$\epsilon{}$}{\ra{}}{end}
+        \production{14.1}{statement}{id}{}{; end else}
+        \production{14.2}{statement}{call}{}{; end else}
+        \production{14.3}{statement}{begin}{}{; end else}
+        \production{14.4}{statement}{while}{}{; end else}
+        \production{14.5}{statement}{if}{}{; end else}
+        \production{15.1}{else$'$}{else}{}{; end else}
+        \production{15.2}{else$'$}{$\epsilon{}$}{\ra{}}{; end else}
+
+
+        \production{16}{variable}{id}{}{assignop}
+        \production{17.1}{array\_access}{[}{}{assignop}
+        \production{17.2}{array\_access}{$\epsilon{}$}{\ra{}}{assignop}
+        \production{18}{procedure\_statement}{call}{}{; end else}
+        \production{19.1}{optional\_expressions}{(}{}{; end else}
+        \production{19.2}{optional\_expressions}{$\epsilon{}$}{\ra{}}
+                                                    {; end else}
+
+        \production{20.1}{expression\_list}{id num ( not + -}{}{)}
+        \production{20.2.1}{expression\_list$'$}{,}{}{)}
+        \production{20.2.2}{expression\_list$'$}{$\epsilon{}$}{\ra{}}{)}
+
+
+        \production{21}{expression}{id num ( not + -}{}
+                                            {; end else do then ] ) ,}
+        \production{22.1}{related\_expression}{relop}{}
+                                            {; end else do then ] ) ,}
+        \production{22.2}{related\_expression}{$\epsilon{}$}{\ra{}}
+                                            {; end else do then ] ) ,}
+        \production{23.1.1}{simple\_expression}{id num ( not}{}
+                                            {relop ; end else do then ] ) ,}
+        \production{23.1.2}{simple\_expression}{+ -}{}
+                                            {relop ; end else do then ] ) ,}
+        \production{23.2.1}{simple\_expression$'$}{addop}{}
+                                            {relop ; end else do then ] ) ,}
+        \production{23.2.2}{simple\_expression$'$}{$\epsilon{}$}{\ra{}}
+                                            {relop ; end else do then ] ) ,}
+
+        \production{24.1}{term}{id num ( not}{}
+                                        {addop relop ; end else do then ] ) ,}
+        \production{24.2.1}{term$'$}{mulop}{}
+                                        {addop relop ; end else do then ] ) ,}
+        \production{24.2.2}{term$'$}{$\epsilon{}$}{\ra{}}
+                                        {addop relop ; end else do then ] ) ,}
+
+        \production{25.1}{factor}{id}{}
+                                    {mulop addop relop ; end else do then ] ) ,}
+        \production{25.2}{factor}{[}{}
+                                    {mulop addop relop ; end else do then ] ) ,}
+        \production{25.3}{factor}{num}{}
+                                    {mulop addop relop ; end else do then ] ) ,}
+        \production{25.4}{factor}{(}{}
+                                    {mulop addop relop ; end else do then ] ) ,}
+        \production{25.5}{factor}{not}{}
+                                    {mulop addop relop ; end else do then ] ) ,}
+        \production{26.1}{sign}{+}{}{id num not (}
+        \production{26.2}{sign}{-}{}{id num not (}
+
+
+    \end{productions}
+\end{document}
