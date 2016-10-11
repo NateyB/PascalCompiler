@@ -1,10 +1,8 @@
 #include<stdlib.h>
-#include<stdio.h>
-
 #include "linkedlist.h"
 
 
-int add(LinkedList* list, void *data, size_t size)
+int add(LinkedList* list, void *data, int size)
 {
     struct node* addition = malloc(sizeof(*addition));
     addition -> data = malloc(size);

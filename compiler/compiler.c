@@ -1,22 +1,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "dataStructures/linkedList/linkedlist.h"
+#include "errorHandler/errorHandler.h"
 #include "tokenizer/tokenizer.h"
+#include "globals.h"
 
 // Global file constants
-static const char* lexErrs[] = {"Unrecognized symbol:",
-                                "ID length exceeded 10 characters:",
-                                "Int length exceeded 10 characters:",
-                                "Integer part of real exceeded 5 characters:",
-                                "Fractional part of real exceeded 5 characters:",
-                                "Exponent part of long real exceeded 2 characters:",
-                                "Missing exponent part of long real:",
-                                "Leading 0 in int:",
-                                "Excessive leading 0 in real:",
-                                "Trailing 0 in real:",
-                                "Leading 0 in exponent:",
-                                "Attempt to use real exponent:"};
-
 static const char TOKEN_PATH[] = "out/tokens.dat";
 static const char LISTING_PATH[] = "out/listing.txt";
 static const char RESWORD_PATH[] = "compiler/data/reswords.dat";
@@ -31,7 +20,6 @@ static const int ListingLineSpace = 10;
 static const int ListingErrSpace = 50;
 static const int ListingLexSpace = 20;
 
-static int LINE = 1;
 static FILE* sourceFile;
 static FILE* listingFile;
 static FILE* tokenFile;
@@ -44,6 +32,8 @@ int init() {
     FILE* resFile = fopen(RESWORD_PATH, "r");
     initializeTokens(resFile);
     fclose(resFile);
+    initializeGlobals();
+    initializeErrorHandler();
 
     if (sourceFile == NULL)
     {
@@ -69,16 +59,16 @@ int init() {
     return 0;
 }
 
-int passError(Token* description, char* line)
+int passError(Token* description)
 {
     fprintf(tokenFile, "%*d%*.*s%*d%*d\n", TokenLineSpace, LINE,
-            TokenLexSpace, description -> length, &line[description -> start],
+            TokenLexSpace, description -> length, &BUFFER[description -> start],
             TokenTypeSpace, description -> category, TokenAttrSpace,
             description -> type);
     fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1,
             catNames[description -> category], ListingErrSpace,
             lexErrs[description -> type], ListingLexSpace, description -> length,
-            &line[description -> start]);
+            &BUFFER[description -> start]);
     return 0;
 }
 
@@ -88,25 +78,19 @@ void writeEOFToken()
             3, "EOF", TokenTypeSpace, FILEEND, TokenAttrSpace, 0);
 }
 
-void updateLine(char* line)
-{
-    passLine(line);
-    fprintf(listingFile, "%*d\t\t%s", ListingLineSpace, LINE, line);
-}
-
-void writeToken(Token* token, char* line)
+void writeToken(Token* token)
 {
     if (token -> category == WS || token -> category == NOOP) // Don't bother including in the output file.
         return;
     if (token -> category == LEXERR) // For catching the unrecognized symbol error
     {
-        passError(token, line);
+        passError(token);
         return;
     }
 
 
     fprintf(tokenFile, "%*d%*.*s%*d", TokenLineSpace, LINE, TokenLexSpace,
-            token -> length, &line[token -> start], TokenTypeSpace,
+            token -> length, &BUFFER[token -> start], TokenTypeSpace,
             token -> category);
     switch (token -> category) {
         case REAL:
@@ -124,22 +108,28 @@ void writeToken(Token* token, char* line)
     fprintf(tokenFile, "\n");
 }
 
+void handleToken(Token* token)
+{
+    writeToken(token);
+}
+
 int run()
 {
     char line[72];
     if (fgets(line, sizeof(line), sourceFile) != NULL)
         updateLine(line);
+
     Token* next = malloc(sizeof(*next));
     while ((next = getNextToken()))
     {
-        writeToken(next, line);
+        handleToken(next);
         if (next -> category == WS && next -> type == 1)
         {
-            LINE++;
             if (fgets(line, sizeof(line), sourceFile) != NULL)
             {
                 updateLine(line);
             } else { // Error or end of file (assume the latter)
+                LINE++;
                 writeEOFToken();
                 return 0;
             }

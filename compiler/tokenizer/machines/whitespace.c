@@ -1,7 +1,7 @@
 #include<stdlib.h>
 #include<ctype.h>
 
-#include "../tokenizer.h"
+#include "../tokens.h"
 #include "machines.h"
 
 int whitespace(Token* storage, char* str, int start)

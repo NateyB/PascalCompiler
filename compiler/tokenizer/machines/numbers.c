@@ -2,8 +2,9 @@
 #include<stdlib.h>
 #include<ctype.h>
 
-#include "../tokenizer.h"
+#include "../tokens.h"
 #include "machines.h"
+#include "../../errorHandler/errorHandler.h"
 
 // Assumes that "str" is valid as an integer.
 char* parseNum(LinkedList* chars, bool real)

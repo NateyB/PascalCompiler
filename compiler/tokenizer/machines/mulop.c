@@ -1,4 +1,4 @@
-#include "../tokenizer.h"
+#include "../tokens.h"
 #include "machines.h"
 
 int mulop(Token* storage, char* str, int start)

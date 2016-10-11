@@ -13,7 +13,7 @@ typedef struct LinkedNodes {
 } LinkedList;
 
 // Add an item to the front of the linked list
-int add(LinkedList* list, void* data, size_t size);
+int add(LinkedList* list, void* data, int size);
 
 // Pop an item from the front of the linked list
 void* pop(LinkedList* list);

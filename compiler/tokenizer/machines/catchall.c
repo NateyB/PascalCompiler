@@ -1,6 +1,6 @@
 #include<string.h>
 
-#include "../tokenizer.h"
+#include "../tokens.h"
 #include "machines.h"
 
 int catchall(Token* storage, char* str, int start)
