@@ -3,7 +3,7 @@
 #include "dataStructures/linkedList/linkedlist.h"
 #include "errorHandler/errorHandler.h"
 #include "tokenizer/tokenizer.h"
-#include "globals.h"
+#include "globals/globals.h"
 
 // Global file constants
 static const char TOKEN_PATH[] = "out/tokens.dat";

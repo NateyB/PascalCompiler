@@ -7,7 +7,7 @@
 #include "../dataStructures/linkedList/linkedlist.h"
 #include "machines/machines.h"
 #include "../errorHandler/errorHandler.h"
-#include "../globals.h"
+#include "../globals/globals.h"
 
 const char* catNames[19] = {"NOOP", "ASSIGNOP", "FILEEND", "RELOP", "ID",
                          "CONTROL", "ADDOP", "MULOP", "WS", "ARRAY", "TYPE",
