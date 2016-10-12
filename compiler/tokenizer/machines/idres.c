@@ -6,6 +6,7 @@
 
 #include "machines.h"
 #include "../../errorHandler/errorHandler.h"
+#include "../../symbolTable/symbolTable.h"
 #include "../../dataStructures/linkedList/linkedList.h"
 #include "../tokens.h"
 
@@ -14,16 +15,7 @@ static int numReserved;
 static enum TokenType* categories;
 static int* attributes;
 
-LinkedList* symbolTable;
-
-int initSymbolTable()
-{
-    symbolTable = malloc(sizeof(*symbolTable));
-    symbolTable -> head = 0;
-    return 0;
-}
-
-int getIndex(const char** array, size_t arr_size, char* item)
+static int getIndex(const char** array, size_t arr_size, char* item)
 {
     while (arr_size > 0)
     {
@@ -34,9 +26,8 @@ int getIndex(const char** array, size_t arr_size, char* item)
     return -1;
 }
 
-int initResWords(FILE* resFile)
+static int initResWords(FILE* resFile)
 {
-    initSymbolTable();
     static const int length = 11;
     LinkedList* resWords = malloc(sizeof(*resWords));
     LinkedList* cats = malloc(sizeof(*cats));
@@ -91,7 +82,15 @@ int initResWords(FILE* resFile)
     return 0;
 }
 
-int isReserved(char* word)
+int initIDResMachine(FILE* resFile)
+{
+    if (initSymbolTable() == 0 && initResWords(resFile) == 0)
+        return 0;
+    else
+        return 1;
+}
+
+static int isReserved(char* word)
 {
     // Check the reserved words table for a match first
     for (size_t i = 0; i < numReserved; i++) {
@@ -100,20 +99,6 @@ int isReserved(char* word)
     }
 
     return -1;
-}
-
-char* knownID(char* word)
-{
-    // Then check the symbol table
-    struct node* node = symbolTable -> head;
-    while (node)
-    {
-        if (strcmp(node -> data, word) == 0) // Match
-            return (char *)(node -> data);
-        node = node -> next;
-    }
-
-    return NULL;
 }
 
 int idres(Token* storage, char* str, int start)
@@ -149,14 +134,10 @@ int idres(Token* storage, char* str, int start)
             storage -> category = categories[index];
             storage -> type = attributes[index];
         }
-        else if ((address = knownID(name)))
-        {
+        else if ((address = checkSymbolTable(name)))
             storage -> id = address;
-        } else
-        {
-            add(symbolTable, name, sizeof(char*));//(wordSize + 1)*sizeof(char));
-            storage -> id = (char *)(symbolTable -> head -> data);
-        }
+        else
+            storage -> id = pushToSymbolTable(name);
 
     }
     if (start - initial > 10) // ID Too long err

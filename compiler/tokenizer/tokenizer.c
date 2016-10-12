@@ -23,7 +23,7 @@ static bool initialized = false;
 int initializeTokens(FILE* resFile)
 {
     if (resFile) {
-        initResWords(resFile);
+        initIDResMachine(resFile);
         initialized = true;
     } else {
         fprintf(stderr, "%s\n", "Reserved words file for tokenizer null!");

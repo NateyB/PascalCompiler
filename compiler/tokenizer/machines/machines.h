@@ -16,7 +16,7 @@ int whitespace(Token* storage, char* str, int start);
 int relop(Token* storage, char* str, int start);
 
 int idres(Token* storage, char* str, int start);
-int initResWords(FILE* resFILE);
+int initIDResMachine(FILE* resFile);
 
 extern const machine machines[];
 #endif // MACHINES_H
