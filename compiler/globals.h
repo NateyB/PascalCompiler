@@ -1,7 +1,8 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-int LINE = 0;
+extern int START;
+extern int LINE;
 extern char* BUFFER;
 
 void updateLine(char* line);

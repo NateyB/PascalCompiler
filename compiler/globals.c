@@ -4,6 +4,8 @@
 #include "globals.h"
 
 char* BUFFER;
+int LINE = 0;
+int START = 0;
 
 void initializeGlobals()
 {
@@ -12,6 +14,7 @@ void initializeGlobals()
 
 void updateLine(char* line)
 {
+    START = 0;
     LINE++;
     strcpy(BUFFER, line);
 }

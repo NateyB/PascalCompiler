@@ -47,7 +47,7 @@ int init() {
         fclose(listingFile);
         return 1;
     }
-    for (size_t i = ASSIGNOP; i <= LEXERR; i++) {
+    for (size_t i = ASSIGNOP; i <= SYNERR; i++) {
         fprintf(tokenFile, "%-5zu%s\n", i, catNames[i]);
     }
     fprintf(tokenFile, "%*s%*s%*s%*s\n", TokenLineSpace, "Line",
@@ -117,7 +117,10 @@ int run()
 {
     char line[72];
     if (fgets(line, sizeof(line), sourceFile) != NULL)
+    {
         updateLine(line);
+        fprintf(listingFile, "%s", line);
+    }
 
     Token* next = malloc(sizeof(*next));
     while ((next = getNextToken()))
@@ -128,6 +131,7 @@ int run()
             if (fgets(line, sizeof(line), sourceFile) != NULL)
             {
                 updateLine(line);
+                fprintf(listingFile, "%s", line);
             } else { // Error or end of file (assume the latter)
                 LINE++;
                 writeEOFToken();
@@ -148,7 +152,7 @@ int main(int argc, char *argv[]) {
         if (run() != 0)
             fprintf(stderr, "%s\n", "Run failed. Could not terminate properly.");
     } else {
-        fprintf(stderr, "%s\n", "Initialization process failed in lexical analyzer.");
+        fprintf(stderr, "%s\n", "Initialization process failed in tokenizer.");
     }
     fclose(listingFile);
     return 0;

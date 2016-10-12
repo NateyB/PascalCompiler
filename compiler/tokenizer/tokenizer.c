@@ -9,17 +9,22 @@
 #include "../errorHandler/errorHandler.h"
 #include "../globals.h"
 
+const char* catNames[19] = {"NOOP", "ASSIGNOP", "FILEEND", "RELOP", "ID",
+                         "CONTROL", "ADDOP", "MULOP", "WS", "ARRAY", "TYPE",
+                         "VAR", "INT", "REAL", "PUNC", "GROUP", "INVERSE",
+                         "LEXERR", "SYNERR"};
+
 const machine machines[] = {whitespace, idres, longRealMachine,
         realMachine, intMachine, grouping, catchall, relop, addop, mulop};
 
 // Initialization stuff
 static bool initialized = false;
-static int start;
 
 int initializeTokens(FILE* resFile)
 {
     if (resFile) {
         initResWords(resFile);
+        initialized = true;
     } else {
         fprintf(stderr, "%s\n", "Reserved words file for tokenizer null!");
     }
@@ -32,28 +37,30 @@ static Token* generateNextToken()
         Token* current = malloc(sizeof(*current));
         if ((current = getNextErrorToken()))
             return current;
+        else
+             current = malloc(sizeof(*current));
 
         int end;
-        current -> start = start;
+        current -> start = START;
         for (int i = 0; i < sizeof(machines)/sizeof(machine); i++)
         {
             current -> type = 0;
-            end = (*machines[i])(current, BUFFER, start);
-            if (end > start) {
-                current -> length = end - start;
-                start = end;
+            end = (*machines[i])(current, BUFFER, START);
+            if (end > START) {
+                current -> length = end - START;
+                START = end;
                 return current;
             }
         }
 
         // Unrecognized symbol error. This error is manual because it takes
         // the place of a lexeme, rather than being processed during one.
-        throwError(LEXERR, 0, start, 1);
+        throwError(LEXERR, 0, START, 1);
         current -> category = NOOP;
-        start++;
+        START++;
         return current;
     } else {
-        fprintf(stderr, "%s\n", "Processor not initialized. Aborting.");
+        fprintf(stderr, "%s\n", "Tokenizer not initialized. Aborting.");
         return NULL;
     }
 }
@@ -61,7 +68,7 @@ static Token* generateNextToken()
 
 Token* getNextToken()
 {
-    Token* next;
+    Token* next = malloc(sizeof(*next));
     do {
         next = generateNextToken();
     } while (next -> category == NOOP);
