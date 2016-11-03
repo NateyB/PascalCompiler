@@ -105,13 +105,11 @@
 
         \production{25.1}{factor}{id}{}
                                     {mulop addop relop ; end else do then ] ) ,}
-        \production{25.2}{factor}{[}{}
+        \production{25.2}{factor}{num}{}
                                     {mulop addop relop ; end else do then ] ) ,}
-        \production{25.3}{factor}{num}{}
+        \production{25.3}{factor}{(}{}
                                     {mulop addop relop ; end else do then ] ) ,}
-        \production{25.4}{factor}{(}{}
-                                    {mulop addop relop ; end else do then ] ) ,}
-        \production{25.5}{factor}{not}{}
+        \production{25.4}{factor}{not}{}
                                     {mulop addop relop ; end else do then ] ) ,}
         \production{26.1}{sign}{+}{}{id num not (}
         \production{26.2}{sign}{-}{}{id num not (}

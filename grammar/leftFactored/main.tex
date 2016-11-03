@@ -110,11 +110,10 @@
         \production{24.2.1}{term$'$}{\tm{mulop} factor term$'$}
         \production{24.2.2}{term$'$}{$\epsilon{}$}
 
-        \production{25.1}{factor}{\tm{id}}
-        \production{25.2}{factor}{\tm{id [} expression \tm{]}}
-        \production{25.3}{factor}{\tm{num}}
-        \production{25.4}{factor}{\tm{(} expression \tm{)}}
-        \production{25.5}{factor}{\tm{not} factor}
+        \production{25.1}{factor}{\tm{id} array\_access}
+        \production{25.2}{factor}{\tm{num}}
+        \production{25.3}{factor}{\tm{(} expression \tm{)}}
+        \production{25.4}{factor}{\tm{not} factor}
         \production{26.1}{sign}{\bm{$+$}}
         \production{26.2}{sign}{\bm{$-$}}
 
