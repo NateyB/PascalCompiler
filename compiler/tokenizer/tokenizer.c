@@ -34,8 +34,8 @@ int initializeTokens(FILE* resFile)
 static Token* generateNextToken()
 {
     if (initialized) {
-        Token* current = malloc(sizeof(*current));
-        if ((current = getNextErrorToken()))
+        Token* current = malloc(sizeof(*current)); // TODO necessary allocation?
+        if ((current = getNextErrorToken()) != NULL)
             return current;
         else
              current = malloc(sizeof(*current));

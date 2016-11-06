@@ -6,6 +6,6 @@ extern int LINE;
 extern char* BUFFER;
 
 void updateLine(char* line);
-void initializeGlobals();
+int initializeGlobals();
 
 #endif // GLOBALS_H

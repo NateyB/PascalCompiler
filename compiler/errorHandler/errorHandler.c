@@ -17,9 +17,10 @@ const char* lexErrs[] = {"Unrecognized symbol:",
                          "Leading 0 in exponent:",
                          "Attempt to use real exponent:"};
 
-void initializeErrorHandler()
+int initializeErrorHandler()
 {
     errorList = malloc(sizeof(*errorList));
+    return errorList != NULL;
 }
 
 

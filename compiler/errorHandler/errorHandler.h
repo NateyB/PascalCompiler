@@ -4,7 +4,7 @@
 
 extern const char* lexErrs[];
 void throwError(enum TokenType category, int type, int start, int length);
-void initializeErrorHandler();
+int initializeErrorHandler();
 
 Token* getNextErrorToken();
 
