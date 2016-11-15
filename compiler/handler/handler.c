@@ -77,7 +77,8 @@ void writeError(Token* description)
 
 void writeToken(Token* token)
 {
-    if (token -> category == WS || token -> category == NOOP) // Don't bother including in the output file.
+    // Don't bother including in the output file.
+    if (token -> category == WS || token -> category == NOOP)
         return;
 
     if (token -> category == LEXERR)

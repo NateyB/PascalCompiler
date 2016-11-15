@@ -1,41 +1,40 @@
-#ifndef PRODUCTIONS_H
-#define PRODUCTIONS_H
+#ifndef voidS_H
+#define voidS_H
 #include "../../tokenizer/tokens.h"
 
-// The production type
-typedef void (*production)(Token* handle);
+extern Token* queuedToken;
 
-production program;
-production id_list;
-production id_list_tail;
-production declarations;
-production type;
-production standard_type;
-production subprogram_declarations;
-production subprogram_declaration;
-production subprogram_head;
-production arguments;
-production parameter_list;
-production parameter_list_tail;
-production compound_statement;
-production optional_statements;
-production statement_list;
-production statement_list_tail;
-production statement;
-production else_tail;
-production variable;
-production array_access;
-production procedure_statement;
-production optional_expressions;
-production expression_list;
-production expression_list_tail;
-production experssion;
-production related_expression;
-production simple_expression;
-production simple_expression_tail;
-production term;
-production term_tail;
-production factor;
-production sign;
+void program();
+void id_list();
+void id_list_tail();
+void declarations();
+void type();
+void standard_type();
+void subprogram_declarations();
+void subprogram_declaration();
+void subprogram_head();
+void arguments();
+void parameter_list();
+void parameter_list_tail();
+void compound_statement();
+void optional_statements();
+void statement_list();
+void statement_list_tail();
+void statement();
+void else_tail();
+void variable();
+void array_access();
+void procedure_statement();
+void optional_expressions();
+void expression_list();
+void expression_list_tail();
+void experssion();
+void related_expression();
+void simple_expression();
+void simple_expression_tail();
+void term();
+void term_tail();
+void factor();
+void sign();
 
-#endif // PRODUCTIONS_H
+#endif // voidS_H
