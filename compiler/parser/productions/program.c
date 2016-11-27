@@ -5,24 +5,35 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token endOfFile = {
+const Token endOfFile = {
     FILEEND, false, 0, 0
 };
 
 static const Token* syncSet[] = {&endOfFile};
+static const int sync_size = sizeof(syncSet)/sizeof(syncSet[0]);
 
+static void synch()
+{
+    requireSync(syncSet, sync_size);
+}
+
+// Needs implementing: None
 void program()
 {
-    // Program -> production 1
-    if (match(CONTROL, 7, true))
-        if (match(ID, 0, false))
-            if (match(GROUP, 0, true)) // Open paren
-            {
-                id_list();
-                if match(GROUP, 1, true) // Close paren; continue
-        if (match(CONTROL, 3, true)) // Successfully matched "end"!
-            return;
-        else // Uh-oh; a syntax error
-            requireSync(syncSet, 1);
-    requireSync(syncSet, 1);
+    // Production 1
+    if (curTok -> category == CONTROL && curTok -> type == 7)
+        if (match(CONTROL, 7, true)) // program
+            if (match(ID, 0, false))
+                if (match(GROUP, 0, true)) // (
+                {
+                    id_list();
+                    if (match(GROUP, 1, true)) // )
+                        if (match(PUNC, 1, true)) // ;
+                        {
+                            declarations();
+                            return;
+                        }
+                }
+
+    synch();
 }

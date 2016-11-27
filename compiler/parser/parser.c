@@ -1,23 +1,25 @@
 #include<stdlib.h>
-#include<stdio.h>
 #include<stdbool.h>
 
 #include "../tokenizer/tokens.h"
 #include "productions/productions.h"
 #include "../tokenizer/tokenizer.h"
 #include "../handler/handler.h"
+#include "../errorHandler/errorHandler.h"
 
-Token* queuedToken = NULL;
+Token* curTok = NULL;
+static Token EOFToken = {
+    FILEEND, false, 0, 0
+};
+
 
 Token* getNextRelevantToken()
 {
-    if (queuedToken != NULL)
-        return queuedToken;
     Token* next = malloc(sizeof(*next));
     do {
         next = getNextToken();
         if (!handleToken(next))
-            return NULL;
+            return &EOFToken;
     } while (next -> category == WS || next -> category == NOOP
              || next -> category >= LEXERR);
     return next;
@@ -25,23 +27,19 @@ Token* getNextRelevantToken()
 
 void requireSync(const Token* syncSet[], int size)
 {
-    Token* next = malloc(sizeof(*next));
-    do {
-        next = getNextRelevantToken();
-        if (next == NULL) // EOF
-            return;
+    while (true) {
         for (int i = 0; i < size; i++)
         {
             const Token* syncToken = syncSet[i];
-            if (next -> category == syncToken -> category
-                 && (next -> type == syncToken -> type
-                 || !next -> start))
+            if (curTok -> category == syncToken -> category
+                 && (curTok -> type == syncToken -> type
+                 || !syncToken -> start))
              {
-                 printf("%d\n", next -> category);
                  return;
              }
         }
-    } while (true);
+        curTok = getNextRelevantToken();
+    }
 }
 
 // Searches the array tokens (of size num); if a match is found, return true;
@@ -49,20 +47,34 @@ void requireSync(const Token* syncSet[], int size)
 // of the token, or just the category.
 bool match(int cat, int type, bool strict)
 {
-    Token* next = getNextRelevantToken();
-    if (next -> category == cat && (next -> type == type || !strict))
+    // if (strict)
+    // {
+    //     printf("Exp: %d\t%d\n", cat, type);
+    //     printf("Rec: %d\t%d\n\n", curTok -> category, curTok -> type);
+    // } else {
+    //     printf("Exp: %d\t\n", cat);
+    //     printf("Rec: %d\t\n\n", curTok -> category);
+    // }
+
+    if (cat == FILEEND && curTok -> category == FILEEND)
+        return true;
+    else if (curTok -> category == cat && (!strict || curTok -> type == type))
     {
-        queuedToken = NULL;
+        curTok = getNextRelevantToken();
         return true;
     }
-    return false;
+    else
+    {
+        throwError(SYNERR, 0, 0, 0);
+        curTok = getNextRelevantToken();
+        return false;
+    }
 }
 
 int generateParseTree()
 {
-    Token* first = getNextToken();
-    handleToken(first);
-    program(first);
-
-    return 0;
+    curTok = malloc(sizeof(*curTok));
+    curTok = getNextRelevantToken();
+    program();
+    return match(FILEEND, 0, false);
 }

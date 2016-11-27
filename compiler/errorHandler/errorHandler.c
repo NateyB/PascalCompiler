@@ -17,6 +17,8 @@ const char* lexErrs[] = {"Unrecognized symbol:",
                          "Leading 0 in exponent:",
                          "Attempt to use real exponent:"};
 
+const char* synErrs[] = {"NOOP", "A", "F", "R", "I"};
+
 int initializeErrorHandler()
 {
     errorList = malloc(sizeof(*errorList));

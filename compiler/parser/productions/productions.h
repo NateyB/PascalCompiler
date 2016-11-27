@@ -2,7 +2,8 @@
 #define voidS_H
 #include "../../tokenizer/tokens.h"
 
-extern Token* queuedToken;
+extern Token* curTok;
+extern const Token endOfFile;
 
 void program();
 void id_list();
