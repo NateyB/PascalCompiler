@@ -21,7 +21,7 @@ void expression_list()
         || curTok -> attribute == ADDOP // + OR -
         || curTok -> attribute == ID // id
         || curTok -> attribute == INVERSE && curTok -> aspect == 0 // not
-        || curTok -> attribute == INT || curTok -> attribute == REAL) // num
+        || curTok -> attribute == NUM) // num
     {
         expression();
         expression_list_tail();

@@ -21,7 +21,7 @@ void expression()
         || curTok -> attribute == ADDOP // + OR -
         || curTok -> attribute == ID // id
         || curTok -> attribute == INVERSE && curTok -> aspect == 0 // not
-        || curTok -> attribute == INT || curTok -> attribute == REAL) // num
+        || curTok -> attribute == NUM) // num
     {
         simple_expression();
         related_expression();

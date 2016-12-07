@@ -40,7 +40,7 @@ int parseInt(LinkedList* digits)
 
 int intMachine(Token* storage, char* str, int start)
 {
-    storage -> attribute = INT;
+    storage -> attribute = NUM;
 
     bool errored = false;
     int initial = start;
@@ -62,7 +62,10 @@ int intMachine(Token* storage, char* str, int start)
     if (errored)
         storage -> attribute = NOOP;
     else if (start > initial) // It's a proper integer!
-        storage -> aspect = parseInt(digits);
+    {
+        storage -> aspect = 0;
+        storage -> int_val = parseInt(digits);
+    }
 
     return start;
 }
@@ -70,7 +73,7 @@ int intMachine(Token* storage, char* str, int start)
 // NOTE: Pay attention to memory stuff here (the linked list takes up space).
 int realMachine(Token* storage, char* str, int start)
 {
-    storage -> attribute = REAL;
+    storage -> attribute = NUM;
 
     int initial = start;
     bool errored = false;
@@ -125,14 +128,17 @@ int realMachine(Token* storage, char* str, int start)
     if (errored)
         storage -> attribute = NOOP;
     else
-        storage -> val = parseReal(digits);
+    {
+        storage -> aspect = 1;
+        storage -> real_val = parseReal(digits);
+    }
 
     return start;
 }
 
 int longRealMachine(Token* storage, char* str, int start)
 {
-    storage -> attribute = REAL;
+    storage -> attribute = NUM;
 
     int initial = start;
     bool errored = false;
@@ -223,7 +229,10 @@ int longRealMachine(Token* storage, char* str, int start)
     if (errored)
         storage -> attribute = NOOP;
     else
-        storage -> val = parseReal(digits);
+    {
+        storage -> aspect = 1;
+        storage -> real_val = parseReal(digits);
+    }
 
     return start;
 }

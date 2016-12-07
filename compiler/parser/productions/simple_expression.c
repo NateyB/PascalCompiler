@@ -20,7 +20,7 @@ void simple_expression()
     if (curTok -> attribute == GROUP && curTok -> aspect == 0 // (
         || curTok -> attribute == ID // ID
         || curTok -> attribute == INVERSE && curTok -> aspect == 0 // not
-        || curTok -> attribute == INT || curTok -> attribute == REAL) // num
+        || curTok -> attribute == NUM) // num
     {
         term();
         simple_expression_tail();

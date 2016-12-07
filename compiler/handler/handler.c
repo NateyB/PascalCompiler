@@ -92,10 +92,6 @@ void writeToken(Token* token)
             token -> length, &BUFFER[token -> start], TokenTypeSpace,
             token -> attribute);
     switch (token -> attribute) {
-        case REAL:
-            fprintf(tokenFile, "%*f", TokenAttrSpace, token -> val);
-            break;
-
         case ID:
             fprintf(tokenFile, "%*p", TokenAttrSpace, token -> id);
             break;

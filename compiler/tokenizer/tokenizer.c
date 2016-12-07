@@ -11,8 +11,8 @@
 
 const char* catNames[19] = {"NOOP", "ASSIGNOP", "FILEEND", "RELOP", "ID",
                          "CONTROL", "ADDOP", "MULOP", "WS", "ARRAY", "TYPE",
-                         "VAR", "INT", "REAL", "PUNC", "GROUP", "INVERSE",
-                         "LEXERR", "SYNERR"};
+                         "VAR", "NUM", "PUNC", "GROUP", "INVERSE",
+                         "LEXERR", "SYNERR", "SEMERR"};
 
 const machine machines[] = {whitespace, idres, longRealMachine,
         realMachine, intMachine, grouping, catchall, relop, addop, mulop};

@@ -21,9 +21,9 @@ void type()
     {
         if (match(ARRAY, 0, true)) // array
             if (match(GROUP, 2, true)) // [
-                if (match(INT, 0, false)) // INT
+                if (match(NUM, 0, true)) // INT
                     if (match(ARRAY, 1, true)) // ..
-                        if (match(INT, 0, false)) // INT
+                        if (match(NUM, 0, true)) // INT
                             if (match(GROUP, 3, true)) // ]
                                 if (match(ARRAY, 2, true)) // of
                                 {
@@ -31,8 +31,8 @@ void type()
                                     return;
                                 }
     // Production 4.1
-    } else if ((curTok -> attribute == TYPE && curTok -> aspect == 1) // INT
-               || (curTok -> attribute == TYPE && curTok -> aspect == 2)) // REAL
+    } else if ((curTok -> attribute == TYPE && curTok -> aspect == 1) // int
+               || (curTok -> attribute == TYPE && curTok -> aspect == 2)) // real
     {
         standard_type();
         return;

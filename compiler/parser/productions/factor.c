@@ -25,9 +25,9 @@ void factor()
         }
 
     // Production 25.1.2
-    } else if (curTok -> attribute == INT || curTok -> attribute == REAL) { // num
-        // TODO Implement as num
-        return;
+    } else if (curTok -> attribute == NUM) { // num
+        if (match(NUM, 0, false))
+            return;
 
     // Production 25.1.3
     } else if (curTok -> attribute == GROUP && curTok -> aspect == 0) { // (

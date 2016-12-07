@@ -5,18 +5,23 @@
 
 enum TokenType {NOOP, ASSIGNOP, FILEEND, RELOP, ID,
                 CONTROL, ADDOP, MULOP, WS, ARRAY, TYPE,
-                VAR, INT, REAL, PUNC, GROUP, INVERSE,
+                VAR, NUM, PUNC, GROUP, INVERSE,
                 LEXERR, SYNERR};
 
 // The token data type
 typedef struct T_Type {
-    enum TokenType attribute;
-    int start;
-    int length;
-    union {
+    enum TokenType attribute; // Attribute
+    int start; // Start in the line
+    int length; // Length of the lexeme
+
+    union { // Aspect or character pointer
         int aspect;
-        double val;
         char* id;
+    };
+
+    union { // Value of the number
+        int int_val;
+        double real_val;
     };
 } Token;
 
