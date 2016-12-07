@@ -34,7 +34,7 @@ static int initResWords(FILE* resFile)
     LinkedList* attrs = malloc(sizeof(*attrs));
 
     char word[length] = {0};
-    char category[length] = {0};
+    char attribute[length] = {0};
     int attr = 0;
     //while (fgets(word, length, resFile))
     while (true)
@@ -42,10 +42,10 @@ static int initResWords(FILE* resFile)
         fscanf(resFile, "%s", word);
         if (feof(resFile))
             break;
-        fscanf(resFile, "%s", category); // The actual name.
+        fscanf(resFile, "%s", attribute); // The actual name.
         fscanf(resFile, "%d", &attr);
         numReserved = add(resWords, &word, length*sizeof(char));
-        add(cats, &category, length*sizeof(char));
+        add(cats, &attribute, length*sizeof(char));
         add(attrs, &attr, sizeof(int));
     }
 
@@ -58,7 +58,7 @@ static int initResWords(FILE* resFile)
         node = node -> next;
     }
 
-    // Initialize the category table
+    // Initialize the attribute table
     categories = malloc(numReserved*sizeof(enum TokenType));
     node = cats -> head;
 
@@ -105,8 +105,8 @@ int idres(Token* storage, char* str, int start)
 {
     int initial = start;
     LinkedList* id = malloc(sizeof(*id));
-    storage -> category = ID;
-    storage -> type = 0;
+    storage -> attribute = ID;
+    storage -> aspect = 0;
     char next = str[start];
     if (isalpha(next)) // Can actually be an id/reserved
     {
@@ -131,8 +131,8 @@ int idres(Token* storage, char* str, int start)
         char* address = 0;
         if ((index = isReserved(name)) >= 0)
         { // It's a reserved word!
-            storage -> category = categories[index];
-            storage -> type = attributes[index];
+            storage -> attribute = categories[index];
+            storage -> aspect = attributes[index];
         }
         else if ((address = checkSymbolTable(name)))
             storage -> id = address;
@@ -142,7 +142,7 @@ int idres(Token* storage, char* str, int start)
     }
     if (start - initial > 10) // ID Too long err
     {
-        storage -> category = NOOP;
+        storage -> attribute = NOOP;
         throwError(LEXERR, 1, initial, start - initial);
     }
     return start;

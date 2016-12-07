@@ -17,21 +17,21 @@ static void synch()
 void related_expression()
 {
     // Production 22.1
-    if (curTok -> category == RELOP) { // RELOP
+    if (curTok -> attribute == RELOP) { // RELOP
         if (match(RELOP, 0, false)) { // RELOP
             simple_expression();
             return;
         }
 
     // Production 22.2
-    } else if (curTok -> category == GROUP && curTok -> type == 1 // )
-        || curTok -> category == PUNC && curTok -> type == 0 // ,
-        || curTok -> category == PUNC && curTok -> type == 1 // ;
-        || curTok -> category == GROUP && curTok -> type == 3 // ]
-        || curTok -> category == CONTROL && curTok -> type == 1 // do
-        || curTok -> category == CONTROL && curTok -> type == 2 // else
-        || curTok -> category == CONTROL && curTok -> type == 3 // end
-        || curTok -> category == CONTROL && curTok -> type == 8) // then
+    } else if (curTok -> attribute == GROUP && curTok -> aspect == 1 // )
+        || curTok -> attribute == PUNC && curTok -> aspect == 0 // ,
+        || curTok -> attribute == PUNC && curTok -> aspect == 1 // ;
+        || curTok -> attribute == GROUP && curTok -> aspect == 3 // ]
+        || curTok -> attribute == CONTROL && curTok -> aspect == 1 // do
+        || curTok -> attribute == CONTROL && curTok -> aspect == 2 // else
+        || curTok -> attribute == CONTROL && curTok -> aspect == 3 // end
+        || curTok -> attribute == CONTROL && curTok -> aspect == 8) // then
         return; // epsilon
 
     synch();

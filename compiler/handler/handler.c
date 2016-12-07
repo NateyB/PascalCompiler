@@ -67,21 +67,21 @@ void writeError(Token* description)
 {
     fprintf(tokenFile, "%*d%*.*s%*d%*d\n", TokenLineSpace, LINE,
             TokenLexSpace, description -> length, &BUFFER[description -> start],
-            TokenTypeSpace, description -> category, TokenAttrSpace,
-            description -> type);
+            TokenTypeSpace, description -> attribute, TokenAttrSpace,
+            description -> aspect);
     fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1,
-            catNames[description -> category], ListingErrSpace,
-            lexErrs[description -> type], ListingLexSpace, description -> length,
+            catNames[description -> attribute], ListingErrSpace,
+            lexErrs[description -> aspect], ListingLexSpace, description -> length,
             &BUFFER[description -> start]);
 }
 
 void writeToken(Token* token)
 {
     // Don't bother including in the output file.
-    if (token -> category == WS || token -> category == NOOP)
+    if (token -> attribute == WS || token -> attribute == NOOP)
         return;
 
-    if (token -> category == LEXERR)
+    if (token -> attribute == LEXERR)
     {
         writeError(token);
         return;
@@ -90,8 +90,8 @@ void writeToken(Token* token)
 
     fprintf(tokenFile, "%*d%*.*s%*d", TokenLineSpace, LINE, TokenLexSpace,
             token -> length, &BUFFER[token -> start], TokenTypeSpace,
-            token -> category);
-    switch (token -> category) {
+            token -> attribute);
+    switch (token -> attribute) {
         case REAL:
             fprintf(tokenFile, "%*f", TokenAttrSpace, token -> val);
             break;
@@ -101,7 +101,7 @@ void writeToken(Token* token)
             break;
 
         default:
-            fprintf(tokenFile, "%*d", TokenAttrSpace, token -> type);
+            fprintf(tokenFile, "%*d", TokenAttrSpace, token -> aspect);
             break;
     }
     fprintf(tokenFile, "\n");
@@ -110,7 +110,7 @@ void writeToken(Token* token)
 bool handleToken(Token* token)
 {
     writeToken(token);
-    if (token -> category == WS && token -> type == 1) // A newline
+    if (token -> attribute == WS && token -> aspect == 1) // A newline
     {
         char line[72];
         if (fgets(line, sizeof(line), sourceFile) != NULL)

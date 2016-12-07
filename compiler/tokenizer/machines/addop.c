@@ -3,16 +3,16 @@
 
 int addop(Token* storage, char* str, int start)
 {
-    storage -> category = ADDOP;
+    storage -> attribute = ADDOP;
     switch (str[start])
     {
         case '+':
-            storage -> type = 0;
+            storage -> aspect = 0;
             start++;
             return start;
 
         case '-':
-            storage -> type = 1;
+            storage -> aspect = 1;
             start++;
             return start;
 

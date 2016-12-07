@@ -21,7 +21,7 @@ static void synch()
 void program()
 {
     // Production 1
-    if (curTok -> category == CONTROL && curTok -> type == 7)
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 7)
         if (match(CONTROL, 7, true)) // program
             if (match(ID, 0, false))
                 if (match(GROUP, 0, true)) // (

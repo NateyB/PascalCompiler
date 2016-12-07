@@ -17,11 +17,11 @@ static void synch()
 void statement_list()
 {
     // Production 13.1
-    if (curTok -> category == CONTROL && curTok -> type == 0 // begin
-        || curTok -> category == CONTROL && curTok -> type == 10 // call
-        || curTok -> category == ID // ID
-        || curTok -> category == CONTROL && curTok -> type = 5 // if
-        || curTok -> category == CONTROL && curTok -> type == 9) // while
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 0 // begin
+        || curTok -> attribute == CONTROL && curTok -> aspect == 10 // call
+        || curTok -> attribute == ID // ID
+        || curTok -> attribute == CONTROL && curTok -> aspect == 5 // if
+        || curTok -> attribute == CONTROL && curTok -> aspect == 9) // while
     {
         statement();
         statement_list_tail();

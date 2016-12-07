@@ -17,7 +17,7 @@ static void synch()
 void optional_expressions()
 {
     // Production 19.1
-    if (curTok -> category == GROUP && curTok -> type == 0) // (
+    if (curTok -> attribute == GROUP && curTok -> aspect == 0) // (
     {
         if (match(GROUP, 0, true)) { // (
             expression_list();
@@ -26,9 +26,9 @@ void optional_expressions()
         }
 
     // Production 19.2
-    } else if (curTok -> category == PUNC && curTok -> type == 1 // ;
-          || curTok -> category == CONTROL && curTok -> type == 2 // else
-          || curTok -> category == CONTROL && curTok -> type == 3) // end
+    } else if (curTok -> attribute == PUNC && curTok -> aspect == 1 // ;
+          || curTok -> attribute == CONTROL && curTok -> aspect == 2 // else
+          || curTok -> attribute == CONTROL && curTok -> aspect == 3) // end
         return; // epsilon
 
     synch();

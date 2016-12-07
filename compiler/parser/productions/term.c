@@ -17,10 +17,10 @@ static void synch()
 void term()
 {
     // Production 24.1
-    if (curTok -> category == GROUP && curTok -> type == 0 // (
-        || curTok -> category == ID // ID
-        || curTok -> category == INVERSE && curTok -> type == 0 // not
-        || curTok -> cateogry == INT || curTok -> category == REAL) { // num
+    if (curTok -> attribute == GROUP && curTok -> aspect == 0 // (
+        || curTok -> attribute == ID // ID
+        || curTok -> attribute == INVERSE && curTok -> aspect == 0 // not
+        || curTok -> attribute == INT || curTok -> attribute == REAL) { // num
         factor();
         term_tail();
         return;

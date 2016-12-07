@@ -17,12 +17,12 @@ static void synch()
 void sign()
 {
     // Production 24.2.1
-    if (curTok -> category == ADDOP && curTok -> type == 0) { // +
+    if (curTok -> attribute == ADDOP && curTok -> aspect == 0) { // +
         if (match(ADDOP, 0, true)) // +
             return;
 
     // Production 24.2.2
-    } else if (curTok -> category == ADDOP && curTok -> type == 1) { // -
+    } else if (curTok -> attribute == ADDOP && curTok -> aspect == 1) { // -
         if (match(ADDOP, 1, true)) // -
             return; // epsilon
     }

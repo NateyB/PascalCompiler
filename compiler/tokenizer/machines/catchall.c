@@ -7,32 +7,32 @@ int catchall(Token* storage, char* str, int start)
 {
     if (strncmp(&str[start], ":=", 2) == 0)
     {
-        storage -> category = ASSIGNOP;
-        storage -> type = 0;
+        storage -> attribute = ASSIGNOP;
+        storage -> aspect = 0;
         start += 2;
     } else if (strncmp(&str[start], "..", 2) == 0)
     {
-        storage -> category = ARRAY;
-        storage -> type = 1;
+        storage -> attribute = ARRAY;
+        storage -> aspect = 1;
         start += 2;
     } else if (str[start] == ':'){
-        storage -> category = TYPE;
-        storage -> type = 0;
+        storage -> attribute = TYPE;
+        storage -> aspect = 0;
         start++;
     } else if (str[start] == ',')
     {
-        storage -> category = PUNC;
-        storage -> type = 0;
+        storage -> attribute = PUNC;
+        storage -> aspect = 0;
         start++;
     } else if (str[start] == ';')
     {
-        storage -> category = PUNC;
-        storage -> type = 1;
+        storage -> attribute = PUNC;
+        storage -> aspect = 1;
         start++;
     } else if (str[start] == '.')
     {
-        storage -> category = PUNC;
-        storage -> type = 2;
+        storage -> attribute = PUNC;
+        storage -> aspect = 2;
         start++;
     }
 

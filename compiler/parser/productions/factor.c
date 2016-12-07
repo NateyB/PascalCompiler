@@ -17,7 +17,7 @@ static void synch()
 void factor()
 {
     // Production 25.1.1
-    if (curTok -> category == ID) { // id
+    if (curTok -> attribute == ID) { // id
         if (match(ID, 0, false)) // id
         {
             factor_tail();
@@ -25,12 +25,12 @@ void factor()
         }
 
     // Production 25.1.2
-    } else if (curTok -> category == INT || curTok -> category == REAL) { // num
+    } else if (curTok -> attribute == INT || curTok -> attribute == REAL) { // num
         // TODO Implement as num
         return;
 
     // Production 25.1.3
-    } else if (curTok -> category == GROUP && curTok -> type == 0) { // (
+    } else if (curTok -> attribute == GROUP && curTok -> aspect == 0) { // (
         if (match(GROUP, 0, true)) { // (
             expression();
             if (match(GROUP, 1, true)) // )
@@ -38,7 +38,7 @@ void factor()
         }
 
     // Production 25.1.4
-    } else if (curTok -> category == INVERSE && curTok -> type == 0) { // not
+    } else if (curTok -> attribute == INVERSE && curTok -> aspect == 0) { // not
         if (match(INVERSE, 0, true)) { // not
             factor();
             return;

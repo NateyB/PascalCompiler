@@ -17,13 +17,13 @@ static void synch()
 void standard_type()
 {
     // Production 5.1
-    if (curTok -> category == TYPE && curTok -> type == 1) // integer
+    if (curTok -> attribute == TYPE && curTok -> aspect == 1) // integer
     {
         if (match(TYPE, 1, true))
             return;
 
     // Production 5.2
-    } else if (curTok -> category == TYPE && curTok -> type == 2) { // real
+    } else if (curTok -> attribute == TYPE && curTok -> aspect == 2) { // real
         if (match(TYPE, 2, true))
             return;
     }

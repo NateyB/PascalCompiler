@@ -17,7 +17,7 @@ static void synch()
 void parameter_list()
 {
     // Production 10.1
-    if (curTok -> category == ID) {
+    if (curTok -> attribute == ID) {
         if (match(ID, 0, false)) // ID
             if (match(TYPE, 0, true)) { // :
                 type();

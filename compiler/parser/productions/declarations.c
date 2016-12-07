@@ -17,7 +17,7 @@ static void synch()
 void declarations()
 {
     // Production 3.1
-    if (curTok -> category == VAR && curTok -> type == 0) // Declaration
+    if (curTok -> attribute == VAR && curTok -> aspect == 0) // Declaration
     {
         if (match(VAR, 0, true)) // var
             if (match(ID, 0, false)) // ID
@@ -31,8 +31,8 @@ void declarations()
                     }
                 }
     // Production 3.2
-    } else if ((curTok -> category == CONTROL && curTok -> type == 0) // Begin
-               || (curTok -> category == CONTROL && curTok -> type == 6)) //Proc
+    } else if ((curTok -> attribute == CONTROL && curTok -> aspect == 0) // Begin
+               || (curTok -> attribute == CONTROL && curTok -> aspect == 6)) //Proc
                return; // Epsilon
 
     synch();

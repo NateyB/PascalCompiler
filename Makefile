@@ -1,4 +1,5 @@
 objects := $(shell find compiler -name '*.c')
+CFLAGS=-Wno-logical-op-parentheses
 
 analyzermake: $(objects)
-	gcc -g -o compiler.out $(objects)
+	gcc $(CFLAGS) -g -o pascompiler $(objects)

@@ -17,7 +17,7 @@ static void synch()
 void array_access()
 {
     // Production 17.1
-    if (curTok -> category == GROUP && curTok -> type == 2) // [
+    if (curTok -> attribute == GROUP && curTok -> aspect == 2) // [
     {
         if (match(GROUP, 2, true)) { // [
             expression();
@@ -26,7 +26,7 @@ void array_access()
         }
 
     // Production 17.2
-    } else if (curTok -> category == ASSIGNOP && curTok -> type == 0) // :=
+    } else if (curTok -> attribute == ASSIGNOP && curTok -> aspect == 0) // :=
         return; // epsilon
 
     synch();

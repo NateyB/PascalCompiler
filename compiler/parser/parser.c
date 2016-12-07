@@ -20,8 +20,8 @@ Token* getNextRelevantToken()
         next = getNextToken();
         if (!handleToken(next))
             return &EOFToken;
-    } while (next -> category == WS || next -> category == NOOP
-             || next -> category >= LEXERR);
+    } while (next -> attribute == WS || next -> attribute == NOOP
+             || next -> attribute >= LEXERR);
     return next;
 }
 
@@ -31,8 +31,8 @@ void requireSync(const Token* syncSet[], int size)
         for (int i = 0; i < size; i++)
         {
             const Token* syncToken = syncSet[i];
-            if (curTok -> category == syncToken -> category
-                 && (curTok -> type == syncToken -> type
+            if (curTok -> attribute == syncToken -> attribute
+                 && (curTok -> aspect == syncToken -> aspect
                  || !syncToken -> start))
              {
                  return;
@@ -43,22 +43,13 @@ void requireSync(const Token* syncSet[], int size)
 }
 
 // Searches the array tokens (of size num); if a match is found, return true;
-// else, return false. The strict flag dictates whether to match the type
-// of the token, or just the category.
-bool match(int cat, int type, bool strict)
+// else, return false. The strict flag dictates whether to match the aspect
+// of the token, or just the attribute.
+bool match(int cat, int aspect, bool strict)
 {
-    // if (strict)
-    // {
-    //     printf("Exp: %d\t%d\n", cat, type);
-    //     printf("Rec: %d\t%d\n\n", curTok -> category, curTok -> type);
-    // } else {
-    //     printf("Exp: %d\t\n", cat);
-    //     printf("Rec: %d\t\n\n", curTok -> category);
-    // }
-
-    if (cat == FILEEND && curTok -> category == FILEEND)
+    if (cat == FILEEND && curTok -> attribute == FILEEND)
         return true;
-    else if (curTok -> category == cat && (!strict || curTok -> type == type))
+    else if (curTok -> attribute == cat && (!strict || curTok -> aspect == aspect))
     {
         curTok = getNextRelevantToken();
         return true;

@@ -17,7 +17,7 @@ static void synch()
 void id_list_tail()
 {
     // Production 2.2.1
-    if (curTok -> category == PUNC && curTok -> type == 0) // ,
+    if (curTok -> attribute == PUNC && curTok -> aspect == 0) // ,
     {
         match(PUNC, 0, true);
         if (match(ID, 0, false)) // ID
@@ -26,7 +26,7 @@ void id_list_tail()
             return;
         }
     // Production 2.2.2
-    } else if (curTok -> category == GROUP && curTok -> type == 1) // )
+    } else if (curTok -> attribute == GROUP && curTok -> aspect == 1) // )
         return; // Epsilon
 
     synch();

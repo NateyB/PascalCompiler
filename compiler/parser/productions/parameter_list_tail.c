@@ -14,10 +14,10 @@ static void synch()
 }
 
 // Needs implementing: None
-void paramater_list_tail()
+void parameter_list_tail()
 {
     // Production 10.2.1
-    if (curTok -> category == PUNC && curTok -> type == 1) // ;
+    if (curTok -> attribute == PUNC && curTok -> aspect == 1) // ;
     {
         if (match(PUNC, 1, true)) // ;
             if (match(ID, 0, false)) // ID
@@ -28,7 +28,7 @@ void paramater_list_tail()
                 }
 
     // Production 10.2.2
-    } else if (curTok -> category == GROUP && curTok -> type == 2) // )
+    } else if (curTok -> attribute == GROUP && curTok -> aspect == 2) // )
         return; // epsilon
 
     synch();

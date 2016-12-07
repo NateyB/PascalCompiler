@@ -17,7 +17,7 @@ static void synch()
 void else_tail()
 {
     // Production 15.1
-    if (curTok -> category == CONTROL && curTok -> type == 2) // else
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 2) // else
     {
         if (match(CONTROL, 2, true)) {
             statement();
@@ -25,8 +25,8 @@ void else_tail()
         }
 
     // Production 15.2
-    } else if (curTok -> category == CONTROL && curTok -> type == 3 // end
-               || curTok -> category == PUNC && curTok -> type == 1) // ;
+    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 3 // end
+               || curTok -> attribute == PUNC && curTok -> aspect == 1) // ;
         return; // epsilon
 
     synch();

@@ -17,7 +17,7 @@ static void synch()
 void procedure_statement()
 {
     // Production 18
-    if (curTok -> category == CONTROL && curTok -> type == 10) // call
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 10) // call
         if (match(CONTROL, 10, true)) // call
             if (match(ID, 0, false)) { // id
                 optional_expressions();

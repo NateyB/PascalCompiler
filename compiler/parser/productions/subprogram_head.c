@@ -17,15 +17,14 @@ static void synch()
 void subprogram_head()
 {
     // Production 8
-    if (curTok -> category == CONTROL && curTok -> type == 6) // procedure
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 6) // procedure
     {
         if (match(CONTROL, 6, true)) // procedure
             if (match(ID, 0, false)) { // id
                 arguments();
-                if match(PUNC, 1, true) // ;
+                if (match(PUNC, 1, true)) // ;
                     return;
                 }
-            }
     }
 
     synch();

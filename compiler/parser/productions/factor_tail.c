@@ -17,7 +17,7 @@ static void synch()
 void factor_tail()
 {
     // Production 25.2.1
-    if (curTok -> category == GROUP && curTok -> category == 2) { // [
+    if (curTok -> attribute == GROUP && curTok -> attribute == 2) { // [
         if (match(GROUP, 2, true)) { // [
             expression();
             if (match(GROUP, 3, true)) // ]
@@ -25,17 +25,17 @@ void factor_tail()
         }
 
     // Production 25.2.2
-    } else if (curTok -> category == GROUP && curTok -> type == 1 // )
-        || curTok -> category == PUNC && curTok -> type == 0 // ,
-        || curTok -> category == PUNC && curTok -> type == 1 // ;
-        || curTok -> category == GROUP && curTok -> type == 3 // ]
-        || curTok -> category == ADDOP                         // ADDOP
-        || curTok -> category == CONTROL && curTok -> type == 1 // do
-        || curTok -> category == CONTROL && curTok -> type == 2 // else
-        || curTok -> category == CONTROL && curTok -> type == 3 // end
-        || curTok -> category == MULOP                          // MULOP
-        || curTok -> category == RELOP                          // RELOP
-        || curTok -> category == CONTROL && curTok -> type == 8) // then
+    } else if (curTok -> attribute == GROUP && curTok -> aspect == 1 // )
+        || curTok -> attribute == PUNC && curTok -> aspect == 0 // ,
+        || curTok -> attribute == PUNC && curTok -> aspect == 1 // ;
+        || curTok -> attribute == GROUP && curTok -> aspect == 3 // ]
+        || curTok -> attribute == ADDOP                         // ADDOP
+        || curTok -> attribute == CONTROL && curTok -> aspect == 1 // do
+        || curTok -> attribute == CONTROL && curTok -> aspect == 2 // else
+        || curTok -> attribute == CONTROL && curTok -> aspect == 3 // end
+        || curTok -> attribute == MULOP                          // MULOP
+        || curTok -> attribute == RELOP                          // RELOP
+        || curTok -> attribute == CONTROL && curTok -> aspect == 8) // then
         return; // epsilon
 
     synch();

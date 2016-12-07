@@ -3,7 +3,7 @@
 #include "../tokenizer/tokens.h"
 
 extern const char* lexErrs[];
-void throwError(enum TokenType category, int type, int start, int length);
+void throwError(enum TokenType attribute, int aspect, int start, int length);
 int initializeErrorHandler();
 
 Token* getNextErrorToken();

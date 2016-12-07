@@ -17,7 +17,7 @@ static void synch()
 void variable()
 {
     // Production 16
-    if (curTok -> category == ID) // id
+    if (curTok -> attribute == ID) // id
     {
         if (match(ID, 0, false)) { // id
             array_access();

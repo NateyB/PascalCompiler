@@ -3,14 +3,14 @@
 
 int mulop(Token* storage, char* str, int start)
 {
-    storage -> category = MULOP;
+    storage -> attribute = MULOP;
     if (str[start] == '*')
     {
-        storage -> type = 0;
+        storage -> aspect = 0;
         start++;
     } else if (str[start] == '/')
     {
-        storage -> type = 1;
+        storage -> aspect = 1;
         start++;
     }
 

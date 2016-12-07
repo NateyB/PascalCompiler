@@ -17,7 +17,7 @@ static void synch()
 void compound_statement()
 {
     // Production 11
-    if (curTok -> category == CONTROL && curTok -> type == 0) // begin
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 0) // begin
     {
         if (match(CONTROL, 0, true)) { // begin
             optional_statements();

@@ -17,17 +17,17 @@ static void synch()
 void simple_expression()
 {
     // Production 23.1.1
-    if (curTok -> category == GROUP && curTok -> type == 0 // (
-        || curTok -> category == ID // ID
-        || curTok -> category == INVERSE && curTok -> type == 0 // not
-        || curTok -> category == INT || curTok -> category == REAL) // num
+    if (curTok -> attribute == GROUP && curTok -> aspect == 0 // (
+        || curTok -> attribute == ID // ID
+        || curTok -> attribute == INVERSE && curTok -> aspect == 0 // not
+        || curTok -> attribute == INT || curTok -> attribute == REAL) // num
     {
         term();
         simple_expression_tail();
         return;
 
     // Production 23.1.2
-    } else if (curTok -> category == ADDOP) { // addop
+    } else if (curTok -> attribute == ADDOP) { // addop
         sign();
         term();
         simple_expression_tail();

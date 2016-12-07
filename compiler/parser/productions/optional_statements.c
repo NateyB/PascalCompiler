@@ -17,17 +17,17 @@ static void synch()
 void optional_statements()
 {
     // Production 12.1
-    if (curTok -> category == CONTROL && curTok -> type == 0 // begin
-        || curTok -> category == CONTROL && curTok -> type == 10 // call
-        || curTok -> category == ID // ID
-        || curTok -> category == CONTROL && curTok -> type = 5 // if
-        || curTok -> category == CONTROL && curTok -> type == 9) // while
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 0 // begin
+        || curTok -> attribute == CONTROL && curTok -> aspect == 10 // call
+        || curTok -> attribute == ID // ID
+        || curTok -> attribute == CONTROL && curTok -> aspect == 5 // if
+        || curTok -> attribute == CONTROL && curTok -> aspect == 9) // while
     {
         statement_list();
         return;
-        
+
     // Production 12.2
-    } else if (curTok -> category == CONTROL && curTok -> type == 3) // end
+    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 3) // end
         return; // epsilon
 
     synch();

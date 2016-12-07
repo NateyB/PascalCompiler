@@ -10,11 +10,11 @@ enum TokenType {NOOP, ASSIGNOP, FILEEND, RELOP, ID,
 
 // The token data type
 typedef struct T_Type {
-    enum TokenType category;
+    enum TokenType attribute;
     int start;
     int length;
     union {
-        int type;
+        int aspect;
         double val;
         char* id;
     };

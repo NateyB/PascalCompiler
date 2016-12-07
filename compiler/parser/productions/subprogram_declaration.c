@@ -17,7 +17,7 @@ static void synch()
 void subprogram_declaration()
 {
     // Production 7
-    if (curTok -> category == CONTROL && curTok -> type == 6) // procedure
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 6) // procedure
     {
         subprogram_head();
         declarations();

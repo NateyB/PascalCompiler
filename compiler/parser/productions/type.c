@@ -17,7 +17,7 @@ static void synch()
 void type()
 {
     // Production 4.2
-    if (curTok -> category == ARRAY && curTok -> type == 0)
+    if (curTok -> attribute == ARRAY && curTok -> aspect == 0)
     {
         if (match(ARRAY, 0, true)) // array
             if (match(GROUP, 2, true)) // [
@@ -31,8 +31,8 @@ void type()
                                     return;
                                 }
     // Production 4.1
-    } else if ((curTok -> category == TYPE && curTok -> type == 1) // INT
-               || (curTok -> category == TYPE && curTok -> type == 2)) // REAL
+    } else if ((curTok -> attribute == TYPE && curTok -> aspect == 1) // INT
+               || (curTok -> attribute == TYPE && curTok -> aspect == 2)) // REAL
     {
         standard_type();
         return;

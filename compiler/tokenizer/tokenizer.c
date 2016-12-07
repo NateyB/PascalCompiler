@@ -44,7 +44,7 @@ static Token* generateNextToken()
         current -> start = START;
         for (int i = 0; i < sizeof(machines)/sizeof(machine); i++)
         {
-            current -> type = 0;
+            current -> aspect = 0;
             end = (*machines[i])(current, BUFFER, START);
             if (end > START) {
                 current -> length = end - START;
@@ -56,7 +56,7 @@ static Token* generateNextToken()
         // Unrecognized symbol error. This error is manual because it takes
         // the place of a lexeme, rather than being processed during one.
         throwError(LEXERR, 0, START, 1);
-        current -> category = NOOP;
+        current -> attribute = NOOP;
         START++;
         return current;
     } else {
@@ -71,7 +71,7 @@ Token* getNextToken()
     Token* next = malloc(sizeof(*next));
     do {
         next = generateNextToken();
-    } while (next -> category == NOOP);
+    } while (next -> attribute == NOOP);
 
     return next;
 }

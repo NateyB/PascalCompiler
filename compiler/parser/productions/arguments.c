@@ -17,7 +17,7 @@ static void synch()
 void arguments()
 {
     // Production 9.1
-    if (curTok -> category == GROUP && curTok -> type == 0) // (
+    if (curTok -> attribute == GROUP && curTok -> aspect == 0) // (
     {
         if (match(GROUP, 0, true)) { // (
             parameter_list();
@@ -26,7 +26,7 @@ void arguments()
         }
 
     // Production 9.2
-    } else if (curTok -> category == PUNC && curTok -> type == 1) // ;
+    } else if (curTok -> attribute == PUNC && curTok -> aspect == 1) // ;
         return; // Epsilon
 
     synch();

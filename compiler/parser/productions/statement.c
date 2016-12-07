@@ -17,7 +17,7 @@ static void synch()
 void statement()
 {
     // Production 14.1
-    if (curTok -> category == ID) { // id
+    if (curTok -> attribute == ID) { // id
         variable();
         if (match(ASSIGNOP, 0, true)) // :=
         {
@@ -26,17 +26,17 @@ void statement()
         }
 
     // Production 14.2
-    } else if (curTok -> category == CONTROL && curTok -> type == 10) { // call
+    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 10) { // call
         procedure_statement();
         return;
 
     // Production 14.3
-    } else if (curTok -> category == CONTROL && curTok -> type == 0) { // begin
+    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 0) { // begin
         compound_statement();
         return;
 
     // Production 14.4
-    } else if (curTok -> category == CONTROL && curTok -> type == 9) { // while
+    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 9) { // while
         if (match(CONTROL, 9, true)) { // while
             expression();
             if (match(CONTROL, 1, true)) { // do
@@ -44,9 +44,9 @@ void statement()
                 return;
             }
         }
-        
+
     // Production 14.5
-    } else if (curTok -> category == CONTROL && curTok -> type = 5) { // if
+    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 5) { // if
         if (match(CONTROL, 5, true)) { // if
             expression();
             if (match(CONTROL, 8, true)) { // then

@@ -26,11 +26,11 @@ int initializeErrorHandler()
 }
 
 
-void throwError(enum TokenType category, int type, int start, int length)
+void throwError(enum TokenType attribute, int aspect, int start, int length)
 {
     Token* errToken = malloc(sizeof(*errToken));
-    errToken -> category = category;
-    errToken -> type = type;
+    errToken -> attribute = attribute;
+    errToken -> aspect = aspect;
     errToken -> start = start;
     errToken -> length = length;
 

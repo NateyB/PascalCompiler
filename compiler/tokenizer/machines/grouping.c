@@ -3,26 +3,26 @@
 
 int grouping(Token* storage, char* str, int start)
 {
-    storage -> category = GROUP;
+    storage -> attribute = GROUP;
     switch (str[start])
     {
         case '(':
-            storage -> type = 0;
+            storage -> aspect = 0;
             start++;
             break;
 
         case ')':
-            storage -> type = 1;
+            storage -> aspect = 1;
             start++;
             break;
 
         case '[':
-            storage -> type = 2;
+            storage -> aspect = 2;
             start++;
             break;
 
         case ']':
-            storage -> type = 3;
+            storage -> aspect = 3;
             start++;
             break;
 

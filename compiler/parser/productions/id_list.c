@@ -17,7 +17,7 @@ static void synch()
 void id_list()
 {
     // Production 2.1
-    if (curTok -> category == ID)
+    if (curTok -> attribute == ID)
         if (match(ID, 0, false)) // ID
         {
             id_list_tail();

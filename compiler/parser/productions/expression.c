@@ -17,11 +17,11 @@ static void synch()
 void expression()
 {
     // Production 21
-    if (curTok -> category == GROUP && curTok -> type == 0 // (
-        || curTok -> category == ADDOP // + OR -
-        || curTok -> category == ID // id
-        || curTok -> category == INVERSE && curTok -> type == 0 // not
-        || curTok -> category == INT || curTok -> category == REAL) // num
+    if (curTok -> attribute == GROUP && curTok -> aspect == 0 // (
+        || curTok -> attribute == ADDOP // + OR -
+        || curTok -> attribute == ID // id
+        || curTok -> attribute == INVERSE && curTok -> aspect == 0 // not
+        || curTok -> attribute == INT || curTok -> attribute == REAL) // num
     {
         simple_expression();
         related_expression();

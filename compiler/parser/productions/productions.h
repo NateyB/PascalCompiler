@@ -6,12 +6,12 @@ extern Token* curTok;
 extern const Token endOfFile;
 
 // All of these must have their follows added to the sync set
-void program(); // ?
-void id_list(); // √
-void id_list_tail(); // √
-void declarations(); // √
-void type(); // √
-void standard_type(); // √
+void program();
+void id_list();
+void id_list_tail();
+void declarations();
+void type();
+void standard_type();
 void subprogram_declarations();
 void subprogram_declaration();
 void subprogram_head();

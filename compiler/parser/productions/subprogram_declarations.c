@@ -17,7 +17,7 @@ static void synch()
 void subprogram_declarations()
 {
     // Production 6.1
-    if (curTok -> category == CONTROL && curTok -> type == 6) // procedure
+    if (curTok -> attribute == CONTROL && curTok -> aspect == 6) // procedure
     {
         subprogram_declaration();
         if (match(PUNC, 1, true)) { // ;
@@ -26,7 +26,7 @@ void subprogram_declarations()
         }
 
     // Production 6.2
-    } else if (curTok -> category == CONTROL && curTok -> type == 0) // begin
+    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 0) // begin
         return; // Epsilon
 
     synch();

@@ -17,7 +17,7 @@ static void synch()
 void expression_list_tail()
 {
     // Production 20.2.1
-    if (curTok -> category == PUNC && curTok -> type == 0) // ,
+    if (curTok -> attribute == PUNC && curTok -> aspect == 0) // ,
     {
         if (match(PUNC, 0, true)) { // ,
             expression();
@@ -26,7 +26,7 @@ void expression_list_tail()
         }
 
     // Production 20.2.2
-    } else if (curTok -> category == GROUP && curTok -> type == 1) // (
+    } else if (curTok -> attribute == GROUP && curTok -> aspect == 1) // (
         return; // epsilon
 
     synch();
