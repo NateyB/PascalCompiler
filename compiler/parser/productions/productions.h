@@ -5,12 +5,13 @@
 extern Token* curTok;
 extern const Token endOfFile;
 
-void program();
-void id_list();
-void id_list_tail();
-void declarations();
-void type();
-void standard_type();
+// All of these must have their follows added to the sync set
+void program(); // ?
+void id_list(); // √
+void id_list_tail(); // √
+void declarations(); // √
+void type(); // √
+void standard_type(); // √
 void subprogram_declarations();
 void subprogram_declaration();
 void subprogram_head();
@@ -29,13 +30,14 @@ void procedure_statement();
 void optional_expressions();
 void expression_list();
 void expression_list_tail();
-void experssion();
+void expression();
 void related_expression();
 void simple_expression();
 void simple_expression_tail();
 void term();
 void term_tail();
 void factor();
+void factor_tail();
 void sign();
 
 #endif // voidS_H

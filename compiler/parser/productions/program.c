@@ -31,7 +31,10 @@ void program()
                         if (match(PUNC, 1, true)) // ;
                         {
                             declarations();
-                            return;
+                            subprogram_declarations();
+                            compound_statement();
+                            if (match(PUNC, 2, true)) // .
+                                return;
                         }
                 }
 
