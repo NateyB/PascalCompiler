@@ -9,11 +9,6 @@
 #include "../errorHandler/errorHandler.h"
 #include "../globals/globals.h"
 
-const char* catNames[19] = {"NOOP", "ASSIGNOP", "FILEEND", "RELOP", "ID",
-                         "CONTROL", "ADDOP", "MULOP", "WS", "ARRAY", "TYPE",
-                         "VAR", "NUM", "PUNC", "GROUP", "INVERSE",
-                         "LEXERR", "SYNERR", "SEMERR"};
-
 const machine machines[] = {whitespace, idres, longRealMachine,
         realMachine, intMachine, grouping, catchall, relop, addop, mulop};
 

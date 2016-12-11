@@ -5,25 +5,29 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token* syncSet[] = {&endOfFile};
-static const int sync_size = sizeof(syncSet)/sizeof(syncSet[0]);
+static const Token* first_set[] = {&plus_tok, &minus_tok};
+static const int first_size = sizeof(first_set)/sizeof(first_set[0]);
+
+static const Token* sync_set[] = {&eof_tok, &id_tok, &num_tok,
+    &not_tok, &rparen_tok};
+static const int sync_size = sizeof(sync_set)/sizeof(sync_set[0]);
 
 static void synch()
 {
-    requireSync(syncSet, sync_size);
+    require_sync(sync_set, sync_size, first_set, first_size);
 }
 
-// Needs implementing: All
+// Needs implementing: None
 void sign()
 {
     // Production 24.2.1
-    if (curTok -> attribute == ADDOP && curTok -> aspect == 0) { // +
-        if (match(ADDOP, 0, true)) // +
+    if (tokens_equal(&plus_tok, current_tok, true)) {
+        if (match(&plus_tok, true))
             return;
 
     // Production 24.2.2
-    } else if (curTok -> attribute == ADDOP && curTok -> aspect == 1) { // -
-        if (match(ADDOP, 1, true)) // -
+    } else if (tokens_equal(&minus_tok, current_tok, true)) {
+        if (match(&minus_tok, true))
             return; // epsilon
     }
     synch();

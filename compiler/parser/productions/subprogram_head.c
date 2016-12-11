@@ -5,24 +5,28 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token* syncSet[] = {&endOfFile};
-static const int sync_size = sizeof(syncSet)/sizeof(syncSet[0]);
+static const Token* first_set[] = {&procedure_tok};
+static const int first_size = sizeof(first_set)/sizeof(first_set[0]);
+
+static const Token* sync_set[] = {&eof_tok, &var_tok, &procedure_tok,
+                                  &begin_tok};
+static const int sync_size = sizeof(sync_set)/sizeof(sync_set[0]);
 
 static void synch()
 {
-    requireSync(syncSet, sync_size);
+    require_sync(sync_set, sync_size, first_set, first_size);
 }
 
 // Needs implementing: None
 void subprogram_head()
 {
     // Production 8
-    if (curTok -> attribute == CONTROL && curTok -> aspect == 6) // procedure
+    if (tokens_equal(&procedure_tok, current_tok, true)) // procedure
     {
-        if (match(CONTROL, 6, true)) // procedure
-            if (match(ID, 0, false)) { // id
+        if (match(&procedure_tok, true)) // procedure
+            if (match(&id_tok, false)) { // id
                 arguments();
-                if (match(PUNC, 1, true)) // ;
+                if (match(&semic_tok, true)) // ;
                     return;
                 }
     }

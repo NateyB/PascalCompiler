@@ -5,28 +5,31 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token* syncSet[] = {&endOfFile};
-static const int sync_size = sizeof(syncSet)/sizeof(syncSet[0]);
+static const Token* first_set[] = {&else_tok, &semic_tok, &end_tok, &else_tok};
+static const int first_size = sizeof(first_set)/sizeof(first_set[0]);
+
+static const Token* sync_set[] = {&eof_tok, &semic_tok, &end_tok, &else_tok};
+static const int sync_size = sizeof(sync_set)/sizeof(sync_set[0]);
 
 static void synch()
 {
-    requireSync(syncSet, sync_size);
+    require_sync(sync_set, sync_size, first_set, first_size);
 }
 
 // Needs implementing: None
 void else_tail()
 {
     // Production 15.1
-    if (curTok -> attribute == CONTROL && curTok -> aspect == 2) // else
+    if (tokens_equal(&else_tok, current_tok, true)) // else
     {
-        if (match(CONTROL, 2, true)) {
+        if (match(&else_tok, true)) {
             statement();
             return;
         }
 
     // Production 15.2
-    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 3 // end
-               || curTok -> attribute == PUNC && curTok -> aspect == 1) // ;
+    } else if (tokens_equal(&end_tok, current_tok, true) // end
+               || tokens_equal(&semic_tok, current_tok, true)) // ;
         return; // epsilon
 
     synch();

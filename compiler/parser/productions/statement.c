@@ -5,51 +5,55 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token* syncSet[] = {&endOfFile};
-static const int sync_size = sizeof(syncSet)/sizeof(syncSet[0]);
+static const Token* first_set[] = {&id_tok, &call_tok, &begin_tok, &while_tok,
+                                   &if_tok};
+static const int first_size = sizeof(first_set)/sizeof(first_set[0]);
+
+static const Token* sync_set[] = {&eof_tok, &semic_tok, &end_tok, &else_tok};
+static const int sync_size = sizeof(sync_set)/sizeof(sync_set[0]);
 
 static void synch()
 {
-    requireSync(syncSet, sync_size);
+    require_sync(sync_set, sync_size, first_set, first_size);
 }
 
 // Needs implementing: None
 void statement()
 {
     // Production 14.1
-    if (curTok -> attribute == ID) { // id
+    if (tokens_equal(&id_tok, current_tok, false)) { // id
         variable();
-        if (match(ASSIGNOP, 0, true)) // :=
+        if (match(&assignop_tok, true)) // :=
         {
             expression();
             return;
         }
 
     // Production 14.2
-    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 10) { // call
+    } else if (tokens_equal(&call_tok, current_tok, true)) { // call
         procedure_statement();
         return;
 
     // Production 14.3
-    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 0) { // begin
+    } else if (tokens_equal(&begin_tok, current_tok, true)) { // begin
         compound_statement();
         return;
 
     // Production 14.4
-    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 9) { // while
-        if (match(CONTROL, 9, true)) { // while
+    } else if (tokens_equal(&while_tok, current_tok, true)) { // while
+        if (match(&while_tok, true)) { // while
             expression();
-            if (match(CONTROL, 1, true)) { // do
+            if (match(&do_tok, true)) { // do
                 statement();
                 return;
             }
         }
 
     // Production 14.5
-    } else if (curTok -> attribute == CONTROL && curTok -> aspect == 5) { // if
-        if (match(CONTROL, 5, true)) { // if
+    } else if (tokens_equal(&if_tok, current_tok, true)) { // if
+        if (match(&if_tok, true)) { // if
             expression();
-            if (match(CONTROL, 8, true)) { // then
+            if (match(&then_tok, true)) { // then
                 statement();
                 else_tail();
                 return;

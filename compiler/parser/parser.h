@@ -3,7 +3,8 @@
 #include<stdbool.h>
 
 int generateParseTree();
-bool match(int cat, int aspect, bool strict);
-void requireSync(const Token* syncSet[], int size);
+bool match(const Token* source, bool strict);
+void require_sync(const Token* sync_set[], int size,
+                  const Token* first_set[], int first_size);
 
 #endif // PARSER_H

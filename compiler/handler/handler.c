@@ -41,7 +41,7 @@ int initializeHandler(const char* sourcePath, const char* resPath,
         (tokenFile = fopen(tokenPath, "w+")) == NULL)
         return 0;
 
-    for (size_t i = ASSIGNOP; i <= SYNERR; i++) {
+    for (size_t i = FILEEND; i <= SYNERR; i++) {
         fprintf(tokenFile, "%-5zu%s\n", i, catNames[i]);
     }
 

@@ -5,34 +5,37 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token* syncSet[] = {&endOfFile};
-static const int sync_size = sizeof(syncSet)/sizeof(syncSet[0]);
+static const Token* first_set[] = {&integer_tok, &real_tok, &array_tok};
+static const int first_size = sizeof(first_set)/sizeof(first_set[0]);
+
+static const Token* sync_set[] = {&array_tok, &integer_tok, &real_tok};
+static const int sync_size = sizeof(sync_set)/sizeof(sync_set[0]);
 
 static void synch()
 {
-    requireSync(syncSet, sync_size);
+    require_sync(sync_set, sync_size, first_set, first_size);
 }
 
 // Needs implementing: None
 void type()
 {
     // Production 4.2
-    if (curTok -> attribute == ARRAY && curTok -> aspect == 0)
+    if (tokens_equal(&array_tok, current_tok, true))
     {
-        if (match(ARRAY, 0, true)) // array
-            if (match(GROUP, 2, true)) // [
-                if (match(NUM, 0, true)) // INT
-                    if (match(ARRAY, 1, true)) // ..
-                        if (match(NUM, 0, true)) // INT
-                            if (match(GROUP, 3, true)) // ]
-                                if (match(ARRAY, 2, true)) // of
+        if (match(&array_tok, true)) // array
+            if (match(&lbrac_tok, true)) // [
+                if (match(&num_tok, true)) // INT
+                    if (match(&dotdot_tok, true)) // ..
+                        if (match(&integer_val_tok, true)) // INT
+                            if (match(&rbrac_tok, true)) // ]
+                                if (match(&of_tok, true)) // of
                                 {
                                     standard_type();
                                     return;
                                 }
     // Production 4.1
-    } else if ((curTok -> attribute == TYPE && curTok -> aspect == 1) // int
-               || (curTok -> attribute == TYPE && curTok -> aspect == 2)) // real
+    } else if (tokens_equal(&integer_tok, current_tok, true) // int
+               || tokens_equal(&real_tok, current_tok, true)) // real
     {
         standard_type();
         return;

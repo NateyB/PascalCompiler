@@ -5,33 +5,41 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token* syncSet[] = {&endOfFile};
-static const int sync_size = sizeof(syncSet)/sizeof(syncSet[0]);
+static const Token* first_set[] = {&relop_tok,
+                                   &semic_tok, &end_tok, &else_tok, &do_tok,
+                                   &then_tok, &rbrac_tok, &rparen_tok,
+                                   &comma_tok};
+static const int first_size = sizeof(first_set)/sizeof(first_set[0]);
+
+static const Token* sync_set[] = {&eof_tok, &semic_tok, &end_tok,
+                                  &else_tok, &do_tok, &then_tok, &rbrac_tok,
+                                  &rparen_tok, &comma_tok};
+static const int sync_size = sizeof(sync_set)/sizeof(sync_set[0]);
 
 static void synch()
 {
-    requireSync(syncSet, sync_size);
+    require_sync(sync_set, sync_size, first_set, first_size);
 }
 
 // Needs implementing: None
 void related_expression()
 {
     // Production 22.1
-    if (curTok -> attribute == RELOP) { // RELOP
-        if (match(RELOP, 0, false)) { // RELOP
+    if (tokens_equal(&relop_tok, current_tok, false)) {
+        if (match(&relop_tok, false)) {
             simple_expression();
             return;
         }
 
     // Production 22.2
-    } else if (curTok -> attribute == GROUP && curTok -> aspect == 1 // )
-        || curTok -> attribute == PUNC && curTok -> aspect == 0 // ,
-        || curTok -> attribute == PUNC && curTok -> aspect == 1 // ;
-        || curTok -> attribute == GROUP && curTok -> aspect == 3 // ]
-        || curTok -> attribute == CONTROL && curTok -> aspect == 1 // do
-        || curTok -> attribute == CONTROL && curTok -> aspect == 2 // else
-        || curTok -> attribute == CONTROL && curTok -> aspect == 3 // end
-        || curTok -> attribute == CONTROL && curTok -> aspect == 8) // then
+    } else if (tokens_equal(&rparen_tok, current_tok, true)
+        || tokens_equal(&comma_tok, current_tok, true)
+        || tokens_equal(&semic_tok, current_tok, true)
+        || tokens_equal(&rbrac_tok, current_tok, true)
+        || tokens_equal(&do_tok, current_tok, true)
+        || tokens_equal(&else_tok, current_tok, true)
+        || tokens_equal(&end_tok, current_tok, true)
+        || tokens_equal(&then_tok, current_tok, true))
         return; // epsilon
 
     synch();

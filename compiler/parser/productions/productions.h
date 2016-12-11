@@ -2,8 +2,7 @@
 #define voidS_H
 #include "../../tokenizer/tokens.h"
 
-extern Token* curTok;
-extern const Token endOfFile;
+extern Token* current_tok;
 
 // All of these must have their follows added to the sync set
 void program();

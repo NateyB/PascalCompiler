@@ -5,37 +5,46 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token* syncSet[] = {&endOfFile};
-static const int sync_size = sizeof(syncSet)/sizeof(syncSet[0]);
+static const Token* first_set[] = {&lbrac_tok, &mulop_tok, &addop_tok, &relop_tok,
+                                   &semic_tok, &end_tok, &else_tok, &do_tok,
+                                   &then_tok, &rbrac_tok, &rparen_tok,
+                                   &comma_tok};
+static const int first_size = sizeof(first_set)/sizeof(first_set[0]);
+
+static const Token* sync_set[] = {&eof_tok, &mulop_tok, &addop_tok, &relop_tok,
+                                  &semic_tok, &end_tok, &else_tok, &do_tok,
+                                  &then_tok, &rbrac_tok, &rparen_tok,
+                                  &comma_tok};
+static const int sync_size = sizeof(sync_set)/sizeof(sync_set[0]);
 
 static void synch()
 {
-    requireSync(syncSet, sync_size);
+    require_sync(sync_set, sync_size, first_set, first_size);
 }
 
 // Needs implementing: None
 void factor_tail()
 {
     // Production 25.2.1
-    if (curTok -> attribute == GROUP && curTok -> attribute == 2) { // [
-        if (match(GROUP, 2, true)) { // [
+    if (tokens_equal(&lbrac_tok, current_tok, true)) {
+        if (match(&lbrac_tok, true)) {
             expression();
-            if (match(GROUP, 3, true)) // ]
+            if (match(&rbrac_tok, true))
                 return;
         }
 
     // Production 25.2.2
-    } else if (curTok -> attribute == GROUP && curTok -> aspect == 1 // )
-        || curTok -> attribute == PUNC && curTok -> aspect == 0 // ,
-        || curTok -> attribute == PUNC && curTok -> aspect == 1 // ;
-        || curTok -> attribute == GROUP && curTok -> aspect == 3 // ]
-        || curTok -> attribute == ADDOP                         // ADDOP
-        || curTok -> attribute == CONTROL && curTok -> aspect == 1 // do
-        || curTok -> attribute == CONTROL && curTok -> aspect == 2 // else
-        || curTok -> attribute == CONTROL && curTok -> aspect == 3 // end
-        || curTok -> attribute == MULOP                          // MULOP
-        || curTok -> attribute == RELOP                          // RELOP
-        || curTok -> attribute == CONTROL && curTok -> aspect == 8) // then
+    } else if (tokens_equal(&rparen_tok, current_tok, true)
+        || tokens_equal(&comma_tok, current_tok, true)
+        || tokens_equal(&semic_tok, current_tok, true)
+        || tokens_equal(&rbrac_tok, current_tok, true)
+        || tokens_equal(&addop_tok, current_tok, false)
+        || tokens_equal(&do_tok, current_tok, true)
+        || tokens_equal(&else_tok, current_tok, true)
+        || tokens_equal(&end_tok, current_tok, true)
+        || tokens_equal(&mulop_tok, current_tok, false)
+        || tokens_equal(&relop_tok, current_tok, false)
+        || tokens_equal(&then_tok, current_tok, true))
         return; // epsilon
 
     synch();
