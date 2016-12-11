@@ -143,7 +143,7 @@ int idres(Token* storage, char* str, int start)
     if (start - initial > 10) // ID Too long err
     {
         storage -> attribute = NOOP;
-        throwError(LEXERR, 1, initial, start - initial);
+        throw_lex_error(LEXERR, 1, initial, start - initial);
     }
     return start;
 }

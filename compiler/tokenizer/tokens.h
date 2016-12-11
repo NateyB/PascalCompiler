@@ -8,7 +8,7 @@
 enum TokenType {NOOP, FILEEND, ASSIGNOP, RELOP, ID,
                 CONTROL, ADDOP, MULOP, WS, ARRAY, TYPE,
                 VAR, NUM, PUNC, GROUP, INVERSE,
-                LEXERR, SYNERR};
+                LEXERR, SYNERR, SEMERR};
 
 // The token data type
 typedef struct T_Type {

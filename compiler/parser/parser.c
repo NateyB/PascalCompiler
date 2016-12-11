@@ -28,7 +28,6 @@ Token* get_next_relevant_token()
         } while (next -> attribute == WS || next -> attribute == NOOP
                  || next -> attribute >= LEXERR);
     } else {
-        should_print_synerr = false;
         next = &eof_tok;
     }
 
@@ -38,22 +37,14 @@ Token* get_next_relevant_token()
 void require_sync(const Token* sync_set[], int size,
                   const Token* first_set[], int first_size)
 {
-    if (should_print_synerr) {
-        printf("Found '%s'; expected ", getLexFromToken(current_tok, true));
-        for (int i = first_size - 1; i >= 0; i--) {
-            printf("'%s'", getLexFromToken(first_set[i], first_set[i] -> start));
-            if (i > 0)
-                printf(", ");
-        }
-        printf(" instead.\n");
-    }
+    if (should_print_synerr)
+        throw_syn_error(current_tok, first_set, first_size);
+
     while (true) {
         for (int i = 0; i < size; i++)
-        {
-            const Token* sync_token = sync_set[i];
-            if (tokens_equal(sync_token, current_tok, sync_token -> start))
+            if (tokens_equal(sync_set[i], current_tok, sync_set[i] -> start))
                  return;
-        }
+
         current_tok = get_next_relevant_token();
     }
 }
@@ -72,9 +63,7 @@ bool match(const Token* source, bool strict)
     else
     {
         should_print_synerr = false;
-        printf("Found '%s'; expected '%s' instead.\n", getLexFromToken(current_tok, strict),
-                                    getLexFromToken(source, source -> start));
-        throwError(SYNERR, 0, 0, 0);
+        throw_syn_error(current_tok, &source, 1);
         current_tok = get_next_relevant_token();
         return false;
     }

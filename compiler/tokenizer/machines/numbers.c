@@ -52,12 +52,12 @@ int intMachine(Token* storage, char* str, int start)
     if (start - initial > 10)
     {
         errored = true;
-        throwError(LEXERR, 2, initial, start - initial);
+        throw_lex_error(LEXERR, 2, initial, start - initial);
     }
     if (start > initial + 1 && str[initial] == '0')
     {
         errored = true;
-        throwError(LEXERR, 7, initial, start - initial);
+        throw_lex_error(LEXERR, 7, initial, start - initial);
     }
     if (errored)
         storage -> attribute = NOOP;
@@ -106,22 +106,22 @@ int realMachine(Token* storage, char* str, int start)
     // Now, we check for errors.
     if (intPart > 5)
     {
-        throwError(LEXERR, 3, initial, start - initial);
+        throw_lex_error(LEXERR, 3, initial, start - initial);
         errored = true;
     }
     if (fracPart > 5)
     {
-        throwError(LEXERR, 4, initial, start - initial);
+        throw_lex_error(LEXERR, 4, initial, start - initial);
         errored = true;
     }
     if (str[initial] == '0' && intPart > 1) // Leading zero!
     {
-        throwError(LEXERR, 8, initial, start - initial);
+        throw_lex_error(LEXERR, 8, initial, start - initial);
         errored = true;
     }
     if (str[start - 1] == '0' && fracPart > 1) // Trailing zero!
     {
-        throwError(LEXERR, 9, initial, start - initial);
+        throw_lex_error(LEXERR, 9, initial, start - initial);
         errored = true;
     }
 
@@ -197,32 +197,32 @@ int longRealMachine(Token* storage, char* str, int start)
     // Now, we check for errors.
     if (intPart > 5)
     {
-        throwError(LEXERR, 3, initial, start - initial);
+        throw_lex_error(LEXERR, 3, initial, start - initial);
         errored = true;
     }
     if (fracPart > 5)
     {
-        throwError(LEXERR, 4, initial, start - initial);
+        throw_lex_error(LEXERR, 4, initial, start - initial);
         errored = true;
     }
     if (str[initial] == '0' && intPart > 1) // Leading zero!
     {
-        throwError(LEXERR, 8, initial, start - initial);
+        throw_lex_error(LEXERR, 8, initial, start - initial);
         errored = true;
     }
     if (str[start - expPart - 2] == '0' && fracPart > 1) // Trailing zero in real!
     {
-        throwError(LEXERR, 9, initial, start - initial);
+        throw_lex_error(LEXERR, 9, initial, start - initial);
         errored = true;
     }
     if (expPart > 2) // Exponent too long!
     {
-        throwError(LEXERR, 5, initial, start - initial);
+        throw_lex_error(LEXERR, 5, initial, start - initial);
         errored = true;
     }
     if (str[start - expPart] == '0') // Leading zero in exponent!
     {
-        throwError(LEXERR, 10, initial, start - initial);
+        throw_lex_error(LEXERR, 10, initial, start - initial);
         errored = true;
     }
 

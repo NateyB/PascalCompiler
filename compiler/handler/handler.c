@@ -10,11 +10,11 @@ static FILE* tokenFile;
 static FILE* sourceFile;
 
 static const int TokenLineSpace = 10;
-static const int TokenTypeSpace = 15;
+static const int TokenTypeSpace = 20;
 static const int TokenAttrSpace = 20;
 static const int  TokenLexSpace = 20;
 
-static const int ListingLineSpace = 10;
+static const int ListingLineSpace = 7;
 static const int ListingErrSpace = 50;
 static const int ListingLexSpace = 20;
 
@@ -41,7 +41,7 @@ int initializeHandler(const char* sourcePath, const char* resPath,
         (tokenFile = fopen(tokenPath, "w+")) == NULL)
         return 0;
 
-    for (size_t i = FILEEND; i <= SYNERR; i++) {
+    for (size_t i = FILEEND; i <= SEMERR; i++) {
         fprintf(tokenFile, "%-5zu%s\n", i, catNames[i]);
     }
 
@@ -50,15 +50,15 @@ int initializeHandler(const char* sourcePath, const char* resPath,
     if (fgets(line, sizeof(line), sourceFile) != NULL)
     {
         updateLine(line);
-        fprintf(listingFile, "%s", line);
+        fprintf(listingFile, "%*d\t%s", ListingLineSpace, LINE, line);
     } else {
         writeEOFToken();
     }
 
     fprintf(tokenFile, "%*s%*s%*s%*s\n", TokenLineSpace, "Line",
                                             TokenLexSpace, "Lexeme",
-                                            TokenTypeSpace, "Token Type",
-                                            TokenAttrSpace, "Token Attribute");
+                                            TokenAttrSpace, "Token Attribute",
+                                            TokenTypeSpace, "Token Type");
 
     return 1;
 }
@@ -69,10 +69,14 @@ void writeError(Token* description)
             TokenLexSpace, description -> length, &BUFFER[description -> start],
             TokenTypeSpace, description -> attribute, TokenAttrSpace,
             description -> aspect);
-    fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1,
-            catNames[description -> attribute], ListingErrSpace,
-            lexErrs[description -> aspect], ListingLexSpace, description -> length,
-            &BUFFER[description -> start]);
+    if (description -> attribute == LEXERR)
+        fprintf(listingFile, "%*s:%*s%*.*s\n", ListingLineSpace - 1,
+                catNames[description -> attribute], ListingErrSpace,
+                lexErrs[description -> aspect], ListingLexSpace,
+                description -> length, &BUFFER[description -> start]);
+    else if (description -> attribute == SYNERR)
+        fprintf(listingFile, "%*s: %s\n", ListingLineSpace - 1,
+                catNames[description -> attribute], synErr);
 }
 
 void writeToken(Token* token)
@@ -81,7 +85,7 @@ void writeToken(Token* token)
     if (token -> attribute == WS || token -> attribute == NOOP)
         return;
 
-    if (token -> attribute == LEXERR)
+    if (token -> attribute >= LEXERR)
     {
         writeError(token);
         return;
@@ -112,7 +116,7 @@ bool handleToken(Token* token)
         if (fgets(line, sizeof(line), sourceFile) != NULL)
         {
             updateLine(line);
-            fprintf(listingFile, "%s", line);
+            fprintf(listingFile, "%*d\t%s", ListingLineSpace, LINE, line);
         } else { // Error or end of file (assume the latter)
             LINE++;
             writeEOFToken();

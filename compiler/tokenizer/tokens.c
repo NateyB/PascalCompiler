@@ -229,7 +229,8 @@ const char* getLexFromToken(Token* token, bool strict) {
         }
 
         case LEXERR:
-        case SYNERR: return "An error in the compiler has occurred.";
+        case SYNERR:
+        case SEMERR: return "An error in the compiler has occurred.";
     }
 }
 
