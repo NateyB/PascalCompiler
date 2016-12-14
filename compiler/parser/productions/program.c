@@ -20,10 +20,15 @@ static void synch()
 // Needs implementing: None
 void program()
 {
+    Token* id_ref;
     // Production 1
     if (tokens_equal(&program_tok, current_tok, true))
         if (match(&program_tok, true)) // program
-            if (match(&id_tok, false))
+            if ((id_ref = match(&id_tok, false))) // id
+            {
+                id_ref -> type = PGNAME;
+                id_ref -> param = false;
+                check_add_node(id_ref);
                 if (match(&lparen_tok, true)) // (
                 {
                     id_list();
@@ -37,6 +42,7 @@ void program()
                                 return;
                         }
                 }
+            }
 
     synch();
 }

@@ -19,17 +19,17 @@ static void synch()
 }
 
 // Needs implementing: None
-void term()
+LangType term()
 {
     // Production 24.1
     if (tokens_equal(&lparen_tok, current_tok, true) // (
         || tokens_equal(&id_tok, current_tok, false) // ID
         || tokens_equal(&not_tok, current_tok, true) // not
         || tokens_equal(&num_tok, current_tok, false)) { // num
-        factor();
-        term_tail();
-        return;
+        LangType f_type = factor();
+        return term_tail(f_type);
     }
 
     synch();
+    return ERR;
 }

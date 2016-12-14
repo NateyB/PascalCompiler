@@ -22,15 +22,28 @@ static void synch()
     require_sync(sync_set, sync_size, first_set, first_size);
 }
 
+static LangType array_compare(LangType a_vals, LangType e_type) {
+    if ((a_vals == INT || a_vals == REAL) && e_type == INT)
+        return a_vals;
+    if (a_vals != ERR && e_type != ERR)
+        // SEMERR
+        ;
+
+    return ERR;
+}
+
 // Needs implementing: None
-void factor_tail()
+LangType factor_tail(id_type)
 {
     // Production 25.2.1
     if (tokens_equal(&lbrac_tok, current_tok, true)) {
         if (match(&lbrac_tok, true)) {
-            expression();
+            LangType e_type = expression();
             if (match(&rbrac_tok, true))
-                return;
+            {
+                LangType n_type = convert_from_array(id_type);
+                return array_compare(n_type, e_type);
+            }
         }
 
     // Production 25.2.2
@@ -45,7 +58,8 @@ void factor_tail()
         || tokens_equal(&mulop_tok, current_tok, false)
         || tokens_equal(&relop_tok, current_tok, false)
         || tokens_equal(&then_tok, current_tok, true))
-        return; // epsilon
+        return id_type; // epsilon
 
     synch();
+    return ERR;
 }

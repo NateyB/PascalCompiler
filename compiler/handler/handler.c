@@ -8,6 +8,7 @@
 static FILE* listingFile;
 static FILE* tokenFile;
 static FILE* sourceFile;
+static FILE* memFile;
 
 static const int TokenLineSpace = 10;
 static const int TokenTypeSpace = 20;
@@ -18,6 +19,9 @@ static const int ListingLineSpace = 7;
 static const int ListingErrSpace = 50;
 static const int ListingLexSpace = 20;
 
+static const int MemNameSpace = 10;
+static const int MemValSpace = 20;
+
 void writeEOFToken()
 {
     fprintf(tokenFile, "%*d%*.*s%*d%*d\n", TokenLineSpace, LINE, TokenLexSpace,
@@ -25,7 +29,8 @@ void writeEOFToken()
 }
 
 int initializeHandler(const char* sourcePath, const char* resPath,
-                        const char* listingPath, const char* tokenPath)
+                        const char* listingPath, const char* tokenPath,
+                        const char* memPath)
 {
     if ((sourceFile = fopen(sourcePath, "r")) == NULL)
     {
@@ -38,7 +43,8 @@ int initializeHandler(const char* sourcePath, const char* resPath,
     fclose(resFile);
 
     if ((listingFile = fopen(listingPath, "w+")) == NULL ||
-        (tokenFile = fopen(tokenPath, "w+")) == NULL)
+        (tokenFile = fopen(tokenPath, "w+")) == NULL ||
+        (memFile = fopen(memPath, "w+")) == NULL)
         return 0;
 
     for (size_t i = FILEEND; i <= SEMERR; i++) {
@@ -60,7 +66,13 @@ int initializeHandler(const char* sourcePath, const char* resPath,
                                             TokenAttrSpace, "Token Attribute",
                                             TokenTypeSpace, "Token Type");
 
+    fprintf(memFile, "%*s%*s\n", MemNameSpace, "ID",
+                MemValSpace, "Memory Offset");
     return 1;
+}
+
+void outputWidth(char* lex, int width) {
+    fprintf(memFile, "%*s%*d\n", MemNameSpace, lex, MemValSpace, width);
 }
 
 void writeError(Token* description)

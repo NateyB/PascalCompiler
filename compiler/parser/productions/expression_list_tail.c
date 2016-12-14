@@ -17,20 +17,31 @@ static void synch()
 }
 
 // Needs implementing: None
-void expression_list_tail()
+void expression_list_tail(tree_node* to_match)
 {
     // Production 20.2.1
     if (tokens_equal(&comma_tok, current_tok, true))
     {
         if (match(&comma_tok, true)) {
-            expression();
-            expression_list_tail();
+            if (to_match == NULL)
+                // SEMERR: Value not expected
+                ;
+            LangType e_type = expression();
+            if (to_match != NULL && e_type != to_match -> type)
+                // SEMERR: type mismatch exception
+                ;
+            expression_list_tail(to_match == NULL ? NULL : to_match -> left);
             return;
         }
 
     // Production 20.2.2
-    } else if (tokens_equal(&lparen_tok, current_tok, true))
+    } else if (tokens_equal(&rparen_tok, current_tok, true))
+    {
+        if (to_match != NULL)
+            // SEMERR: Value expected
+            ;
         return; // epsilon
+    }
 
     synch();
 }

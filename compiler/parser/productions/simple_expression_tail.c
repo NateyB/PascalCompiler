@@ -22,14 +22,14 @@ static void synch()
 }
 
 // Needs implementing: None
-void simple_expression_tail()
+LangType simple_expression_tail(LangType t_type)
 {
     // Production 23.2.1
     if (tokens_equal(&addop_tok, current_tok, false)) {
-        if (match(&addop_tok, false)) {
-            term();
-            simple_expression_tail();
-            return;
+        Token* addop_op;
+        if ((addop_op = match(&addop_tok, false))) {
+            LangType t_type2 = term();
+            return simple_expression_tail(type_lookup(t_type, t_type2, addop_op));
         }
 
 
@@ -43,7 +43,8 @@ void simple_expression_tail()
         || tokens_equal(&end_tok, current_tok, true)
         || tokens_equal(&relop_tok, current_tok, false)
         || tokens_equal(&then_tok, current_tok, true))
-        return; // epsilon
+        return t_type; // epsilon
 
     synch();
+    return ERR;
 }

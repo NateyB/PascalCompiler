@@ -5,6 +5,10 @@
 
 #include "../dataStructures/linkedList/linkedList.h"
 
+// Must have a boolean indicating whether it is a parameter or not
+typedef enum LangType {ERR, REAL, INT, BOOL, PGNAME, PPNAME,
+                       PROC, AINT, AREAL} LangType;
+
 enum TokenType {NOOP, FILEEND, ASSIGNOP, RELOP, ID,
                 CONTROL, ADDOP, MULOP, WS, ARRAY, TYPE,
                 VAR, NUM, PUNC, GROUP, INVERSE,
@@ -22,10 +26,15 @@ typedef struct T_Type {
     int start; // Start in the line
     int length; // Length of the lexeme
 
-    union { // Value of the number
+    union { // Value of the number, or length of the array
         int int_val;
         double real_val;
+        int array_length;
     };
+
+    LangType type; // The type of the token
+    bool param; // Whether the token is a parameter or not
+
 } Token;
 
 extern const Token eof_tok;
@@ -69,9 +78,15 @@ extern const char* catNames[19];
 const Token* getTokenFromLex(char* lex);
 const char* getLexFromToken(Token* token, bool strict);
 
+// The type; else null if impossible
+LangType convert_to_array(LangType type);
+LangType convert_from_array(LangType type);
 
+// Returns the type produced by the operation
+LangType type_lookup(LangType first, LangType second, Token* op);
 
 // Returns true if the tokens are equivalent, false otherwise
 bool tokens_equal(const Token* p1, Token* p2, bool strict);
+
 
 #endif // TOKENS_H

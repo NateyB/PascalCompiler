@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<string.h>
+#include<stdio.h> // TODO Remove
 
 #include "../dataStructures/linkedList/linkedList.h"
 #include "symbolTable.h"
@@ -13,9 +14,9 @@ int initSymbolTable()
     return 0;
 }
 
-char* pushToSymbolTable(char* name)
+char* pushToSymbolTable(char* name, size_t length)
 {
-    add(symbolTable, name, sizeof(char*));
+    add(symbolTable, name, sizeof(char)*length);
     return (char *)(symbolTable -> head -> data);
 }
 
@@ -25,7 +26,7 @@ char* checkSymbolTable(char* word)
     struct node* node = symbolTable -> head;
     while (node)
     {
-        if (strcmp(node -> data, word) == 0) // Match
+        if (strcmp((char *) node -> data, word) == 0) // Match
             return (char *)(node -> data);
         node = node -> next;
     }

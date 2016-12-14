@@ -20,37 +20,40 @@ static void synch()
 }
 
 // Needs implementing: 25.1.2
-void factor()
+LangType factor()
 {
     // Production 25.1.1
     if (tokens_equal(&id_tok, current_tok, false)) { // id
-        if (match(&id_tok, false)) // id
+        Token* id_ref;
+        if ((id_ref = match(&id_tok, false))) // id
         {
-            factor_tail();
-            return;
+            return factor_tail(get_type(id_ref));
         }
 
     // Production 25.1.2
     } else if (tokens_equal(&num_tok, current_tok, false)) { // num
-        if (match(&num_tok, false))
-            return;
+        Token* num_type;
+        if ((num_type = match(&num_tok, false)))
+            return num_type -> aspect == 0 ? INT : REAL;
 
     // Production 25.1.3
     } else if (tokens_equal(&lparen_tok, current_tok, true)) { // (
         if (match(&lparen_tok, true)) { // (
-            expression();
+            LangType e_type = expression();
             if (match(&rparen_tok, true)) // )
-                return;
+                return e_type;
         }
 
     // Production 25.1.4
     } else if (tokens_equal(&not_tok, current_tok, true)) { // not
-        if (match(&not_tok, true)) { // not
-            factor();
-            return;
+        Token* not_op;
+        if ((not_op = match(&not_tok, true))) { // not
+            LangType f_type = factor();
+            return type_lookup(f_type, ERR, not_op);
         }
     }
 
 
     synch();
+    return ERR;
 }

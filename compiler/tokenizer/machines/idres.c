@@ -113,7 +113,7 @@ int idres(Token* storage, char* str, int start)
         size_t wordSize = 0;
         do
         {
-            wordSize = add(id, &next, sizeof(char));
+            wordSize = add(id, &next, sizeof(char*));
             start++;
             next = str[start];
         } while(isalpha(next) || isdigit(next)); // Match ID
@@ -137,12 +137,12 @@ int idres(Token* storage, char* str, int start)
         else if ((address = checkSymbolTable(name)))
             storage -> id = address;
         else
-            storage -> id = pushToSymbolTable(name);
+            storage -> id = pushToSymbolTable(name, wordSize);
 
     }
     if (start - initial > 10) // ID Too long err
     {
-        storage -> attribute = NOOP;
+        //storage -> attribute = NOOP; TODO investigate
         throw_lex_error(LEXERR, 1, initial, start - initial);
     }
     return start;

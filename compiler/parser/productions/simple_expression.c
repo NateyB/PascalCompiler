@@ -20,7 +20,7 @@ static void synch()
 }
 
 // Needs implementing: None
-void simple_expression()
+LangType simple_expression()
 {
     // Production 23.1.1
     if (tokens_equal(&lparen_tok, current_tok, true)
@@ -28,17 +28,20 @@ void simple_expression()
         || tokens_equal(&not_tok, current_tok, true)
         || tokens_equal(&num_tok, current_tok, false))
     {
-        term();
-        simple_expression_tail();
-        return;
+        LangType t_type = term();
+        return simple_expression_tail(t_type);
 
     // Production 23.1.2
-    } else if (tokens_equal(&addop_tok, current_tok, false)) {
+    } else if (tokens_equal(&plus_tok, current_tok, true)
+               || tokens_equal(&minus_tok, current_tok, true)) {
         sign();
-        term();
-        simple_expression_tail();
-        return;
+        LangType t_type = term();
+        if (t_type != INT && t_type != REAL && t_type != ERR)
+            // SEMERR
+            ;
+        return simple_expression_tail(t_type);
     }
 
     synch();
+    return ERR;
 }

@@ -26,6 +26,8 @@ void subprogram_declaration()
         declarations();
         subprogram_declarations();
         compound_statement();
+
+        reached_end_of_scope(); // pop from stack
         return;
     }
 

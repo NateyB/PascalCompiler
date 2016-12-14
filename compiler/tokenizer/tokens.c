@@ -80,7 +80,7 @@ const Token integer_val_tok = {
     NUM, 0, true, 0, 0
 };
 const Token of_tok = {
-    CONTROL, 5, true, 0, 0
+    ARRAY, 2, true, 0, 0
 };
 const Token real_val_tok = {
     NUM, 1, true, 0, 0
@@ -143,7 +143,6 @@ const Token* getTokenFromLex(char* lex) {
 
 const char* getLexFromToken(Token* token, bool strict) {
     switch (token -> attribute) {
-        case NOOP: return "An error in the compiler has occurred.";
         case FILEEND: return "EOF";
         case ASSIGNOP: return ":=";
 
@@ -187,8 +186,6 @@ const char* getLexFromToken(Token* token, bool strict) {
                 case 1: return "/";
             }
 
-        case WS: return "An error in the compiler has occurred.";
-
         case ARRAY: if (!strict) return "ARRAY"; else
             switch (token -> aspect) {
                 case 0: return "array";
@@ -228,6 +225,8 @@ const char* getLexFromToken(Token* token, bool strict) {
             case 0: return "not";
         }
 
+        case NOOP:
+        case WS:
         case LEXERR:
         case SYNERR:
         case SEMERR: return "An error in the compiler has occurred.";
@@ -238,4 +237,151 @@ const char* getLexFromToken(Token* token, bool strict) {
 bool tokens_equal(const Token* p1, Token* p2, bool strict) {
     return p1 -> attribute == p2 -> attribute &&
             (!strict || p1 -> aspect == p2 -> aspect);
+}
+
+LangType convert_to_array(LangType type) {
+    switch (type) {
+        case INT: return AINT;
+        case REAL: return AREAL;
+
+        default: return ERR; // TODO: SEMERR!!
+    }
+}
+
+LangType convert_from_array(LangType type) {
+    switch (type) {
+        case AINT: return INT;
+        case AREAL: return REAL;
+
+        default: return ERR; // TODO: SEMERR!!
+    }
+}
+
+static LangType assignop_lookup(LangType first, LangType second) {
+    if (first == ERR || second == ERR) // just an err
+        // NOOP
+        return ERR;
+    else if (first != INT || second != REAL
+            || first != INT || second != REAL)
+        // SEMERR, type mismatch
+        return ERR;
+    else if (first != second)
+        // SEMERR, type coercion attempted
+        return ERR;
+
+    return NULL;
+}
+
+static LangType relop_lookup(LangType first, LangType second) {
+    if (first == second && (first == INT || first == REAL))
+        return BOOL;
+    else if (first != ERR && second != ERR)
+        // SEMERR, type coercion attempted
+        ;
+
+    return ERR;
+}
+
+static LangType addop_lookup(LangType first, LangType second, int opcode) {
+    switch (opcode) {
+        case 0:
+        case 1: if (first == second && (first == INT || first == REAL))
+                    return first;
+                else if (first != ERR && second != ERR)
+                    // SEMERR: Type coercion
+                    ;
+
+                return ERR;
+
+
+        case 2: if (first == second && first == BOOL)
+                    return BOOL;
+                else if (first != ERR && second != ERR)
+                    // SEMERR: Type coercion
+                    ;
+
+                return ERR;
+
+        default: return NULL;
+    }
+}
+
+static LangType mulop_lookup(LangType first, LangType second, int opcode) {
+    switch (opcode) {
+        case 0:
+        case 1: if (first == second && (first == INT || first == REAL))
+                    return first;
+                else if (first != ERR && second != ERR)
+                    // SEMERR: Type coercion
+                    ;
+
+                return ERR;
+
+
+        case 2: if (first == second && first == BOOL) // and
+                    return BOOL;
+                else if (first != ERR && second != ERR)
+                    // SEMERR: Type coercion
+                    ;
+
+                return ERR;
+
+        case 3: // div; mod
+        case 4: if (first == second && first == INT)
+                    return INT;
+                else if (first != ERR && second != ERR)
+                    // SEMERR: Type coercion
+                    ;
+
+                return ERR;
+
+        default: return NULL;
+    }
+}
+
+static LangType not_lookup(LangType first, LangType second) {
+    if (first == second && first == BOOL) // and
+        return BOOL;
+    else if (first != ERR && second != ERR)
+        // SEMERR: Type coercion
+        ;
+
+    return ERR;
+}
+
+static LangType array_lookup(LangType first, LangType second) {
+    if (first == second && first == INT)
+        return INT;
+    else if (first != ERR && second != ERR)
+        // SEMERR:
+        ;
+
+    return ERR;
+}
+
+LangType type_lookup(LangType first, LangType second, Token* op) {
+    switch (op -> attribute) {
+        // Operations which are meaninngless
+        case NOOP:
+        case LEXERR:
+        case SYNERR:
+        case SEMERR:
+        case GROUP:
+        case PUNC:
+        case FILEEND:
+        case ID:
+        case CONTROL:
+        case WS:
+        case TYPE:
+        case VAR:
+        case NUM: return NULL;
+
+        case ASSIGNOP: return assignop_lookup(first, second);
+        case RELOP: return relop_lookup(first, second);
+        case ADDOP: return addop_lookup(first, second, op -> aspect);
+        case ARRAY: return array_lookup(first, second);
+        case MULOP: return mulop_lookup(first, second, op -> aspect);
+        case INVERSE: return not_lookup(first, second);
+
+    }
 }

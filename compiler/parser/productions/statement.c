@@ -22,10 +22,17 @@ void statement()
 {
     // Production 14.1
     if (tokens_equal(&id_tok, current_tok, false)) { // id
-        variable();
+        Token* id_tok = current_tok;
+        LangType v_type = variable();
         if (match(&assignop_tok, true)) // :=
         {
-            expression();
+            LangType e_type = expression();
+            if (get_type(id_tok) == ERR)
+                // The only way for this to error is
+                // SEMERR, undeclared
+                ;
+            else
+                type_lookup(v_type, e_type, &assignop_tok);
             return;
         }
 
@@ -42,7 +49,10 @@ void statement()
     // Production 14.4
     } else if (tokens_equal(&while_tok, current_tok, true)) { // while
         if (match(&while_tok, true)) { // while
-            expression();
+            LangType e_type = expression();
+            if (e_type != BOOL || e_type != ERR)
+                // SEMERR type mismatch
+                ;
             if (match(&do_tok, true)) { // do
                 statement();
                 return;
@@ -52,7 +62,10 @@ void statement()
     // Production 14.5
     } else if (tokens_equal(&if_tok, current_tok, true)) { // if
         if (match(&if_tok, true)) { // if
-            expression();
+            LangType e_type = expression();
+            if (e_type != BOOL || e_type != ERR)
+                // SEMERR type mismatch
+                ;
             if (match(&then_tok, true)) { // then
                 statement();
                 else_tail();

@@ -22,13 +22,14 @@ static void synch()
 }
 
 // Needs implementing: None
-void related_expression()
+LangType related_expression(LangType s_type)
 {
     // Production 22.1
     if (tokens_equal(&relop_tok, current_tok, false)) {
-        if (match(&relop_tok, false)) {
-            simple_expression();
-            return;
+        Token* relop_op;
+        if ((relop_op = match(&relop_tok, false))) {
+            LangType s1_type = simple_expression();
+            return type_lookup(s_type, s1_type, relop_op);
         }
 
     // Production 22.2
@@ -40,7 +41,8 @@ void related_expression()
         || tokens_equal(&else_tok, current_tok, true)
         || tokens_equal(&end_tok, current_tok, true)
         || tokens_equal(&then_tok, current_tok, true))
-        return; // epsilon
+        return s_type; // epsilon
 
     synch();
+    return ERR;
 }

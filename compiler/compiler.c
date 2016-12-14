@@ -11,12 +11,13 @@
 // Global file constants
 static const char TOKEN_PATH[] = "out/tokens.dat";
 static const char LISTING_PATH[] = "out/listing.txt";
+static const char MEM_PATH[] = "out/mem.txt";
 static const char RESWORD_PATH[] = "compiler/data/reswords.dat";
 
 // Returns 1 on failure, 0 on success.
 int init(char* sourcePath) {
     return initializeGlobals() && initializeErrorHandler() &&
-    initializeHandler(sourcePath, RESWORD_PATH, LISTING_PATH, TOKEN_PATH)
+    initializeHandler(sourcePath, RESWORD_PATH, LISTING_PATH, TOKEN_PATH, MEM_PATH)
     ? 0 : 1;
 }
 

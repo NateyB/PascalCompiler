@@ -23,9 +23,13 @@ void id_list_tail()
     if (tokens_equal(&comma_tok, current_tok, true))
     {
         match(&comma_tok, true);
-        if (match(&id_tok, false))
+        Token* id_ref;
+        // Production 2.1
+        if ((id_ref = match(&id_tok, false)))
         {
-            id_list_tail();
+            id_ref -> type = PPNAME;
+            id_ref -> param = true;
+            check_add_node(id_ref);id_list_tail();
             return;
         }
     // Production 2.2.2

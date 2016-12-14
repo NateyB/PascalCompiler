@@ -22,10 +22,13 @@ void parameter_list_tail()
     // Production 10.2.1
     if (tokens_equal(&semic_tok, current_tok, true)) // ;
     {
+        Token* id_ref;
         if (match(&semic_tok, true)) // ;
-            if (match(&id_tok, false)) // ID
+            if ((id_ref = match(&id_tok, false))) // ID
                 if (match(&colon_tok, true)) { // :
-                    type();
+                    id_ref -> param = true;
+                    id_ref -> type = type();
+                    check_add_node(id_ref);
                     parameter_list_tail();
                     return;
                 }

@@ -21,9 +21,12 @@ void parameter_list()
 {
     // Production 10.1
     if (tokens_equal(&id_tok, current_tok, false)) {
-        if (match(&id_tok, false)) // ID
+        Token* id_ref;
+        if ((id_ref = match(&id_tok, false))) // ID
             if (match(&colon_tok, true)) { // :
-                type();
+                id_ref -> param = true;
+                id_ref -> type = type();
+                check_add_node(id_ref);
                 parameter_list_tail();
                 return;
             }

@@ -20,7 +20,7 @@ static void synch()
 }
 
 // Needs implementing: None
-void expression()
+LangType expression()
 {
     // Production 21
     if (tokens_equal(&lparen_tok, current_tok, true)
@@ -29,10 +29,10 @@ void expression()
         || tokens_equal(&not_tok, current_tok, true)
         || tokens_equal(&num_tok, current_tok, false))
     {
-        simple_expression();
-        related_expression();
-        return;
+        LangType s_type = simple_expression();
+        return related_expression(s_type);
     }
 
     synch();
+    return ERR;
 }

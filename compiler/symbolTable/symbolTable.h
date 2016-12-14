@@ -3,6 +3,6 @@
 
 int initSymbolTable();
 char* checkSymbolTable(char* name);
-char* pushToSymbolTable(char* name);
+char* pushToSymbolTable(char* name, size_t length);
 
 #endif // SYMBOL_TABLE_H

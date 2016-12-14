@@ -59,9 +59,10 @@ int intMachine(Token* storage, char* str, int start)
         errored = true;
         throw_lex_error(LEXERR, 7, initial, start - initial);
     }
-    if (errored)
+    // TODO investigate (all of these machines)
+    /*if (errored)
         storage -> attribute = NOOP;
-    else if (start > initial) // It's a proper integer!
+    else*/ if (start > initial) // It's a proper integer!
     {
         storage -> aspect = 0;
         storage -> int_val = parseInt(digits);
@@ -124,9 +125,9 @@ int realMachine(Token* storage, char* str, int start)
         throw_lex_error(LEXERR, 9, initial, start - initial);
         errored = true;
     }
-
+/*
     if (errored)
-        storage -> attribute = NOOP;
+        storage -> attribute = NOOP;*/
     else
     {
         storage -> aspect = 1;
@@ -225,10 +226,10 @@ int longRealMachine(Token* storage, char* str, int start)
         throw_lex_error(LEXERR, 10, initial, start - initial);
         errored = true;
     }
-
+    /*
     if (errored)
         storage -> attribute = NOOP;
-    else
+    else*/
     {
         storage -> aspect = 1;
         storage -> real_val = parseReal(digits);

@@ -18,13 +18,13 @@ static void synch()
 }
 
 // Needs implementing: None
-void optional_expressions()
+void optional_expressions(tree_node* to_match)
 {
     // Production 19.1
     if (tokens_equal(&lparen_tok, current_tok, true))
     {
         if (match(&lparen_tok, true)) {
-            expression_list();
+            expression_list(to_match);
             if (match(&rparen_tok, true))
                 return;
         }
@@ -33,7 +33,12 @@ void optional_expressions()
     } else if (tokens_equal(&semic_tok, current_tok, true)
           || tokens_equal(&else_tok, current_tok, true)
           || tokens_equal(&end_tok, current_tok, true))
+    {
+        if (to_match != NULL)
+            // SEMERR: Value expected
+            ;
         return; // epsilon
+    }
 
     synch();
 }

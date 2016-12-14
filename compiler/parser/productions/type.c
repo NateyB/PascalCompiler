@@ -17,29 +17,36 @@ static void synch()
 }
 
 // Needs implementing: None
-void type()
+LangType type(Token* id_ref)
 {
     // Production 4.2
     if (tokens_equal(&array_tok, current_tok, true))
     {
+        Token* numI;
+        Token* numF;
         if (match(&array_tok, true)) // array
             if (match(&lbrac_tok, true)) // [
-                if (match(&num_tok, true)) // INT
+                if ((numI = match(&num_tok, false))) // num
                     if (match(&dotdot_tok, true)) // ..
-                        if (match(&integer_val_tok, true)) // INT
+                        if ((numF = match(&num_tok, false))) // num
                             if (match(&rbrac_tok, true)) // ]
                                 if (match(&of_tok, true)) // of
                                 {
-                                    standard_type();
-                                    return;
+                                    if (type_lookup(numI -> aspect == 0 ? INT : REAL, numF -> aspect == 0 ? INT : REAL, &dotdot_tok) != ERR) {
+                                        if (numI -> int_val <= numF -> int_val)
+                                            // SEMERR: Value mismatch
+                                            ;
+                                        id_ref -> array_length = numF -> int_val - numI -> int_val + 1;
+                                    }
+                                    return convert_to_array(standard_type());
                                 }
     // Production 4.1
     } else if (tokens_equal(&integer_tok, current_tok, true) // int
                || tokens_equal(&real_tok, current_tok, true)) // real
     {
-        standard_type();
-        return;
+        return standard_type();
     }
 
     synch();
+    return ERR;
 }

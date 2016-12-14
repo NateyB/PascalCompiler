@@ -1,5 +1,6 @@
 #include<stdbool.h>
 #include<stdlib.h>
+#include<stdio.h> // TODO: Remove
 
 #include "productions.h"
 #include "../parser.h"
@@ -21,11 +22,18 @@ void procedure_statement()
 {
     // Production 18
     if (tokens_equal(&call_tok, current_tok, true)) // call
+    {
+        Token* id_ref;
         if (match(&call_tok, true)) // call
-            if (match(&id_tok, false)) { // id
-                optional_expressions();
+            if ((id_ref = match(&id_tok, false))) { // id
+                tree_node* addition = start_param_matching(id_ref);
+                if (addition == NULL)
+                    // SEMERR: Not in scope
+                    return;
+                optional_expressions(addition -> left);
                 return;
             }
+    }
 
     synch();
 }

@@ -17,19 +17,20 @@ static void synch()
 }
 
 // Needs implementing: None
-void standard_type()
+LangType standard_type()
 {
     // Production 5.1
     if (tokens_equal(&integer_tok, current_tok, true)) // integer
     {
         if (match(&integer_tok, true))
-            return;
+            return INT;
 
     // Production 5.2
     } else if (tokens_equal(&real_tok, current_tok, true)) { // real
         if (match(&real_tok, true))
-            return;
+            return REAL;
     }
 
     synch();
+    return ERR;
 }

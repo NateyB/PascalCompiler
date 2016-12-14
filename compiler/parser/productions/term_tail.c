@@ -22,14 +22,14 @@ static void synch()
 }
 
 // Needs implementing: None
-void term_tail()
+LangType term_tail(LangType f_type)
 {
     // Production 24.2.1
     if (tokens_equal(&mulop_tok, current_tok, false)) { // MULOP
-        if (match(&mulop_tok, false)) { // MULOP
-            factor();
-            term_tail();
-            return;
+        Token* mulop_op;
+        if ((mulop_op = match(&mulop_tok, false))) { // MULOP
+            LangType f2_type = factor();
+            return term_tail(type_lookup(f_type, f2_type, mulop_op));
         }
 
     // Production 24.2.2
@@ -43,7 +43,8 @@ void term_tail()
         || tokens_equal(&end_tok, current_tok, true)
         || tokens_equal(&relop_tok, current_tok, false)
         || tokens_equal(&then_tok, current_tok, true))
-        return; // epsilon
+        return f_type; // epsilon
 
     synch();
+    return ERR;
 }

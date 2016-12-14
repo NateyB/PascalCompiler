@@ -18,7 +18,7 @@ static void synch()
 }
 
 // Needs implementing: None
-void expression_list()
+void expression_list(tree_node* to_match)
 {
     // Production 20.1
     if (tokens_equal(&lparen_tok, current_tok, true)
@@ -27,8 +27,14 @@ void expression_list()
         || tokens_equal(&not_tok, current_tok, true)
         || tokens_equal(&num_tok, current_tok, false)) // num
     {
-        expression();
-        expression_list_tail();
+        if (to_match == NULL)
+            // SEMERR: Value not expected
+            ;
+        LangType e_type = expression();
+        if (to_match != NULL && e_type != to_match -> type)
+            // SEMERR: type mismatch exception
+            ;
+        expression_list_tail(to_match == NULL ? NULL : to_match -> left);
         return;
     }
 

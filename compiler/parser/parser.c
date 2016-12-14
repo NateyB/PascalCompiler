@@ -49,23 +49,24 @@ void require_sync(const Token* sync_set[], int size,
     }
 }
 
-// Searches the array tokens (of size num); if a match is found, return true;
-// else, return false. The strict flag dictates whether to match the aspect
-// of the token, or just the attribute.
-bool match(const Token* source, bool strict)
+// Attempts to match the source token with the current token;
+// if it is found, it returns the previous token (for use in the RDP).
+// If it is not found, then match returns null
+Token* match(const Token* source, bool strict)
 {
     if (tokens_equal(source, current_tok, strict))
     {
+        Token* prev_tok = current_tok;
         should_print_synerr = true;
         current_tok = get_next_relevant_token();
-        return true;
+        return prev_tok;
     }
     else
     {
         should_print_synerr = false;
         throw_syn_error(current_tok, &source, 1);
         current_tok = get_next_relevant_token();
-        return false;
+        return NULL;
     }
 }
 

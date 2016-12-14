@@ -17,16 +17,17 @@ static void synch()
 }
 
 // Needs implementing: None
-void variable()
+LangType variable()
 {
     // Production 16
     if (tokens_equal(&id_tok, current_tok, false)) // id
     {
-        if (match(&id_tok, false)) { // id
-            array_access();
-            return;
+        Token* id_ref;
+        if ((id_ref = match(&id_tok, false))) { // id
+            return array_access(get_type(id_ref));
         }
     }
 
     synch();
+    return ERR;
 }

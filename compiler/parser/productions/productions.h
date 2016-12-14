@@ -1,6 +1,7 @@
 #ifndef voidS_H
 #define voidS_H
 #include "../../tokenizer/tokens.h"
+#include "../../dataStructures/declarationsTree/declarationsTree.h"
 
 extern Token* current_tok;
 
@@ -9,8 +10,8 @@ void program();
 void id_list();
 void id_list_tail();
 void declarations();
-void type();
-void standard_type();
+LangType type();
+LangType standard_type();
 void subprogram_declarations();
 void subprogram_declaration();
 void subprogram_head();
@@ -23,20 +24,20 @@ void statement_list();
 void statement_list_tail();
 void statement();
 void else_tail();
-void variable();
-void array_access();
+LangType variable();
+LangType array_access(LangType id_type);
 void procedure_statement();
 void optional_expressions();
 void expression_list();
 void expression_list_tail();
-void expression();
-void related_expression();
-void simple_expression();
-void simple_expression_tail();
-void term();
-void term_tail();
-void factor();
-void factor_tail();
+LangType expression();
+LangType related_expression();
+LangType simple_expression();
+LangType simple_expression_tail();
+LangType term();
+LangType term_tail();
+LangType factor();
+LangType factor_tail();
 void sign();
 
 #endif // voidS_H
