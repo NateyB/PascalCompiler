@@ -22,12 +22,13 @@ void subprogram_declaration()
     // Production 7
     if (tokens_equal(&procedure_tok, current_tok, true)) // procedure
     {
-        subprogram_head();
+        bool declared = subprogram_head();
         declarations();
         subprogram_declarations();
         compound_statement();
 
-        reached_end_of_scope(); // pop from stack
+        if (declared)
+            reached_end_of_scope(); // pop from stack
         return;
     }
 

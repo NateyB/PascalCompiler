@@ -1,7 +1,9 @@
 #include <stdlib.h>
-#include <stdio.h> // TODO Remove
+#include <stdio.h>
 
 #include "../../handler/handler.h"
+#include "../../errorHandler/errorHandler.h"
+#include "../../globals/globals.h"
 #include "declarationsTree.h"
 
 static int offset = 0;
@@ -32,8 +34,11 @@ static bool check_node(char* id, bool green) {
     tree_node* current_node = bottom_node;
     while (current_node != NULL) {
         // Already exists
-        if ((!green || current_node -> type == PROC || current_node -> type == PGNAME) && id == current_node -> lex)
+        if (id == current_node -> lex)
             return true;
+
+        if (!green && (current_node -> type == PROC || current_node -> type == PGNAME))
+            return false;
 
         // We've passed the most recent green node, and this is a blue one
         if (!green && (current_node -> type == PROC || current_node -> type == PGNAME))
@@ -54,10 +59,10 @@ static bool check_add_green_node(Token* decl) {
         tree_node* addition = malloc(sizeof(*addition));
         addition -> lex = decl -> id;
         addition -> type = decl -> type;
-        addition -> param = false;
+        addition -> add_right = false;
 
         // Add it to the top of the stack
-        add(green_node_stack, addition, sizeof(addition));
+        add(green_node_stack, &addition, sizeof(&addition));
 
         addition -> left = NULL;
         addition -> right = NULL;
@@ -76,17 +81,21 @@ static bool check_add_green_node(Token* decl) {
     tree_node* addition = malloc(sizeof(*addition));
     addition -> lex = decl -> id;
     addition -> type = decl -> type;
-    addition -> param = false;
+    addition -> add_right = false;
 
     // Add it to the top of the stack
-    add(green_node_stack, addition, sizeof(addition));
+    add(green_node_stack, &addition, sizeof(&addition));
 
     addition -> left = NULL;
     addition -> right = NULL;
     addition -> parent = bottom_node;
 
     // Make it the new bottom node
-    bottom_node -> right = addition;
+    if (bottom_node -> add_right == true)
+        bottom_node -> right = addition;
+    else
+        bottom_node -> left = addition;
+
     bottom_node = addition;
 
     return true;
@@ -105,6 +114,7 @@ static bool check_add_blue_node(Token* decl) {
     // It hasn't been declared; create it
     tree_node* addition = malloc(sizeof(*addition));
     addition -> lex = decl -> id;
+    //printf("%s\n", addition -> lex);
     addition -> type = decl -> type;
     addition -> param = decl -> param;
 
@@ -120,6 +130,8 @@ static bool check_add_blue_node(Token* decl) {
 
     bottom_node -> left = addition;
     bottom_node = addition;
+
+    //printf("(%s, %s)\n", bottom_node -> lex, bottom_node -> parent -> lex);
     return true;
 }
 
@@ -136,29 +148,46 @@ tree_node* start_param_matching(Token* id) {
 }
 
 bool check_add_node(Token* decl) {
+    char* errorMessage ;
     switch (decl -> type) {
         case PGNAME:
-        case PROC: return check_add_green_node(decl);
+        case PROC: if (!check_add_green_node(decl)) {
+                       errorMessage = calloc(100, sizeof(*errorMessage));
+                       sprintf(errorMessage,
+                            "A program or procedure named '%.*s' is already defined in this scope!",
+                            decl -> length, &BUFFER[decl -> start]);
+                        throw_sem_error(errorMessage);
+                        return false;
+                   }
+                   return true;
 
-        default: return check_add_blue_node(decl);
-    }
+        default: if (!check_add_blue_node(decl)) {
+                       errorMessage = calloc(100, sizeof(*errorMessage));
+                       sprintf(errorMessage,
+                            "A variable named '%.*s' is already defined in this scope!",
+                            decl -> length, &BUFFER[decl -> start]);
+                        throw_sem_error(errorMessage);
+                        return false;
+                   }
+                   return true;
+        }
 }
 
 void reached_end_of_scope() {
-    bottom_node = (tree_node*) pop(green_node_stack);
+    bottom_node = (*(tree_node**) pop(green_node_stack));
+    bottom_node -> add_right = true;
 }
 
 
 LangType get_type(Token* id) {
     tree_node* current_node = bottom_node;
-    while (current_node != NULL &&
-            current_node -> type != PGNAME &&
-                current_node -> type != PROC)
+    while (current_node != NULL)
     {
         if (current_node -> lex == id -> id)
             return current_node -> type;
+
         current_node = current_node -> parent;
     }
 
-    return ERR;
+    return NULL;
 }

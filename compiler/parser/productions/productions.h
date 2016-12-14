@@ -19,7 +19,7 @@ LangType type();
 LangType standard_type();
 void subprogram_declarations();
 void subprogram_declaration();
-void subprogram_head();
+bool subprogram_head();
 void arguments();
 void parameter_list();
 void parameter_list_tail();

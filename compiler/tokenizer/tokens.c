@@ -13,114 +13,42 @@ const char* catNames[] = {"NOOP", "FILEEND", "ASSIGNOP", "RELOP", "ID",
 const char* typeNames[] = {"ERR", "REAL", "INT", "BOOL", "PGNAME", "PPNAME",
                            "PROC", "AINT", "AREAL"};
 
-const Token eof_tok = {
-    FILEEND, 0, false, 0, 0
-};
-const Token lparen_tok = {
-    GROUP, 0, true, 0, 0
-};
-const Token rparen_tok = {
-    GROUP, 1, true, 0, 0
-};
-const Token plus_tok = {
-    ADDOP, 0, true, 0, 0
-};
-const Token comma_tok = {
-    PUNC, 0, true, 0, 0
-};
-const Token minus_tok = {
-    ADDOP, 1, true, 0, 0
-};
-const Token semic_tok = {
-    PUNC, 1, true, 0, 0
-};
-const Token colon_tok = {
-    TYPE, 0, true, 0, 0
-};
-const Token dotdot_tok = {
-    ARRAY, 1, true, 0, 0
-};
-const Token period_tok = {
-    PUNC, 2, true, 0, 0
-};
-const Token lbrac_tok = {
-    GROUP, 2, true, 0, 0
-};
-const Token rbrac_tok = {
-    GROUP, 3, true, 0, 0
-};
-const Token addop_tok = {
-    ADDOP, 0, false, 0, 0
-};
-const Token array_tok = {
-    ARRAY, 0, true, 0, 0
-};
-const Token assignop_tok = {
-    ASSIGNOP, 0, true, 0, 0
-};
-const Token begin_tok = {
-    CONTROL, 0, true, 0, 0
-};
-const Token call_tok = {
-    CONTROL, 10, true, 0, 0
-};
-const Token do_tok = {
-    CONTROL, 1, true, 0, 0
-};
-const Token else_tok = {
-    CONTROL, 2, true, 0, 0
-};
-const Token end_tok = {
-    CONTROL, 3, true, 0, 0
-};
-const Token id_tok = {
-    ID, 0, false, 0, 0
-};
-const Token if_tok = {
-    CONTROL, 5, true, 0, 0
-};
-const Token integer_tok = {
-    TYPE, 1, true, 0, 0
-};
-const Token integer_val_tok = {
-    NUM, 0, true, 0, 0
-};
-const Token of_tok = {
-    ARRAY, 2, true, 0, 0
-};
-const Token real_val_tok = {
-    NUM, 1, true, 0, 0
-};
-const Token mulop_tok = {
-    MULOP, 0, false, 0, 0
-};
-const Token not_tok = {
-    INVERSE, 0, true, 0, 0
-};
-const Token num_tok = {
-    NUM, 0, false, 0, 0
-};
-const Token procedure_tok = {
-    CONTROL, 6, true, 0, 0
-};
-const Token program_tok = {
-    CONTROL, 7, true, 0, 0
-};
-const Token real_tok = {
-    TYPE, 2, true, 0, 0
-};
-const Token relop_tok = {
-    RELOP, 0, false, 0, 0
-};
-const Token then_tok = {
-    CONTROL, 8, true, 0, 0
-};
-const Token var_tok = {
-    VAR, 0, true, 0, 0
-};
-const Token while_tok = {
-    CONTROL, 9, true, 0, 0
-};
+const Token eof_tok = {FILEEND, 0, false, 0, 0};
+const Token lparen_tok = {GROUP, 0, true, 0, 0};
+const Token rparen_tok = {GROUP, 1, true, 0, 0};
+const Token plus_tok = {ADDOP, 0, true, 0, 0};
+const Token comma_tok = {PUNC, 0, true, 0, 0};
+const Token minus_tok = {ADDOP, 1, true, 0, 0};
+const Token semic_tok = {PUNC, 1, true, 0, 0};
+const Token colon_tok = {TYPE, 0, true, 0, 0};
+const Token dotdot_tok = {ARRAY, 1, true, 0, 0};
+const Token period_tok = {PUNC, 2, true, 0, 0};
+const Token lbrac_tok = {GROUP, 2, true, 0, 0};
+const Token rbrac_tok = {GROUP, 3, true, 0, 0};
+const Token addop_tok = {ADDOP, 0, false, 0, 0};
+const Token array_tok = {ARRAY, 0, true, 0, 0};
+const Token assignop_tok = {ASSIGNOP, 0, true, 0, 0};
+const Token begin_tok = {CONTROL, 0, true, 0, 0};
+const Token call_tok = {CONTROL, 10, true, 0, 0};
+const Token do_tok = {CONTROL, 1, true, 0, 0};
+const Token else_tok = {CONTROL, 2, true, 0, 0};
+const Token end_tok = {CONTROL, 3, true, 0, 0};
+const Token id_tok = {ID, 0, false, 0, 0};
+const Token if_tok = {CONTROL, 5, true, 0, 0};
+const Token integer_tok = {TYPE, 1, true, 0, 0};
+const Token integer_val_tok = {NUM, 0, true, 0, 0};
+const Token of_tok = {ARRAY, 2, true, 0, 0};
+const Token real_val_tok = {NUM, 1, true, 0, 0};
+const Token mulop_tok = {MULOP, 0, false, 0, 0};
+const Token not_tok = {INVERSE, 0, true, 0, 0};
+const Token num_tok = {NUM, 0, false, 0, 0};
+const Token procedure_tok = {CONTROL, 6, true, 0, 0};
+const Token program_tok = {CONTROL, 7, true, 0, 0};
+const Token real_tok = {TYPE, 2, true, 0, 0};
+const Token relop_tok = {RELOP, 0, false, 0, 0};
+const Token then_tok = {CONTROL, 8, true, 0, 0};
+const Token var_tok = {VAR, 0, true, 0, 0};
+const Token while_tok = {CONTROL, 9, true, 0, 0};
 
 static const char* lexes[] = {"(", ")", "+", ",", "-", ";", ":", "[", "]", "addop",
                               "array", "assignop", "begin", "call", "do", "else",
@@ -279,21 +207,21 @@ static LangType assignop_lookup(LangType first, LangType second) {
     if (first == ERR || second == ERR) // just an err
         // NOOP
         return ERR;
-    else if (first != INT || first != REAL) {
+    else if (first != INT && first != REAL) {
         errorMessage  = calloc(100, sizeof(*errorMessage));
-        sprintf(errorMessage, "Attempt to assign value to %s; real or integer expected instead!", typeNames[first]);
+        sprintf(errorMessage, "Cannot assign values to variables of type %s!", typeNames[first]);
         throw_sem_error(errorMessage);
         return ERR;
     }
-    else if (second != INT || second != REAL) {
+    else if (second != INT && second != REAL) {
         errorMessage  = calloc(100, sizeof(*errorMessage));
-        sprintf(errorMessage, "Attempt to assign value %s; real or integer expected instead!", typeNames[second]);
+        sprintf(errorMessage, "Attempt to assign value %s; only reals and integers can be assigned!", typeNames[second]);
         throw_sem_error(errorMessage);
         return ERR;
     }
     else if (first != second) {
         errorMessage  = calloc(100, sizeof(*errorMessage));
-        sprintf(errorMessage, "Attempt to coerce type %s into type %s in assignment!", typeNames[first], typeNames[second]);
+        sprintf(errorMessage, "Attempt to convert type %s into type %s in assignment!", typeNames[first], typeNames[second]);
         throw_sem_error(errorMessage);
         return ERR;
     }
@@ -307,7 +235,7 @@ static LangType relop_lookup(LangType first, LangType second) {
         return BOOL;
     else if (first != ERR && second != ERR) {
         errorMessage  = calloc(100, sizeof(*errorMessage));
-        sprintf(errorMessage, "Attempt to coerce type %s into type %s in comparison!", typeNames[first], typeNames[second]);
+        sprintf(errorMessage, "Attempt to compare incompatible types %s and %s!", typeNames[first], typeNames[second]);
         throw_sem_error(errorMessage);
     }
 
@@ -322,7 +250,7 @@ static LangType addop_lookup(LangType first, LangType second, int opcode) {
                     return first;
                 else if (first != ERR && second != ERR) {
                     errorMessage  = calloc(100, sizeof(*errorMessage));
-                    sprintf(errorMessage, "Attempt to coerce type %s into type %s in addition!", typeNames[first], typeNames[second]);
+                    sprintf(errorMessage, "Attempt to add incompatible types %s and %s!", typeNames[first], typeNames[second]);
                     throw_sem_error(errorMessage);
                     return ERR;
                 }
@@ -354,7 +282,7 @@ static LangType mulop_lookup(LangType first, LangType second, int opcode) {
                 else if ((first == REAL && second == INT)
                          || (first == INT && second == REAL)) {
                      errorMessage  = calloc(100, sizeof(*errorMessage));
-                     sprintf(errorMessage, "Attempt coerce types %s and %s in multiplication!!", typeNames[first], typeNames[second]);
+                     sprintf(errorMessage, "Attempt to multiply or divide incompatible types %s and %s!", typeNames[first], typeNames[second]);
                      throw_sem_error(errorMessage);
                 }
                 else if (first != ERR && second != ERR) {

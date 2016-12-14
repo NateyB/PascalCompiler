@@ -18,8 +18,9 @@ static void synch()
 }
 
 // Needs implementing: None
-void subprogram_head()
+bool subprogram_head()
 {
+    bool result = false;
     // Production 8
     if (tokens_equal(&procedure_tok, current_tok, true)) // procedure
     {
@@ -28,12 +29,13 @@ void subprogram_head()
             if ((id_ref = match(&id_tok, false))) { // id
                 id_ref -> type = PROC;
                 id_ref -> param = false;
-                check_add_node(id_ref);
+                result = check_add_node(id_ref);
                 arguments();
                 if (match(&semic_tok, true)) // ;
-                    return;
+                    return result;
                 }
     }
 
     synch();
+    return result;
 }

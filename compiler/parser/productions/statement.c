@@ -23,22 +23,23 @@ void statement()
     char* errorMessage;
     // Production 14.1
     if (tokens_equal(&id_tok, current_tok, false)) { // id
-        Token* id_ref = current_tok;
+        Token* id_tok = current_tok;
         LangType v_type = variable();
         if (match(&assignop_tok, true)) // :=
         {
+            if (get_type(id_tok) == ERR)
+            // The only way for this to error is an undeclared variable
+            {
+                errorMessage = calloc(100, sizeof(*errorMessage));
+                sprintf(errorMessage, "ID '%.*s' not in scope!",
+                                        id_tok -> length,
+                                        &BUFFER[id_tok -> start]);
+                throw_sem_error(errorMessage);
+                expression();
+                return;
+            }
             LangType e_type = expression();
-            if (get_type(id_ref) == ERR)
-                // The only way for this to error is an undeclared variable
-                {
-                    errorMessage  = calloc(100, sizeof(*errorMessage));
-                    sprintf(errorMessage, "ID %*s not in scope!",
-                                            id_ref -> length,
-                                            &BUFFER[id_ref -> start]);
-                    throw_sem_error(errorMessage);
-                }
-            else
-                type_lookup(v_type, e_type, &assignop_tok);
+            type_lookup(v_type, e_type, &assignop_tok);
             return;
         }
 

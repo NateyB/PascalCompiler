@@ -29,14 +29,13 @@ void procedure_statement()
                 tree_node* addition = start_param_matching(id_ref);
                 if (addition == NULL) {
                     errorMessage  = calloc(100, sizeof(*errorMessage));
-                    sprintf(errorMessage, "ID %*s not in scope!", id_ref -> length,
+                    sprintf(errorMessage, "ID '%.*s' not in scope!", id_ref -> length,
                         &BUFFER[id_ref -> start]);
                     throw_sem_error(errorMessage);
 
                     optional_expressions(NULL);
-                    return;
-                }
-                optional_expressions(addition -> left);
+                } else
+                    optional_expressions(addition -> left);
                 return;
             }
     }

@@ -31,7 +31,7 @@ void expression_list(tree_node* to_match)
         if (to_match == NULL)
         {
             errorMessage  = calloc(100, sizeof(*errorMessage));
-            sprintf(errorMessage, "Attempt to pass extraneous paramters!");
+            sprintf(errorMessage, "Attempt to pass extraneous parameters!");
             throw_sem_error(errorMessage);
         }
         LangType e_type = expression();
