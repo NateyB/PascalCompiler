@@ -22,6 +22,7 @@ LangType type(Token* id_ref)
     // Production 4.2
     if (tokens_equal(&array_tok, current_tok, true))
     {
+        char* errorMessage;
         Token* numI;
         Token* numF;
         if (match(&array_tok, true)) // array
@@ -33,9 +34,11 @@ LangType type(Token* id_ref)
                                 if (match(&of_tok, true)) // of
                                 {
                                     if (type_lookup(numI -> aspect == 0 ? INT : REAL, numF -> aspect == 0 ? INT : REAL, &dotdot_tok) != ERR) {
-                                        if (numI -> int_val <= numF -> int_val)
-                                            // SEMERR: Value mismatch
-                                            ;
+                                        if (numI -> int_val >= numF -> int_val) {
+                                            errorMessage  = calloc(100, sizeof(*errorMessage));
+                                            sprintf(errorMessage, "Expected array end index %d to be strictly greater than start %d", numF -> int_val, numI -> int_val);
+                                            throw_sem_error(errorMessage);
+                                        }
                                         id_ref -> array_length = numF -> int_val - numI -> int_val + 1;
                                     }
                                     return convert_to_array(standard_type());

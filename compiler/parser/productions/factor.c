@@ -27,7 +27,8 @@ LangType factor()
         Token* id_ref;
         if ((id_ref = match(&id_tok, false))) // id
         {
-            return factor_tail(get_type(id_ref));
+            LangType id_type = get_type(id_ref);
+            return factor_tail(id_type);
         }
 
     // Production 25.1.2

@@ -1,6 +1,6 @@
-//#include<string.h>
-#include<stdlib.h>
 #include<string.h>
+#include<stdlib.h>
+
 
 #include "errorHandler.h"
 
@@ -20,6 +20,9 @@ const char* lexErrs[] = {"Unrecognized symbol:",
                          "Attempt to use real exponent:"};
 
 char* synErr;
+char* semErr;
+
+
 
 int initializeErrorHandler()
 {
@@ -74,6 +77,20 @@ void throw_syn_error(Token* received, const Token** expected, int exp_size)
         }
     }
     strcpy(&synErr[current], " instead.");
+}
+
+void throw_sem_error(char* msg) {
+    // Generate error token
+    Token* errToken = malloc(sizeof(*errToken));
+    errToken -> attribute = SEMERR;
+    errToken -> aspect = 0;
+    errToken -> start = 0;
+    errToken -> length = 0;
+
+    add(errorList, errToken, sizeof(*errToken));
+
+    // Set the msg
+    semErr = msg;
 }
 
 void throw_lex_error(enum TokenType attribute, int aspect, int start, int length)

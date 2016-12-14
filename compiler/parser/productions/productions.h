@@ -1,7 +1,12 @@
 #ifndef voidS_H
 #define voidS_H
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "../../globals/globals.h"
 #include "../../tokenizer/tokens.h"
 #include "../../dataStructures/declarationsTree/declarationsTree.h"
+#include "../../errorHandler/errorHandler.h"
 
 extern Token* current_tok;
 

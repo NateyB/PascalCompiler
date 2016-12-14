@@ -20,17 +20,23 @@ static void synch()
 // Needs implementing: None
 void statement()
 {
+    char* errorMessage;
     // Production 14.1
     if (tokens_equal(&id_tok, current_tok, false)) { // id
-        Token* id_tok = current_tok;
+        Token* id_ref = current_tok;
         LangType v_type = variable();
         if (match(&assignop_tok, true)) // :=
         {
             LangType e_type = expression();
-            if (get_type(id_tok) == ERR)
-                // The only way for this to error is
-                // SEMERR, undeclared
-                ;
+            if (get_type(id_ref) == ERR)
+                // The only way for this to error is an undeclared variable
+                {
+                    errorMessage  = calloc(100, sizeof(*errorMessage));
+                    sprintf(errorMessage, "ID %*s not in scope!",
+                                            id_ref -> length,
+                                            &BUFFER[id_ref -> start]);
+                    throw_sem_error(errorMessage);
+                }
             else
                 type_lookup(v_type, e_type, &assignop_tok);
             return;
@@ -50,9 +56,13 @@ void statement()
     } else if (tokens_equal(&while_tok, current_tok, true)) { // while
         if (match(&while_tok, true)) { // while
             LangType e_type = expression();
-            if (e_type != BOOL || e_type != ERR)
-                // SEMERR type mismatch
-                ;
+            if (e_type != BOOL && e_type != ERR)
+            {
+                errorMessage  = calloc(100, sizeof(*errorMessage));
+                sprintf(errorMessage, "Expression in while must be boolean, not %s!",
+                                        typeNames[e_type]);
+                throw_sem_error(errorMessage);
+            }
             if (match(&do_tok, true)) { // do
                 statement();
                 return;
@@ -63,9 +73,13 @@ void statement()
     } else if (tokens_equal(&if_tok, current_tok, true)) { // if
         if (match(&if_tok, true)) { // if
             LangType e_type = expression();
-            if (e_type != BOOL || e_type != ERR)
-                // SEMERR type mismatch
-                ;
+            if (e_type != BOOL && e_type != ERR)
+            {
+                errorMessage  = calloc(100, sizeof(*errorMessage));
+                sprintf(errorMessage, "If clause must be a boolean expression, not %s!",
+                                        typeNames[e_type]);
+                throw_sem_error(errorMessage);
+            }
             if (match(&then_tok, true)) { // then
                 statement();
                 else_tail();

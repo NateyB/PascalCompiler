@@ -1,11 +1,17 @@
 #include<string.h>
+#include<stdlib.h>
+#include<stdio.h>
 
+#include "../errorHandler/errorHandler.h"
 #include "tokens.h"
 
 const char* catNames[] = {"NOOP", "FILEEND", "ASSIGNOP", "RELOP", "ID",
                          "CONTROL", "ADDOP", "MULOP", "WS", "ARRAY", "TYPE",
                          "VAR", "NUM", "PUNC", "GROUP", "INVERSE",
                          "LEXERR", "SYNERR", "SEMERR"};
+
+const char* typeNames[] = {"ERR", "REAL", "INT", "BOOL", "PGNAME", "PPNAME",
+                           "PROC", "AINT", "AREAL"};
 
 const Token eof_tok = {
     FILEEND, 0, false, 0, 0
@@ -240,65 +246,97 @@ bool tokens_equal(const Token* p1, Token* p2, bool strict) {
 }
 
 LangType convert_to_array(LangType type) {
+    char* errorMessage;
     switch (type) {
         case INT: return AINT;
         case REAL: return AREAL;
 
-        default: return ERR; // TODO: SEMERR!!
+        // Type mismatch!!
+        default:    errorMessage  = calloc(150, sizeof(*errorMessage));
+                    sprintf(errorMessage, "Attempt to create array using type %s; must use integer or real instead!", typeNames[type]);
+                    throw_sem_error(errorMessage);
+
+        case ERR:   return ERR;
     }
 }
 
 LangType convert_from_array(LangType type) {
+    char* errorMessage;
     switch (type) {
         case AINT: return INT;
         case AREAL: return REAL;
 
-        default: return ERR; // TODO: SEMERR!!
+
+        default: errorMessage = calloc(100, sizeof(*errorMessage));
+                 sprintf(errorMessage, "Attempt to index variable of type %s!", typeNames[type]);
+                 throw_sem_error(errorMessage);
+        case ERR: return ERR;
     }
 }
 
 static LangType assignop_lookup(LangType first, LangType second) {
+    char* errorMessage;
     if (first == ERR || second == ERR) // just an err
         // NOOP
         return ERR;
-    else if (first != INT || second != REAL
-            || first != INT || second != REAL)
-        // SEMERR, type mismatch
+    else if (first != INT || first != REAL) {
+        errorMessage  = calloc(100, sizeof(*errorMessage));
+        sprintf(errorMessage, "Attempt to assign value to %s; real or integer expected instead!", typeNames[first]);
+        throw_sem_error(errorMessage);
         return ERR;
-    else if (first != second)
-        // SEMERR, type coercion attempted
+    }
+    else if (second != INT || second != REAL) {
+        errorMessage  = calloc(100, sizeof(*errorMessage));
+        sprintf(errorMessage, "Attempt to assign value %s; real or integer expected instead!", typeNames[second]);
+        throw_sem_error(errorMessage);
         return ERR;
+    }
+    else if (first != second) {
+        errorMessage  = calloc(100, sizeof(*errorMessage));
+        sprintf(errorMessage, "Attempt to coerce type %s into type %s in assignment!", typeNames[first], typeNames[second]);
+        throw_sem_error(errorMessage);
+        return ERR;
+    }
 
     return NULL;
 }
 
 static LangType relop_lookup(LangType first, LangType second) {
+    char* errorMessage;
     if (first == second && (first == INT || first == REAL))
         return BOOL;
-    else if (first != ERR && second != ERR)
-        // SEMERR, type coercion attempted
-        ;
+    else if (first != ERR && second != ERR) {
+        errorMessage  = calloc(100, sizeof(*errorMessage));
+        sprintf(errorMessage, "Attempt to coerce type %s into type %s in comparison!", typeNames[first], typeNames[second]);
+        throw_sem_error(errorMessage);
+    }
 
     return ERR;
 }
 
 static LangType addop_lookup(LangType first, LangType second, int opcode) {
+    char* errorMessage;
     switch (opcode) {
         case 0:
         case 1: if (first == second && (first == INT || first == REAL))
                     return first;
-                else if (first != ERR && second != ERR)
-                    // SEMERR: Type coercion
-                    ;
+                else if (first != ERR && second != ERR) {
+                    errorMessage  = calloc(100, sizeof(*errorMessage));
+                    sprintf(errorMessage, "Attempt to coerce type %s into type %s in addition!", typeNames[first], typeNames[second]);
+                    throw_sem_error(errorMessage);
+                    return ERR;
+                }
 
                 return ERR;
 
 
         case 2: if (first == second && first == BOOL)
                     return BOOL;
-                else if (first != ERR && second != ERR)
-                    // SEMERR: Type coercion
-                    ;
+                else if (first != ERR && second != ERR) {
+                    errorMessage  = calloc(100, sizeof(*errorMessage));
+                    sprintf(errorMessage, "Expected BOOL and BOOL for use with 'or', received %s and %s!", typeNames[first], typeNames[second]);
+                    throw_sem_error(errorMessage);
+                }
 
                 return ERR;
 
@@ -307,13 +345,23 @@ static LangType addop_lookup(LangType first, LangType second, int opcode) {
 }
 
 static LangType mulop_lookup(LangType first, LangType second, int opcode) {
+    char* errorMessage;
+
     switch (opcode) {
         case 0:
         case 1: if (first == second && (first == INT || first == REAL))
                     return first;
-                else if (first != ERR && second != ERR)
-                    // SEMERR: Type coercion
-                    ;
+                else if ((first == REAL && second == INT)
+                         || (first == INT && second == REAL)) {
+                     errorMessage  = calloc(100, sizeof(*errorMessage));
+                     sprintf(errorMessage, "Attempt coerce types %s and %s in multiplication!!", typeNames[first], typeNames[second]);
+                     throw_sem_error(errorMessage);
+                }
+                else if (first != ERR && second != ERR) {
+                    errorMessage  = calloc(100, sizeof(*errorMessage));
+                    sprintf(errorMessage, "Expceted ints or reals for multiplication, received %s and %s!", typeNames[first], typeNames[second]);
+                    throw_sem_error(errorMessage);
+                }
 
                 return ERR;
 
@@ -321,17 +369,25 @@ static LangType mulop_lookup(LangType first, LangType second, int opcode) {
         case 2: if (first == second && first == BOOL) // and
                     return BOOL;
                 else if (first != ERR && second != ERR)
-                    // SEMERR: Type coercion
-                    ;
+                {
+                    errorMessage  = calloc(100, sizeof(*errorMessage));
+                    sprintf(errorMessage, "Expected BOOL and BOOL for use with 'and', received %s and %s!", typeNames[first], typeNames[second]);
+                    throw_sem_error(errorMessage);
+                }
 
                 return ERR;
 
         case 3: // div; mod
         case 4: if (first == second && first == INT)
                     return INT;
-                else if (first != ERR && second != ERR)
-                    // SEMERR: Type coercion
-                    ;
+                else if (first != ERR && second != ERR) {
+                    errorMessage  = calloc(100, sizeof(*errorMessage));
+                    sprintf(errorMessage,
+                        "Integers required with %s, received %s and %s!",
+                        opcode == 3 ? "div" : "mod", typeNames[first],
+                        typeNames[second]);
+                    throw_sem_error(errorMessage);
+                }
 
                 return ERR;
 
@@ -340,11 +396,16 @@ static LangType mulop_lookup(LangType first, LangType second, int opcode) {
 }
 
 static LangType not_lookup(LangType first, LangType second) {
-    if (first == second && first == BOOL) // and
+    char* errorMessage;
+
+    if (first == BOOL) // and
         return BOOL;
-    else if (first != ERR && second != ERR)
-        // SEMERR: Type coercion
-        ;
+    else if (first != ERR)
+    {
+        errorMessage  = calloc(100, sizeof(*errorMessage));
+        sprintf(errorMessage, "Expected BOOL use with 'not', received %s!", typeNames[first]);
+        throw_sem_error(errorMessage);
+    }
 
     return ERR;
 }
@@ -352,9 +413,16 @@ static LangType not_lookup(LangType first, LangType second) {
 static LangType array_lookup(LangType first, LangType second) {
     if (first == second && first == INT)
         return INT;
-    else if (first != ERR && second != ERR)
-        // SEMERR:
-        ;
+    else if (first != ERR)
+    {
+        char* errorMessage = calloc(100, sizeof(*errorMessage));
+        sprintf(errorMessage, "Attempt to index variable of type %s!", typeNames[first]);
+        throw_sem_error(errorMessage);
+    } else if (second != ERR){
+        char* errorMessage = calloc(100, sizeof(*errorMessage));
+        sprintf(errorMessage, "Attempt to use variable of type %s to index array!", typeNames[second]);
+        throw_sem_error(errorMessage);
+    }
 
     return ERR;
 }

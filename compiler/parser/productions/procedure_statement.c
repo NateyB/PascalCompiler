@@ -1,6 +1,5 @@
 #include<stdbool.h>
 #include<stdlib.h>
-#include<stdio.h> // TODO: Remove
 
 #include "productions.h"
 #include "../parser.h"
@@ -20,6 +19,7 @@ static void synch()
 // Needs implementing: None
 void procedure_statement()
 {
+    char* errorMessage;
     // Production 18
     if (tokens_equal(&call_tok, current_tok, true)) // call
     {
@@ -27,9 +27,15 @@ void procedure_statement()
         if (match(&call_tok, true)) // call
             if ((id_ref = match(&id_tok, false))) { // id
                 tree_node* addition = start_param_matching(id_ref);
-                if (addition == NULL)
-                    // SEMERR: Not in scope
+                if (addition == NULL) {
+                    errorMessage  = calloc(100, sizeof(*errorMessage));
+                    sprintf(errorMessage, "ID %*s not in scope!", id_ref -> length,
+                        &BUFFER[id_ref -> start]);
+                    throw_sem_error(errorMessage);
+
+                    optional_expressions(NULL);
                     return;
+                }
                 optional_expressions(addition -> left);
                 return;
             }

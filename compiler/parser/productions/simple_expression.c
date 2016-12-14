@@ -22,6 +22,7 @@ static void synch()
 // Needs implementing: None
 LangType simple_expression()
 {
+    char* errorMessage;
     // Production 23.1.1
     if (tokens_equal(&lparen_tok, current_tok, true)
         || tokens_equal(&id_tok, current_tok, false)
@@ -37,8 +38,12 @@ LangType simple_expression()
         sign();
         LangType t_type = term();
         if (t_type != INT && t_type != REAL && t_type != ERR)
-            // SEMERR
-            ;
+        {
+            errorMessage  = calloc(100, sizeof(*errorMessage));
+            sprintf(errorMessage, "Expected number, not %s!",
+                                    typeNames[t_type]);
+            throw_sem_error(errorMessage);
+        }
         return simple_expression_tail(t_type);
     }
 

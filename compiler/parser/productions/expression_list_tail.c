@@ -19,17 +19,24 @@ static void synch()
 // Needs implementing: None
 void expression_list_tail(tree_node* to_match)
 {
+    char* errorMessage;
     // Production 20.2.1
     if (tokens_equal(&comma_tok, current_tok, true))
     {
         if (match(&comma_tok, true)) {
             if (to_match == NULL)
-                // SEMERR: Value not expected
-                ;
+            {
+                errorMessage  = calloc(100, sizeof(*errorMessage));
+                sprintf(errorMessage, "Attempt to pass extraneous paramters!");
+                throw_sem_error(errorMessage);
+            }
             LangType e_type = expression();
-            if (to_match != NULL && e_type != to_match -> type)
-                // SEMERR: type mismatch exception
-                ;
+            if (to_match != NULL && e_type != to_match -> type) {
+                errorMessage  = calloc(100, sizeof(*errorMessage));
+                sprintf(errorMessage, "Expected type %s, not %s!",
+                                        typeNames[to_match -> type], typeNames[e_type]);
+                throw_sem_error(errorMessage);
+            }
             expression_list_tail(to_match == NULL ? NULL : to_match -> left);
             return;
         }
@@ -37,9 +44,12 @@ void expression_list_tail(tree_node* to_match)
     // Production 20.2.2
     } else if (tokens_equal(&rparen_tok, current_tok, true))
     {
-        if (to_match != NULL)
-            // SEMERR: Value expected
-            ;
+        if (to_match != NULL) {
+            errorMessage  = calloc(100, sizeof(*errorMessage));
+            sprintf(errorMessage, "Expected %s, not the end of the list!",
+                                    typeNames[to_match -> type]);
+            throw_sem_error(errorMessage);
+        }
         return; // epsilon
     }
 

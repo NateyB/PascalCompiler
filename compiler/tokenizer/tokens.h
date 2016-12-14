@@ -75,6 +75,7 @@ extern const Token var_tok;
 extern const Token while_tok;
 
 extern const char* catNames[19];
+extern const char* typeNames[9];
 const Token* getTokenFromLex(char* lex);
 const char* getLexFromToken(Token* token, bool strict);
 
