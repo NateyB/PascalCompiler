@@ -22,10 +22,9 @@ void else_tail()
     // Production 15.1
     if (tokens_equal(&else_tok, current_tok, true)) // else
     {
-        if (match(&else_tok, true)) {
-            statement();
-            return;
-        }
+        match(&else_tok, true);
+        statement();
+        return;
 
     // Production 15.2
     } else if (tokens_equal(&end_tok, current_tok, true) // end

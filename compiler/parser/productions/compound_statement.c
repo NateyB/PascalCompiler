@@ -24,11 +24,10 @@ void compound_statement()
     // Production 11
     if (tokens_equal(&begin_tok, current_tok, true))
     {
-        if (match(&begin_tok, true)) {
-            optional_statements();
-            if (match(&end_tok, true))
-                return;
-        }
+        match(&begin_tok, true);
+        optional_statements();
+        match(&end_tok, true);
+        return;
     }
 
     synch();

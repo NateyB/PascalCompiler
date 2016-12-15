@@ -26,11 +26,9 @@ LangType term_tail(LangType f_type)
 {
     // Production 24.2.1
     if (tokens_equal(&mulop_tok, current_tok, false)) { // MULOP
-        Token* mulop_op;
-        if ((mulop_op = match(&mulop_tok, false))) { // MULOP
-            LangType f2_type = factor();
-            return term_tail(type_lookup(f_type, f2_type, mulop_op));
-        }
+        Token* mulop_op = match(&mulop_tok, false);
+        LangType f2_type = factor();
+        return term_tail(type_lookup(f_type, f2_type, mulop_op));
 
     // Production 24.2.2
     } else if (tokens_equal(&rparen_tok, current_tok, true)

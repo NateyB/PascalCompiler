@@ -22,11 +22,11 @@ void statement_list_tail()
     // Production 13.2.1
     if (tokens_equal(&semic_tok, current_tok, true))
     {
-        if (match(&semic_tok, true)) {
-            statement();
-            statement_list_tail();
-            return;
-        }
+        match(&semic_tok, true);
+        statement();
+        statement_list_tail();
+        return;
+
 
     // Production 13.2.2
     } else if (tokens_equal(&end_tok, current_tok, true)) // end

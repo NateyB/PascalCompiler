@@ -21,15 +21,16 @@ void id_list()
 {
     Token* id_ref;
     // Production 2.1
-    if (tokens_equal(&id_tok, current_tok, false))
-        if ((id_ref = match(&id_tok, false)))
-        {
+    if (tokens_equal(&id_tok, current_tok, false)) {
+        id_ref = match(&id_tok, false);
+        if (id_ref != NULL) {
             id_ref -> type = PPNAME;
             id_ref -> param = true;
             check_add_node(id_ref);
-            id_list_tail();
-            return;
         }
+        id_list_tail();
+        return;
+    }
 
     synch();
 }

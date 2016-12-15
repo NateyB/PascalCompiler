@@ -23,9 +23,8 @@ LangType variable()
     if (tokens_equal(&id_tok, current_tok, false)) // id
     {
         Token* id_ref;
-        if ((id_ref = match(&id_tok, false))) { // id
-            return array_access(get_type(id_ref));
-        }
+        id_ref = match(&id_tok, false);
+        return array_access(get_type(id_ref));
     }
 
     synch();

@@ -29,7 +29,7 @@ program fib(input, output);
           a := a - 1;
           b := sum;
           sum := c + sum;
-          c := b
+          c := b.
         end;
       fib2 := sum
     end;

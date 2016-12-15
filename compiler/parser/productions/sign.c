@@ -22,13 +22,13 @@ void sign()
 {
     // Production 24.2.1
     if (tokens_equal(&plus_tok, current_tok, true)) {
-        if (match(&plus_tok, true))
-            return;
+        match(&plus_tok, true);
+        return;
 
     // Production 24.2.2
     } else if (tokens_equal(&minus_tok, current_tok, true)) {
-        if (match(&minus_tok, true))
-            return; // epsilon
+        match(&minus_tok, true);
+        return; // epsilon
     }
     synch();
 }

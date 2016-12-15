@@ -22,16 +22,18 @@ void parameter_list_tail()
     // Production 10.2.1
     if (tokens_equal(&semic_tok, current_tok, true)) // ;
     {
-        Token* id_ref;
-        if (match(&semic_tok, true)) // ;
-            if ((id_ref = match(&id_tok, false))) // ID
-                if (match(&colon_tok, true)) { // :
-                    id_ref -> param = true;
-                    id_ref -> type = type();
-                    check_add_node(id_ref);
-                    parameter_list_tail();
-                    return;
-                }
+        match(&semic_tok, true); // ;
+        Token* id_ref = match(&id_tok, false); // ID
+        match(&colon_tok, true); // :
+        if (id_ref != NULL) {
+            id_ref -> param = true;
+            id_ref -> type = type(id_ref);
+            check_add_node(id_ref);
+        } else {
+            type(NULL);
+        }
+        parameter_list_tail();
+        return;
 
     // Production 10.2.2
     } else if (tokens_equal(&rparen_tok, current_tok, true)) // )

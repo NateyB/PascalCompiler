@@ -10,8 +10,9 @@ const char* catNames[] = {"NOOP", "FILEEND", "ASSIGNOP", "RELOP", "ID",
                          "VAR", "NUM", "PUNC", "GROUP", "INVERSE",
                          "LEXERR", "SYNERR", "SEMERR"};
 
-const char* typeNames[] = {"ERR", "REAL", "INT", "BOOL", "PGNAME", "PPNAME",
-                           "PROC", "AINT", "AREAL"};
+const char* typeNames[] = {"ERR", "REAL", "INT", "BOOL", "PROGRAM",
+                           "PROGRAM_PARAMETER", "PROCEDURE",
+                           "INT ARRAY", "REAL ARRAY"};
 
 const Token eof_tok = {FILEEND, 0, false, 0, 0};
 const Token lparen_tok = {GROUP, 0, true, 0, 0};
@@ -205,7 +206,6 @@ LangType convert_from_array(LangType type) {
 static LangType assignop_lookup(LangType first, LangType second) {
     char* errorMessage;
     if (first == ERR || second == ERR) // just an err
-        // NOOP
         return ERR;
     else if (first != INT && first != REAL) {
         errorMessage  = calloc(100, sizeof(*errorMessage));
@@ -356,6 +356,9 @@ static LangType array_lookup(LangType first, LangType second) {
 }
 
 LangType type_lookup(LangType first, LangType second, Token* op) {
+    if (first == ERR || second == ERR || op == NULL)
+        return ERR;
+
     switch (op -> attribute) {
         // Operations which are meaninngless
         case NOOP:

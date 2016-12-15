@@ -22,11 +22,10 @@ void arguments()
     // Production 9.1
     if (tokens_equal(&lparen_tok, current_tok, true))
     {
-        if (match(&lparen_tok, true)) {
-            parameter_list();
-            if (match(&rparen_tok, true))
-                return;
-        }
+        match(&lparen_tok, true);
+        parameter_list();
+        match(&rparen_tok, true);
+        return;
 
     // Production 9.2
     } else if (tokens_equal(&semic_tok, current_tok, true))

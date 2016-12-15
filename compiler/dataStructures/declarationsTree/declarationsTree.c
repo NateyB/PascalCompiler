@@ -164,7 +164,7 @@ bool check_add_node(Token* decl) {
         default: if (!check_add_blue_node(decl)) {
                        errorMessage = calloc(100, sizeof(*errorMessage));
                        sprintf(errorMessage,
-                            "A variable named '%.*s' is already defined in this scope!",
+                            "A variable named '%.*s' is already defined in the local scope!",
                             decl -> length, &BUFFER[decl -> start]);
                         throw_sem_error(errorMessage);
                         return false;
@@ -180,6 +180,9 @@ void reached_end_of_scope() {
 
 
 LangType get_type(Token* id) {
+    if (id == NULL)
+        return ERR;
+        
     tree_node* current_node = bottom_node;
     while (current_node != NULL)
     {

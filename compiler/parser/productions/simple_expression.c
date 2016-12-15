@@ -40,7 +40,7 @@ LangType simple_expression()
         if (t_type != INT && t_type != REAL && t_type != ERR)
         {
             errorMessage  = calloc(100, sizeof(*errorMessage));
-            sprintf(errorMessage, "Expected number, not %s!",
+            sprintf(errorMessage, "Expected number for use with sign, not %s!",
                                     typeNames[t_type]);
             throw_sem_error(errorMessage);
         }

@@ -25,15 +25,16 @@ bool subprogram_head()
     if (tokens_equal(&procedure_tok, current_tok, true)) // procedure
     {
         Token* id_ref;
-        if (match(&procedure_tok, true)) // procedure
-            if ((id_ref = match(&id_tok, false))) { // id
-                id_ref -> type = PROC;
-                id_ref -> param = false;
-                result = check_add_node(id_ref);
-                arguments();
-                if (match(&semic_tok, true)) // ;
-                    return result;
-                }
+        match(&procedure_tok, true); // procedure
+        id_ref = match(&id_tok, false);
+        if (id_ref != NULL) {
+            id_ref -> type = PROC;
+            id_ref -> param = false;
+            result = check_add_node(id_ref);
+        }
+        arguments();
+        match(&semic_tok, true); // ;
+        return result;
     }
 
     synch();

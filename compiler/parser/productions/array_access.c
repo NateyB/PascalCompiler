@@ -35,13 +35,11 @@ LangType array_access(LangType id_type)
     // Production 17.1
     if (tokens_equal(&lbrac_tok, current_tok, true))
     {
-        if (match(&lbrac_tok, true)) {
-            LangType e_type = expression();
-            if (match(&rbrac_tok, true)) {
-                LangType n_type = convert_from_array(id_type);
-                return array_compare(n_type, e_type);
-            }
-        }
+        match(&lbrac_tok, true);
+        LangType e_type = expression();
+        match(&rbrac_tok, true);
+        LangType n_type = convert_from_array(id_type);
+        return array_compare(n_type, e_type);
 
     // Production 17.2
     } else if (tokens_equal(&assignop_tok, current_tok, true))

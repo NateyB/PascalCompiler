@@ -27,10 +27,9 @@ LangType simple_expression_tail(LangType t_type)
     // Production 23.2.1
     if (tokens_equal(&addop_tok, current_tok, false)) {
         Token* addop_op;
-        if ((addop_op = match(&addop_tok, false))) {
-            LangType t_type2 = term();
-            return simple_expression_tail(type_lookup(t_type, t_type2, addop_op));
-        }
+        addop_op = match(&addop_tok, false);
+        LangType t_type2 = term();
+        return simple_expression_tail(type_lookup(t_type, t_type2, addop_op));
 
 
     // Production 23.2.2

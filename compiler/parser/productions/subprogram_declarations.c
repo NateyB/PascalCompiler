@@ -23,10 +23,9 @@ void subprogram_declarations()
     if (tokens_equal(&procedure_tok, current_tok, true)) // procedure
     {
         subprogram_declaration();
-        if (match(&semic_tok, true)) { // ;
-            subprogram_declarations();
-            return;
-        }
+        match(&semic_tok, true); // ;
+        subprogram_declarations();
+        return;
 
     // Production 6.2
     } else if (tokens_equal(&begin_tok, current_tok, true)) // begin

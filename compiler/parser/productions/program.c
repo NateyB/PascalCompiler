@@ -22,27 +22,24 @@ void program()
 {
     Token* id_ref;
     // Production 1
-    if (tokens_equal(&program_tok, current_tok, true))
-        if (match(&program_tok, true)) // program
-            if ((id_ref = match(&id_tok, false))) // id
-            {
-                id_ref -> type = PGNAME;
-                id_ref -> param = false;
-                check_add_node(id_ref);
-                if (match(&lparen_tok, true)) // (
-                {
-                    id_list();
-                    if (match(&rparen_tok, true)) // )
-                        if (match(&semic_tok, true)) // ;
-                        {
-                            declarations();
-                            subprogram_declarations();
-                            compound_statement();
-                            if (match(&period_tok, true)) // .
-                                return;
-                        }
-                }
-            }
+    if (tokens_equal(&program_tok, current_tok, true)) {
+        match(&program_tok, true); // program
+        id_ref = match(&id_tok, false); // id
+        if (id_ref != NULL) {
+            id_ref -> type = PGNAME;
+            id_ref -> param = false;
+            check_add_node(id_ref);
+        }
+        match(&lparen_tok, true); // (
+        id_list();
+        match(&rparen_tok, true); // )
+        match(&semic_tok, true); // ;
+        declarations();
+        subprogram_declarations();
+        compound_statement();
+        match(&period_tok, true); // .
+        return;
+    }
 
     synch();
 }

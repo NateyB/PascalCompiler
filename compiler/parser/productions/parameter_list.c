@@ -22,14 +22,17 @@ void parameter_list()
     // Production 10.1
     if (tokens_equal(&id_tok, current_tok, false)) {
         Token* id_ref;
-        if ((id_ref = match(&id_tok, false))) // ID
-            if (match(&colon_tok, true)) { // :
-                id_ref -> param = true;
-                id_ref -> type = type();
-                check_add_node(id_ref);
-                parameter_list_tail();
-                return;
-            }
+        id_ref = match(&id_tok, false); // ID
+        match(&colon_tok, true);
+        if (id_ref != NULL) {
+            id_ref -> param = true;
+            id_ref -> type = type(id_ref);
+            check_add_node(id_ref);
+        } else {
+            type(NULL);
+        }
+        parameter_list_tail();
+        return;
     }
 
     synch();

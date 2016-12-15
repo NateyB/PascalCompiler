@@ -18,31 +18,29 @@ static void synch()
 }
 
 // Needs implementing: None
-void optional_expressions(tree_node* to_match)
+void optional_expressions(tree_node* to_match, bool should_error)
 {
     char* errorMessage;
     // Production 19.1
     if (tokens_equal(&lparen_tok, current_tok, true))
     {
-        if (match(&lparen_tok, true)) {
-            expression_list(to_match);
-            if (match(&rparen_tok, true))
-                return;
-        }
+        match(&lparen_tok, true);
+        expression_list(to_match, should_error);
+        match(&rparen_tok, true);
+        return;
 
     // Production 19.2
     } else if (tokens_equal(&semic_tok, current_tok, true)
           || tokens_equal(&else_tok, current_tok, true)
           || tokens_equal(&end_tok, current_tok, true))
     {
-        if (to_match != NULL) {
+        if (to_match != NULL && should_error) {
             errorMessage  = calloc(100, sizeof(*errorMessage));
             sprintf(errorMessage, "Expected another argument of type %s!",
                                     typeNames[to_match -> type]);
             throw_sem_error(errorMessage);
         }
 
-            ;
         return; // epsilon
     }
 

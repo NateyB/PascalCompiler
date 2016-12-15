@@ -25,33 +25,29 @@ LangType factor()
     // Production 25.1.1
     if (tokens_equal(&id_tok, current_tok, false)) { // id
         Token* id_ref;
-        if ((id_ref = match(&id_tok, false))) // id
-        {
-            LangType id_type = get_type(id_ref);
-            return factor_tail(id_type);
-        }
+        id_ref = match(&id_tok, false); // id
+        LangType id_type = get_type(id_ref);
+        return factor_tail(id_type);
 
     // Production 25.1.2
     } else if (tokens_equal(&num_tok, current_tok, false)) { // num
         Token* num_type;
-        if ((num_type = match(&num_tok, false)))
-            return num_type -> aspect == 0 ? INT : REAL;
+        num_type = match(&num_tok, false);
+        return num_type -> aspect == 0 ? INT : REAL;
 
     // Production 25.1.3
     } else if (tokens_equal(&lparen_tok, current_tok, true)) { // (
-        if (match(&lparen_tok, true)) { // (
-            LangType e_type = expression();
-            if (match(&rparen_tok, true)) // )
-                return e_type;
-        }
+        match(&lparen_tok, true);
+        LangType e_type = expression();
+        match(&rparen_tok, true); // )
+        return e_type;
 
     // Production 25.1.4
     } else if (tokens_equal(&not_tok, current_tok, true)) { // not
         Token* not_op;
-        if ((not_op = match(&not_tok, true))) { // not
-            LangType f_type = factor();
-            return type_lookup(f_type, ERR, not_op);
-        }
+        not_op = match(&not_tok, true);
+        LangType f_type = factor();
+        return type_lookup(f_type, ERR, not_op);
     }
 
 

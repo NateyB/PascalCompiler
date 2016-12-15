@@ -18,7 +18,7 @@ static void synch()
 }
 
 // Needs implementing: None
-void expression_list(tree_node* to_match)
+void expression_list(tree_node* to_match, bool should_error)
 {
     // Production 20.1
     if (tokens_equal(&lparen_tok, current_tok, true)
@@ -28,20 +28,20 @@ void expression_list(tree_node* to_match)
         || tokens_equal(&num_tok, current_tok, false)) // num
     {
         char* errorMessage;
-        if (to_match == NULL)
+        if (to_match == NULL && should_error)
         {
             errorMessage  = calloc(100, sizeof(*errorMessage));
-            sprintf(errorMessage, "Attempt to pass extraneous parameters!");
+            sprintf(errorMessage, "Attempt to pass extraneous parameter!");
             throw_sem_error(errorMessage);
         }
         LangType e_type = expression();
-        if (to_match != NULL && e_type != to_match -> type) {
+        if (should_error && to_match != NULL && e_type != ERR && e_type != to_match -> type) {
             errorMessage  = calloc(100, sizeof(*errorMessage));
             sprintf(errorMessage, "Expected type %s, not %s!",
                                     typeNames[to_match -> type], typeNames[e_type]);
             throw_sem_error(errorMessage);
         }
-        expression_list_tail(to_match == NULL ? NULL : to_match -> left);
+        expression_list_tail(to_match == NULL ? NULL : to_match -> left, should_error);
         return;
     }
 

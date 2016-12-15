@@ -24,20 +24,22 @@ void procedure_statement()
     if (tokens_equal(&call_tok, current_tok, true)) // call
     {
         Token* id_ref;
-        if (match(&call_tok, true)) // call
-            if ((id_ref = match(&id_tok, false))) { // id
-                tree_node* addition = start_param_matching(id_ref);
-                if (addition == NULL) {
-                    errorMessage  = calloc(100, sizeof(*errorMessage));
-                    sprintf(errorMessage, "ID '%.*s' not in scope!", id_ref -> length,
-                        &BUFFER[id_ref -> start]);
-                    throw_sem_error(errorMessage);
+        match(&call_tok, true); // call
+        id_ref = match(&id_tok, false);
+        if (id_ref != NULL) {
+            tree_node* addition = start_param_matching(id_ref);
+            if (addition == NULL) {
+                errorMessage  = calloc(100, sizeof(*errorMessage));
+                sprintf(errorMessage, "Procedure '%s' not in scope!", id_ref -> id);
+                throw_sem_error(errorMessage);
 
-                    optional_expressions(NULL);
-                } else
-                    optional_expressions(addition -> left);
-                return;
-            }
+                optional_expressions(NULL, false);
+            } else
+               optional_expressions(addition -> left == NULL ? NULL : addition -> left -> param == true ? addition -> left : NULL, true);
+        } else {
+            optional_expressions(NULL, false);
+        }
+        return;
     }
 
     synch();

@@ -23,25 +23,30 @@ void statement()
     char* errorMessage;
     // Production 14.1
     if (tokens_equal(&id_tok, current_tok, false)) { // id
-        Token* id_tok = current_tok;
+        Token* id_ref = current_tok;
         LangType v_type = variable();
-        if (match(&assignop_tok, true)) // :=
+        match(&assignop_tok, true);
+
+        if (get_type(id_ref) == ERR)
+        // The only way for this to error is an undeclared variable
         {
-            if (get_type(id_tok) == ERR)
-            // The only way for this to error is an undeclared variable
-            {
-                errorMessage = calloc(100, sizeof(*errorMessage));
-                sprintf(errorMessage, "ID '%.*s' not in scope!",
-                                        id_tok -> length,
-                                        &BUFFER[id_tok -> start]);
-                throw_sem_error(errorMessage);
-                expression();
-                return;
-            }
+            errorMessage = calloc(100, sizeof(*errorMessage));
+            sprintf(errorMessage, "ID '%s' not in scope!",
+                                    id_ref -> id);
+            throw_sem_error(errorMessage);
+            expression();
+        } else if (v_type != ERR && v_type != INT && v_type != REAL)
+        {
+            errorMessage = calloc(100, sizeof(*errorMessage));
+            sprintf(errorMessage, "Cannot assign to ID '%s' of type '%s'!",
+                                    id_ref -> id, typeNames[v_type]);
+            throw_sem_error(errorMessage);
+            expression();
+        } else {
             LangType e_type = expression();
             type_lookup(v_type, e_type, &assignop_tok);
-            return;
         }
+        return;
 
     // Production 14.2
     } else if (tokens_equal(&call_tok, current_tok, true)) { // call
@@ -55,38 +60,34 @@ void statement()
 
     // Production 14.4
     } else if (tokens_equal(&while_tok, current_tok, true)) { // while
-        if (match(&while_tok, true)) { // while
-            LangType e_type = expression();
-            if (e_type != BOOL && e_type != ERR)
-            {
-                errorMessage  = calloc(100, sizeof(*errorMessage));
-                sprintf(errorMessage, "Expression in while must be boolean, not %s!",
-                                        typeNames[e_type]);
-                throw_sem_error(errorMessage);
-            }
-            if (match(&do_tok, true)) { // do
-                statement();
-                return;
-            }
+        match(&while_tok, true); // while
+        LangType e_type = expression();
+        if (e_type != BOOL && e_type != ERR)
+        {
+            errorMessage  = calloc(100, sizeof(*errorMessage));
+            sprintf(errorMessage, "Expression in while must be boolean, not %s!",
+                                    typeNames[e_type]);
+            throw_sem_error(errorMessage);
         }
+        match(&do_tok, true);
+        statement();
+        return;
 
     // Production 14.5
     } else if (tokens_equal(&if_tok, current_tok, true)) { // if
-        if (match(&if_tok, true)) { // if
-            LangType e_type = expression();
-            if (e_type != BOOL && e_type != ERR)
-            {
-                errorMessage  = calloc(100, sizeof(*errorMessage));
-                sprintf(errorMessage, "If clause must be a boolean expression, not %s!",
-                                        typeNames[e_type]);
-                throw_sem_error(errorMessage);
-            }
-            if (match(&then_tok, true)) { // then
-                statement();
-                else_tail();
-                return;
-            }
+        match(&if_tok, true); // if
+        LangType e_type = expression();
+        if (e_type != BOOL && e_type != ERR)
+        {
+            errorMessage  = calloc(100, sizeof(*errorMessage));
+            sprintf(errorMessage, "If clause must be a boolean expression, not %s!",
+                                    typeNames[e_type]);
+            throw_sem_error(errorMessage);
         }
+        match(&then_tok, true); // then
+        statement();
+        else_tail();
+        return;
     }
 
 
