@@ -1,0 +1,9 @@
+        ID       Memory Offset
+         a                   0
+         p                   4
+ numsArray                   8
+         q                  36
+         b                   0
+         c                   8
+       sum                  16
+         q                   0

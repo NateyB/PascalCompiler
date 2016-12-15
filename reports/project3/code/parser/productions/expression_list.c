@@ -35,13 +35,14 @@ void expression_list(tree_node* to_match, bool should_error)
             throw_sem_error(errorMessage);
         }
         LangType e_type = expression();
-        if (should_error && to_match != NULL && e_type != ERR && e_type != to_match -> type) {
+        if (should_error && to_match != NULL && to_match -> param && e_type != ERR && e_type != to_match -> type) {
             errorMessage  = calloc(100, sizeof(*errorMessage));
             sprintf(errorMessage, "Expected type %s, not %s!",
                                     typeNames[to_match -> type], typeNames[e_type]);
             throw_sem_error(errorMessage);
         }
-        expression_list_tail(to_match == NULL || !to_match -> param ? NULL : to_match -> left, e_type != ERR && should_error);
+        expression_list_tail(to_match == NULL || !to_match -> param ? NULL :
+                        to_match -> left, e_type != ERR && should_error);
         return;
     }
 

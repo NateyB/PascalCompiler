@@ -64,7 +64,7 @@
 % }
 
 \author{Nate Beckemeyer}
-\title{\textbf{CS 4013: Compiler Construction: Project 2}}
+\title{\textbf{CS 4013: Compiler Construction: Projects 3 \& 4}}
 \date{December 2016}
 
 
@@ -72,89 +72,68 @@
 \begin{document}
     \maketitle
     \section*{Introduction}
-    % For Project 1, I wrote a lexical analyzer in C for Pascal. The purpose
-    % of the lexical analyzer is to  break down the Pascal source code into
-    % the parts needed to construct a parse tree. To achieve that goal, the
-    % lexical analyzer identifies each lexeme in the code, such as the parts
-    % of a type declaration, `:' and `integer' or `real', the beginning of a
-    % program, `program', or perhaps the multiplication operator, `*'. It converts
-    % this lexeme into a token that later parts of the compiler can readily use.
-    %
-    % The user can specify a source document for the analyzer, and the
-    % analyzer will create a listing file and a token file. The listing file
-    % contains the source program, line-by-line, but points out any lexical
-    % errors that occur. The token file contains the line number, the lexeme
-    % corresponding to the token, the type of the token, and the attribute
-    % value of the token.
-    For Project 2, I massaged the modified Pascal grammar into an $LL(1)$
-    grammar. According to that grammar, I implemented a recursive descent parser
-    to construct the parse tree.
+    For Projects 3 and 4, I decorated the $LL(1)$ grammar created in project
+    2 to the static semantics of our modified Pascal language. Then,
+    using the synthesized and inherited attributes, I folded the decorations
+    into the recursive descent parser.
 
-    The compiler detects any lexical and syntax errors that occur, and reports
-    them in the listing file.
+    The compiler detects any lexical, syntax, and semantic errors that occur,
+    and reports them in the listing file.
 
     \section{Methodology}
-    The recursive descent parser matches productions, starting with the
-    ``program'' production. The productions are outlined in the grammars
-    included below. The documents are in the following order:
-    \begin{enumerate}
-        \item The initial grammar without epsilon productions.
-        \item The new grammar having eliminated left recursion.
-        \item That grammar now left-factored to become an $LL(1)$ grammar.
-        \item The first and follows sets for each production.
-        \item The parse table.
-    \end{enumerate}
+    By paying attention to when certain events should happen in the productions,
+    I managed to modify the RDP to enforce the static semantics, such as
+    type-checking. See the included L-Attributed Definiton for more information.
 
-    \includepdf[pages=-]{grammar_steps/sansEpsilon.pdf}
-    \includepdf[pages=-]{grammar_steps/sansLeftRecursion.pdf}
-    \includepdf[pages=-]{grammar_steps/leftFactored.pdf}
-    \includepdf[pages=-]{grammar_steps/firstAndFollows.pdf}
-    \includepdf[pages=-]{grammar_steps/parseTable.pdf}
+    \includepdf[pages=-]{grammar_steps/decorated.pdf}
 
     \section{Implementation}
-    Each production resides in its own file, where it's first and synch sets
-    are specified. The ``program'' production is called when the compiler
-    begins, and it requests the next tokens. From there, productions are called
-    in accordance to the grammar rules and the tokens receieved from the lexical
-    analyzer.
+    I merely modified the productions to enforce the rules, according to the
+    decorated grammar given above.
 
-    The ``match'' function matched the token and set a global variable named
-    ``current\_tok'' to the next token. If the match failed, an syntax error
-    was printed to the listing file. Another operation called
-    ``require\_synch'' was included, in the event that no token could
-    identify the current production in a grammar variable. $require\_synch$
-    would take in the firsts and synch sets of the grammar variables, print the
-    appropriate error message (``recieved X; expected Y, Z''), then discard %chktex 13
-    tokens until an item from the synch set were matched.
-
-    The productions mapped $1:1$ from terminal symbols to match and
-    from grammar variables to productions. Which production to use
-    in which grammar variable was determined by the value of $current\_tok$
-    (hence the $LL(1)$ property of our grammar).
+    The declarations processing was interesting---I used a binary tree with
+    left-child, right-sibling notation. I a pointer to the bottom of the
+    tree at all times. Whenever anything was added to the tree, I updated
+    the bottom pointer to point to the new data.
+    Then, whenever a new scope was declared,
+    I added a pointer to that tree node to the stack; whenever the new scope
+    ended, I set the bottom pointer to the value popped from the stack, and
+    set a flag to add to the right of the child.
 
     If any errors were encountered while parsing, the error is added
     to the error queue. Then, the error is printed before the next token
-    is collected.
+    is collected. In this situation, multiple semantic errors could happen
+    on the same token, so I had to create a separate message for each one
+    and add it to a queue.
 
     \section{Discussion \& Conclusions}
     Implementing this project definitely taught me about the importance
     of an $LL(1)$ grammar, and how neat the recursive descent parser is.
-    I also noticed that the $require\_synch()$ function would have been
-    wonderful as a dynamically-scoped function.
+    Decorating the grammar is a really cool way of implementing the compiler.
 
     I wrote this compiler in C, with no external code of any kind. It was
     compiled with clang on macOS Sierra.
 
     \clearpage{}
     \section*{Appendix 1: Sample Inputs and Outputs} % Input and output files.
-    \subsection{Error-Filled Source File}
-    \ShowSampleFile{appendix1/error_full/debug.pas}{Error-Full Source Code}
+    \subsection{Error-Filled}
+    \ShowSampleFile{appendix1/error_full/error_full.pas}{Error-Full Source Code}
     \ShowSampleFile{appendix1/error_full/listing.txt}{Error-Full Listing File}
+    \ShowSampleFile{appendix1/error_full/mem.txt}{Error-Full Semantic Mem File}
     \ShowTokenFile{appendix1/error_full/tokens.dat}{Error-Full Token File}
 
-    \subsection{Error-Free Source File}
-    \ShowSampleFile{appendix1/error_free/debug.pas}{Error-Free Source Code}
+    \clearpage{}
+    \subsection{Just Semantic Errors}
+    \ShowSampleFile{appendix1/just_sem/debug.pas}{Just Semantic Source Code}
+    \ShowSampleFile{appendix1/just_sem/listing.txt}{Just Semantic Listing File}
+    \ShowSampleFile{appendix1/just_sem/mem.txt}{Just Semantic Mem File}
+    \ShowTokenFile{appendix1/just_sem/tokens.dat}{Just Semantic Token File}
+
+    \clearpage{}
+    \subsection{Error-Free}
+    \ShowSampleFile{appendix1/error_free/error_test.pas}{Error-Free Source Code}
     \ShowSampleFile{appendix1/error_free/listing.txt}{Error-Free Listing File}
+    \ShowSampleFile{appendix1/error_free/mem.txt}{Error-Free Mem File}
     \ShowTokenFile{appendix1/error_free/tokens.dat}{Error-Free Token File}
 
     \twocolumn{}

@@ -216,7 +216,7 @@ static LangType assignop_lookup(LangType first, LangType second) {
     }
     else if (second != INT && second != REAL) {
         errorMessage  = calloc(100, sizeof(*errorMessage));
-        sprintf(errorMessage, "Attempt to assign value %s; only reals and integers can be assigned!", typeNames[second]);
+        sprintf(errorMessage, "Attempt to assign %s value; only reals and integers can be assigned!", typeNames[second]);
         throw_sem_error(errorMessage);
         return ERR;
     }
@@ -327,7 +327,7 @@ static LangType mulop_lookup(LangType first, LangType second, int opcode) {
 static LangType not_lookup(LangType first, LangType second) {
     char* errorMessage;
 
-    if (first == BOOL) // and
+    if (first == BOOL)
         return BOOL;
     else if (first != ERR)
     {

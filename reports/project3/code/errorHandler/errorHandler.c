@@ -18,16 +18,15 @@ const char* lexErrs[] = {"Unrecognized symbol:",
                          "Trailing 0 in real:",
                          "Leading 0 in exponent:",
                          "Attempt to use real exponent:"};
-
 char* synErr;
-char* semErr;
-
+LinkedList* semErrs;
 
 
 int initializeErrorHandler()
 {
     errorList = malloc(sizeof(*errorList));
-    return errorList != NULL;
+    semErrs = malloc(sizeof(*semErrs));
+    return errorList != NULL && semErrs != NULL;
 }
 
 void throw_syn_error(Token* received, const Token** expected, int exp_size)
@@ -87,10 +86,10 @@ void throw_sem_error(char* msg) {
     errToken -> start = 0;
     errToken -> length = 0;
 
-    add(errorList, errToken, sizeof(*errToken));
+    addLast(errorList, errToken, sizeof(*errToken));
 
     // Set the msg
-    semErr = msg;
+    addLast(semErrs, &msg, sizeof(&msg));
 }
 
 void throw_lex_error(enum TokenType attribute, int aspect, int start, int length)

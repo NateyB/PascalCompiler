@@ -24,9 +24,17 @@ LangType factor()
 {
     // Production 25.1.1
     if (tokens_equal(&id_tok, current_tok, false)) { // id
-        Token* id_ref;
-        id_ref = match(&id_tok, false); // id
+        char* errorMessage;
+        Token* id_ref = match(&id_tok, false); // id
         LangType id_type = get_type(id_ref);
+        if (id_type == NULL) {
+            errorMessage = calloc(100, sizeof(*errorMessage));
+            sprintf(errorMessage,
+                 "No variable '%.*s' is defined in the local scope!",
+                 id_ref -> length, &BUFFER[id_ref -> start]);
+             throw_sem_error(errorMessage);
+             id_type = ERR;
+        }
         return factor_tail(id_type);
 
     // Production 25.1.2
@@ -44,10 +52,9 @@ LangType factor()
 
     // Production 25.1.4
     } else if (tokens_equal(&not_tok, current_tok, true)) { // not
-        Token* not_op;
-        not_op = match(&not_tok, true);
+        match(&not_tok, true);
         LangType f_type = factor();
-        return type_lookup(f_type, ERR, not_op);
+        return type_lookup(f_type, INT, &not_tok);
     }
 
 

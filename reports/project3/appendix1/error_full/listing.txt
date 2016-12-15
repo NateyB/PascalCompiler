@@ -1,0 +1,95 @@
+      1	program fib(input; output):
+SYNERR: Found ';'; expected ')', ',' instead.
+SYNERR: Found ':'; expected ';' instead.
+      2	  var a: int; var p: integer;
+SYNERR: Found 'ID'; expected 'array', 'real', 'integer' instead.
+SYNERR: Found 'integer'; expected ';' instead.
+SYNERR: Found ';'; expected 'begin', 'procedure', 'var' instead.
+      3	  var numsArray : array [6..12] on integer;
+      4	  var q: real;
+      5	
+      6	  procedure fib1(aReallyLongInt : integer; b : real, c : real);
+LEXERR:                 ID length exceeded 10 characters:      aReallyLongInt
+SYNERR: Found ','; expected ')', ';' instead.
+      7	    begin
+      8	        if a <= 1.20 then fib := c
+SEMERR: No variable 'a' is defined in the local scope!
+LEXERR:                               Trailing 0 in real:                1.20
+SEMERR: Cannot assign to ID 'fib' of type 'PROGRAM'!
+      9	        else call fib (a - 01, c, b + c)
+SEMERR: No variable ' ' is defined in the local scope!
+SEMERR: Procedure 'fib' not in scope!
+SEMERR: No variable 'a' is defined in the local scope!
+LEXERR:                                 Leading 0 in int:                  01
+SEMERR: No variable 'c' is defined in the local scope!
+SEMERR: No variable 'c' is defined in the local scope!
+     10	    end;
+     11	
+     12	  procedure fib2(a : integer);
+     13	    var b : real; var c : real; var sum : ;
+SYNERR: Found ';'; expected 'array', 'real', 'integer' instead.
+     14	    var b : real;
+SYNERR: Found 'real'; expected ';' instead.
+SYNERR: Found ';'; expected 'begin', 'procedure', 'var' instead.
+     15	    procedure rawr3(b : real);
+     16	      var q : real;
+     17	      begin
+     18	        q := b + 2.0;
+     19	        call fib2(q).
+SEMERR: Expected type INT, not REAL!
+SYNERR: Found '.'; expected 'end', ';' instead.
+     20	      end;
+     21	
+     22	    begin
+     23	      a := a - 1;
+     24	      fib1(3.00);
+SYNERR: Found '('; expected '[', ':=' instead.
+LEXERR:                               Trailing 0 in real:                3.00
+     25	      sum := 1;
+     26	      c := b;
+     27	      while a > 0) do
+SYNERR: Found ')'; expected 'do' instead.
+SYNERR: Found 'do'; expected 'if', 'while', 'begin', 'call', 'ID' instead.
+     28	        call 3;
+     29	        begin
+     30	          a := a - 1;
+     31	          b := sum;
+SEMERR: No variable 'sum' is defined in the local scope!
+     32	          sum := c + sum;
+SEMERR: ID 'sum' not in scope!
+SEMERR: No variable 'sum' is defined in the local scope!
+     33	          c := b
+     34	        end;
+     35	      fib2 := sum
+SEMERR: Cannot assign to ID 'fib2' of type 'PROCEDURE'!
+     36	    end;
+SEMERR: No variable 'sum' is defined in the local scope!
+     37	
+     38	  procedure init;
+     39	    begin
+     40	      n := 12;
+SEMERR: ID 'n' not in scope!
+     41	      if (1 and 2) or 3 then p := 12
+SEMERR: Expected BOOL and BOOL for use with 'and', received INT and INT!
+SEMERR: ID 'p' not in scope!
+     42	      else p := 14;
+SEMERR: ID 'p' not in scope!
+     43	      numsArray[3] := 15.560;
+LEXERR:                               Trailing 0 in real:              15.560
+SEMERR: ID 'numsArray' not in scope!
+     44	      q := q[4];
+SEMERR: ID 'q' not in scope!
+SEMERR: No variable 'q' is defined in the local scope!
+     45	      q[4] := 12
+SEMERR: ID 'q' not in scope!
+     46	    end;
+     47	
+     48	    begin*
+SYNERR: Found '*'; expected 'array', 'end', 'if', 'while', 'begin', 'call', 'ID' instead.
+     49	      call init;
+     50	      call fib2;
+     51	      call rawr3(34, 56);
+     52	    end.
+     53	
+     54	a
+SYNERR: Found 'ID'; expected 'EOF' instead.

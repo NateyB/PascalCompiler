@@ -91,7 +91,7 @@ void writeError(Token* description)
                 catNames[description -> attribute], synErr);
     else if (description -> attribute == SEMERR)
         fprintf(listingFile, "%*s: %s\n", ListingLineSpace - 1,
-                catNames[description -> attribute], semErr);
+                catNames[description -> attribute], *(char**) pop(semErrs));
 }
 
 void writeToken(Token* token)
