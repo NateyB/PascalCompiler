@@ -29,11 +29,11 @@ int addLast(LinkedList* list, void *data, int size)
     for (int i = 0; i < size; i++)
         *(char *) (addition -> data + i) = *(char *) (data + i);
 
-    struct node* current = list -> head;
-
     if (list -> size == 0)
         list -> head = addition;
     else {
+        struct node* current = list -> head;
+
         while (current -> next != NULL)
             current = current -> next;
 
@@ -41,6 +41,7 @@ int addLast(LinkedList* list, void *data, int size)
     }
     list -> size++;
 
+    return list -> size;
 }
 
 void* pop(LinkedList* list)
