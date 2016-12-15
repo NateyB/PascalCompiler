@@ -50,8 +50,11 @@ static Token* generateNextToken()
 
         // Unrecognized symbol error. This error is manual because it takes
         // the place of a lexeme, rather than being processed during one.
-        throw_lex_error(LEXERR, 0, START, 1);
-        //current -> attribute = NOOP;
+        //throw_lex_error(LEXERR, 0, START, 1);
+        current -> attribute = LEXERR;
+        current -> aspect = 0;
+        current -> length = 1;
+        current -> start = START;
         START++;
         return current;
     } else {

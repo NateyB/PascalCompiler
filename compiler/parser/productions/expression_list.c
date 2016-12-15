@@ -28,11 +28,12 @@ void expression_list(tree_node* to_match, bool should_error)
         || tokens_equal(&num_tok, current_tok, false)) // num
     {
         char* errorMessage;
-        if (to_match == NULL && should_error)
+        if ((to_match == NULL || !to_match -> param) && should_error)
         {
             errorMessage  = calloc(100, sizeof(*errorMessage));
-            sprintf(errorMessage, "Attempt to pass extraneous parameter!");
+            sprintf(errorMessage, "Incorrect number of arguments!");
             throw_sem_error(errorMessage);
+            should_error = false;
         }
         LangType e_type = expression();
         if (should_error && to_match != NULL && to_match -> param && e_type != ERR && e_type != to_match -> type) {

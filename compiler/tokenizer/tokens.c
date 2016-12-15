@@ -161,9 +161,11 @@ const char* getLexFromToken(Token* token, bool strict) {
             case 0: return "not";
         }
 
+        case LEXERR: if (token -> aspect == 0)
+                        return "unrecognized symbol";
+
         case NOOP:
         case WS:
-        case LEXERR:
         case SYNERR:
         case SEMERR: return "An error in the compiler has occurred.";
     }

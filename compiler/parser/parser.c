@@ -25,7 +25,8 @@ Token* get_next_relevant_token()
                 break;
             }
         } while (next -> attribute == WS || next -> attribute == NOOP
-                 || next -> attribute >= LEXERR);
+                 || (next -> attribute == LEXERR && next -> aspect > 0)
+                 || (next -> attribute >= SYNERR));
     } else {
         next = &eof_tok;
     }
