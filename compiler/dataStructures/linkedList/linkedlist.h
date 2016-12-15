@@ -14,6 +14,9 @@ typedef struct LinkedNodes {
 
 // Add an item to the front of the linked list
 int add(LinkedList* list, void* data, int size);
+// For use as a queue; slow, do not use
+int addLast(LinkedList* list, void *data, int size);
+
 
 // Pop an item from the front of the linked list
 void* pop(LinkedList* list);
