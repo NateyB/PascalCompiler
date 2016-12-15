@@ -1,0 +1,34 @@
+1       program id (
+2.1     id
+2.2     , id | epsilon
+3.1     var id :
+3.2     var id : | epsilon
+4       integer | real | array [
+5       integer | real
+6.1     procedure id
+6.2     procedure id | epsilon
+7       procedure id
+8       procedure id
+9       ( | epsilon
+10.1    id
+10.2    ; id | epsilon
+11      begin
+12      id | call id | begin | while | if | epsilon
+13.1    id | call id | begin | while | if
+13.2    ; | epsilon
+14      id | call id | begin | while | if
+15      else | epsilon
+16      id
+17      [ | epsilon
+18      call id
+19      ( | epsilon
+20.1    id | num | ( | not | + | -
+20.2    , | epsilon
+21      id | num | ( | not | + | -
+22      relop | epsilon
+23.1    id | num | ( | not | + | -
+23.3    addop | epsilon
+24.1    id | num | ( | not
+24.2    mulop | epsilon
+25      id | num | ( | not
+26      + | -

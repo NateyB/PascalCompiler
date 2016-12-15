@@ -1,37 +1,36 @@
-program fib(input; output):
-  var a: int; var p: integer;
-  var numsArray : array [6..12] on integer;
+program fib(input, output);
+  var a: integer; var p: integer;
+  var numsArray : array [6..12] of integer;
   var q: real;
 
-  procedure fib1(aReallyLongInt : integer; b : real, c : real);
+  procedure fib1(a : integer; b : real; c : real);
     begin
         if a <= 1 then fib := c
         else call fib (a - 1, c, b + c)
     end;
 
   procedure fib2(a : integer);
-    var b : real; var c : real; var sum : ;
+    var b : real; var c : real; var sum : integer;
     var b : real;
     procedure rawr3(b : real);
       var q : real;
       begin
         q := b + 2.0;
-        call fib2(q).
+        call fib2(q)
       end;
 
     begin
       a := a - 1;
-      b := call fib1(3);
+      b := 0;
       sum := 1;
       c := b;
-      while (a > 0 do
-        call 3;
+      while (a > 0) do
         begin
           a := a - 1;
           b := sum;
           sum := c + sum;
           c := b
-        end
+        end;
       fib2 := sum
     end;
 
@@ -48,5 +47,5 @@ program fib(input; output):
     begin
       call init;
       call fib2;
-      call rawr3(34, 56);
+      call rawr3(34, 56)
     end.

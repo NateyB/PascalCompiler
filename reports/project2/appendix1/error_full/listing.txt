@@ -1,0 +1,66 @@
+      1	program fib(input; output):
+SYNERR: Found ';'; expected ')', ',' instead.
+SYNERR: Found ':'; expected ';' instead.
+      2	  var a: int; var p: integer;
+SYNERR: Found 'ID'; expected 'array', 'real', 'integer' instead.
+SYNERR: Found 'integer'; expected ';' instead.
+SYNERR: Found ';'; expected 'begin', 'procedure', 'var' instead.
+      3	  var numsArray : array [6..12] on integer;
+      4	  var q: real;
+      5
+      6	  procedure fib1(aReallyLongInt : integer; b : real, c : real);
+LEXERR:                 ID length exceeded 10 characters:      aReallyLongInt
+SYNERR: Found ','; expected ')', ';' instead.
+      7	    begin
+      8	        if a <= 1 then fib := c
+      9	        else call fib (a - 1, c, b + c)
+     10	    end;
+     11
+     12	  procedure fib2(a : integer);
+     13	    var b : real; var c : real; var sum : ;
+SYNERR: Found ';'; expected 'array', 'real', 'integer' instead.
+     14	    var b : real;
+SYNERR: Found 'real'; expected ';' instead.
+SYNERR: Found ';'; expected 'begin', 'procedure', 'var' instead.
+     15	    procedure rawr3(b : real);
+     16	      var q : real;
+     17	      begin
+     18	        q := b + 2.0;
+     19	        call fib2(q).
+SYNERR: Found '.'; expected 'end', ';' instead.
+     20	      end;
+     21
+     22	    begin
+     23	      a := a - 1;
+     24	      b := call fib1(3);
+SYNERR: Found 'call'; expected '-', '+', 'not', '(', 'a number', 'ID' instead.
+SYNERR: Found ')'; expected 'end', ';' instead.
+     25	      sum := 1;
+     26	      c := b;
+     27	      while (a > 0 do
+     28	        call 3;
+     29	        begin
+     30	          a := a - 1;
+     31	          b := sum;
+     32	          sum := c + sum;
+     33	          c := b
+     34	        end
+     35	      fib2 := sum
+SYNERR: Found 'ID'; expected ';' instead.
+SYNERR: Found ':='; expected 'begin', 'procedure' instead.
+     36	    end;
+     37
+     38	  procedure init;
+     39	    begin
+     40	      n := 12;
+     41	      if (1 and 2) or 3 then p := 12
+     42	      else p := 14;
+     43	      numsArray[3] := 15.56;
+     44	      q := q[4];
+     45	      q[4] := 12
+     46	    end;
+SYNERR: Found ';'; expected '.' instead.
+     47
+     48	    begin
+SYNERR: Found 'begin'; expected 'EOF' instead.
+     49	      call init;
