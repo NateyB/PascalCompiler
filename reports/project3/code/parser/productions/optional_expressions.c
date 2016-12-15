@@ -36,7 +36,7 @@ void optional_expressions(tree_node* to_match, bool should_error)
     {
         if (to_match != NULL && should_error) {
             errorMessage  = calloc(100, sizeof(*errorMessage));
-            sprintf(errorMessage, "Expected an argument of type %s!",
+            sprintf(errorMessage, "Expected another argument of type %s!",
                                     typeNames[to_match -> type]);
             throw_sem_error(errorMessage);
         }

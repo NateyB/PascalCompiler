@@ -180,10 +180,9 @@ void reached_end_of_scope() {
 
 
 LangType get_type(Token* id) {
-    char* errorMessage;
     if (id == NULL)
         return ERR;
-
+        
     tree_node* current_node = bottom_node;
     while (current_node != NULL)
     {

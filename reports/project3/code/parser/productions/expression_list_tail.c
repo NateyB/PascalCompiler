@@ -5,8 +5,7 @@
 #include "../parser.h"
 #include "../../tokenizer/tokens.h"
 
-static const Token* first_set[] = {&id_tok, &num_tok, &lparen_tok, &not_tok,
-                                   &plus_tok, &minus_tok};
+static const Token* first_set[] = {&comma_tok, &rparen_tok};
 static const int first_size = sizeof(first_set)/sizeof(first_set[0]);
 
 static const Token* sync_set[] = {&eof_tok, &rparen_tok};
@@ -18,32 +17,39 @@ static void synch()
 }
 
 // Needs implementing: None
-void expression_list(tree_node* to_match, bool should_error)
+void expression_list_tail(tree_node* to_match, bool should_error)
 {
-    // Production 20.1
-    if (tokens_equal(&lparen_tok, current_tok, true)
-        || tokens_equal(&addop_tok, current_tok, false) // + OR -
-        || tokens_equal(&id_tok, current_tok, false) // ID
-        || tokens_equal(&not_tok, current_tok, true)
-        || tokens_equal(&num_tok, current_tok, false)) // num
+    char* errorMessage;
+    // Production 20.2.1
+    if (tokens_equal(&comma_tok, current_tok, true))
     {
-        char* errorMessage;
+        match(&comma_tok, true);
         if (to_match == NULL && should_error)
         {
             errorMessage  = calloc(100, sizeof(*errorMessage));
-            sprintf(errorMessage, "Attempt to pass extraneous parameter!");
+            sprintf(errorMessage, "Attempt to pass extraneous parameters!");
             throw_sem_error(errorMessage);
         }
         LangType e_type = expression();
-        if (should_error && to_match != NULL && to_match -> param && e_type != ERR && e_type != to_match -> type) {
+        if (should_error && to_match != NULL && e_type != to_match -> type) {
             errorMessage  = calloc(100, sizeof(*errorMessage));
             sprintf(errorMessage, "Expected type %s, not %s!",
                                     typeNames[to_match -> type], typeNames[e_type]);
             throw_sem_error(errorMessage);
         }
-        expression_list_tail(to_match == NULL || !to_match -> param ? NULL :
-                        to_match -> left, e_type != ERR && should_error);
+        expression_list_tail(to_match == NULL ? NULL : to_match -> left, should_error);
         return;
+
+    // Production 20.2.2
+    } else if (tokens_equal(&rparen_tok, current_tok, true))
+    {
+        if (to_match != NULL && to_match -> param && should_error) {
+            errorMessage  = calloc(100, sizeof(*errorMessage));
+            sprintf(errorMessage, "Expected %s, not the end of the parameters!",
+                                    typeNames[to_match -> type]);
+            throw_sem_error(errorMessage);
+        }
+        return; // epsilon
     }
 
     synch();

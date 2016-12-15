@@ -26,25 +26,26 @@ void expression_list_tail(tree_node* to_match, bool should_error)
         match(&comma_tok, true);
         if (to_match == NULL && should_error)
         {
-            errorMessage  = calloc(100, sizeof(*errorMessage));
+            errorMessage = calloc(100, sizeof(*errorMessage));
             sprintf(errorMessage, "Attempt to pass extraneous parameters!");
             throw_sem_error(errorMessage);
         }
         LangType e_type = expression();
-        if (should_error && to_match != NULL && e_type != to_match -> type) {
-            errorMessage  = calloc(100, sizeof(*errorMessage));
+        if (should_error && to_match != NULL && e_type != ERR && e_type != to_match -> type) {
+            errorMessage = calloc(100, sizeof(*errorMessage));
             sprintf(errorMessage, "Expected type %s, not %s!",
                                     typeNames[to_match -> type], typeNames[e_type]);
             throw_sem_error(errorMessage);
         }
-        expression_list_tail(to_match == NULL ? NULL : to_match -> left, should_error);
+        expression_list_tail(to_match == NULL || !to_match -> param ? NULL :
+                        to_match -> left, e_type != ERR && should_error);
         return;
 
     // Production 20.2.2
     } else if (tokens_equal(&rparen_tok, current_tok, true))
     {
         if (to_match != NULL && to_match -> param && should_error) {
-            errorMessage  = calloc(100, sizeof(*errorMessage));
+            errorMessage = calloc(100, sizeof(*errorMessage));
             sprintf(errorMessage, "Expected %s, not the end of the parameters!",
                                     typeNames[to_match -> type]);
             throw_sem_error(errorMessage);
