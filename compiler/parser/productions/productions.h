@@ -1,5 +1,5 @@
-#ifndef voidS_H
-#define voidS_H
+#ifndef PRODUCTIONS_H
+#define PRODUCTIONS_H
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -45,4 +45,4 @@ LangType factor();
 LangType factor_tail();
 void sign();
 
-#endif // voidS_H
+#endif // PRODUCTIONS_H
