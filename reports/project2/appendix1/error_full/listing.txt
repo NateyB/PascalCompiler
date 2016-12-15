@@ -12,8 +12,10 @@ SYNERR: Found ';'; expected 'begin', 'procedure', 'var' instead.
 LEXERR:                 ID length exceeded 10 characters:      aReallyLongInt
 SYNERR: Found ','; expected ')', ';' instead.
       7	    begin
-      8	        if a <= 1 then fib := c
-      9	        else call fib (a - 1, c, b + c)
+      8	        if a <= 1.20 then fib := c
+LEXERR:                               Trailing 0 in real:                1.20
+      9	        else call fib (a - 01, c, b + c)
+LEXERR:                                 Leading 0 in int:                  01
      10	    end;
      11
      12	  procedure fib2(a : integer);
@@ -32,22 +34,22 @@ SYNERR: Found '.'; expected 'end', ';' instead.
      21
      22	    begin
      23	      a := a - 1;
-     24	      b := call fib1(3);
-SYNERR: Found 'call'; expected '-', '+', 'not', '(', 'a number', 'ID' instead.
-SYNERR: Found ')'; expected 'end', ';' instead.
+     24	      fib1(3.00);
+SYNERR: Found '('; expected '[', ':=' instead.
+LEXERR:                               Trailing 0 in real:                3.00
      25	      sum := 1;
      26	      c := b;
-     27	      while (a > 0 do
+     27	      while a > 0) do
+SYNERR: Found ')'; expected 'do' instead.
+SYNERR: Found 'do'; expected 'if', 'while', 'begin', 'call', 'ID' instead.
      28	        call 3;
      29	        begin
      30	          a := a - 1;
      31	          b := sum;
      32	          sum := c + sum;
      33	          c := b
-     34	        end
+     34	        end;
      35	      fib2 := sum
-SYNERR: Found 'ID'; expected ';' instead.
-SYNERR: Found ':='; expected 'begin', 'procedure' instead.
      36	    end;
      37
      38	  procedure init;
@@ -55,12 +57,18 @@ SYNERR: Found ':='; expected 'begin', 'procedure' instead.
      40	      n := 12;
      41	      if (1 and 2) or 3 then p := 12
      42	      else p := 14;
-     43	      numsArray[3] := 15.56;
+     43	      numsArray[3] := 15.560;
+LEXERR:                               Trailing 0 in real:              15.560
      44	      q := q[4];
      45	      q[4] := 12
      46	    end;
-SYNERR: Found ';'; expected '.' instead.
      47
-     48	    begin
-SYNERR: Found 'begin'; expected 'EOF' instead.
+     48	    begin*
+SYNERR: Found '*'; expected 'array', 'end', 'if', 'while', 'begin', 'call', 'ID' instead.
      49	      call init;
+     50	      call fib2;
+     51	      call rawr3(34, 56);
+     52	    end.
+     53
+     54	a
+SYNERR: Found 'ID'; expected 'EOF' instead.

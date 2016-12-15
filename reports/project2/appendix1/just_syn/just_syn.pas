@@ -3,10 +3,10 @@ program fib(input; output):
   var numsArray : array [6..12] on integer;
   var q: real;
 
-  procedure fib1(aReallyLongInt : integer; b : real, c : real);
+  procedure fib1(anInt : integer; b : real, c : real);
     begin
-        if a <= 1.20 then fib := c
-        else call fib (a - 01, c, b + c)
+        if a <= 1 then fib := c
+        else call fib (a - 1, c, b + c)
     end;
 
   procedure fib2(a : integer);
@@ -21,7 +21,7 @@ program fib(input; output):
 
     begin
       a := a - 1;
-      fib1(3.00);
+      fib1(3);
       sum := 1;
       c := b;
       while a > 0) do
@@ -31,7 +31,7 @@ program fib(input; output):
           b := sum;
           sum := c + sum;
           c := b
-        end;
+        end
       fib2 := sum
     end;
 
@@ -40,15 +40,13 @@ program fib(input; output):
       n := 12;
       if (1 and 2) or 3 then p := 12
       else p := 14;
-      numsArray[3] := 15.560;
+      numsArray[3] := 15.56;
       q := q[4];
-      q[4] := 12
+      q[4] := 12;
     end;
 
-    begin*
+    begin
       call init;
       call fib2;
-      call rawr3(34, 56);
+      call rawr3(34, 56)
     end.
-
-a

@@ -8,8 +8,7 @@ SYNERR: Found ';'; expected 'begin', 'procedure', 'var' instead.
       3	  var numsArray : array [6..12] on integer;
       4	  var q: real;
       5
-      6	  procedure fib1(aReallyLongInt : integer; b : real, c : real);
-LEXERR:                 ID length exceeded 10 characters:      aReallyLongInt
+      6	  procedure fib1(anInt : integer; b : real, c : real);
 SYNERR: Found ','; expected ')', ';' instead.
       7	    begin
       8	        if a <= 1 then fib := c
@@ -32,12 +31,13 @@ SYNERR: Found '.'; expected 'end', ';' instead.
      21
      22	    begin
      23	      a := a - 1;
-     24	      b := call fib1(3);
-SYNERR: Found 'call'; expected '-', '+', 'not', '(', 'a number', 'ID' instead.
-SYNERR: Found ')'; expected 'end', ';' instead.
+     24	      fib1(3);
+SYNERR: Found '('; expected '[', ':=' instead.
      25	      sum := 1;
      26	      c := b;
-     27	      while (a > 0 do
+     27	      while a > 0) do
+SYNERR: Found ')'; expected 'do' instead.
+SYNERR: Found 'do'; expected 'if', 'while', 'begin', 'call', 'ID' instead.
      28	        call 3;
      29	        begin
      30	          a := a - 1;
@@ -46,8 +46,7 @@ SYNERR: Found ')'; expected 'end', ';' instead.
      33	          c := b
      34	        end
      35	      fib2 := sum
-SYNERR: Found 'ID'; expected ';' instead.
-SYNERR: Found ':='; expected 'begin', 'procedure' instead.
+SYNERR: Found 'ID'; expected 'end', ';' instead.
      36	    end;
      37
      38	  procedure init;
@@ -57,10 +56,12 @@ SYNERR: Found ':='; expected 'begin', 'procedure' instead.
      42	      else p := 14;
      43	      numsArray[3] := 15.56;
      44	      q := q[4];
-     45	      q[4] := 12
+     45	      q[4] := 12;
      46	    end;
-SYNERR: Found ';'; expected '.' instead.
+SYNERR: Found 'end'; expected 'if', 'while', 'begin', 'call', 'ID' instead.
      47
      48	    begin
-SYNERR: Found 'begin'; expected 'EOF' instead.
      49	      call init;
+     50	      call fib2;
+     51	      call rawr3(34, 56)
+     52	    end.

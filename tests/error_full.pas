@@ -5,8 +5,8 @@ program fib(input; output):
 
   procedure fib1(aReallyLongInt : integer; b : real, c : real);
     begin
-        if a <= 1 then fib := c
-        else call fib (a - 1, c, b + c)
+        if a <= 1.20 then fib := c
+        else call fib (a - 01, c, b + c)
     end;
 
   procedure fib2(a : integer);
@@ -21,17 +21,17 @@ program fib(input; output):
 
     begin
       a := a - 1;
-      b := call fib1(3);
+      fib1(3.00);
       sum := 1;
       c := b;
-      while (a > 0 do
+      while a > 0) do
         call 3;
         begin
           a := a - 1;
           b := sum;
           sum := c + sum;
           c := b
-        end
+        end;
       fib2 := sum
     end;
 
@@ -40,13 +40,15 @@ program fib(input; output):
       n := 12;
       if (1 and 2) or 3 then p := 12
       else p := 14;
-      numsArray[3] := 15.56;
+      numsArray[3] := 15.560;
       q := q[4];
       q[4] := 12
     end;
 
-    begin
+    begin*
       call init;
       call fib2;
       call rawr3(34, 56);
     end.
+
+a
