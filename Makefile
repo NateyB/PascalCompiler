@@ -1,5 +1,5 @@
 objects := $(shell find compiler -name '*.c')
-CFLAGS=-w
+CFLAGS=
 
 analyzermake: $(objects)
 	gcc $(CFLAGS) -g -o pascompiler $(objects)
