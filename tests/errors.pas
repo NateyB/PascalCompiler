@@ -1,22 +1,13 @@
-program errortest(input, output;
-var : integer; var num : ;
-
-procedure errortest(first, second: integer);
-begin
-    if first then second := first;
-    errortest();
-end
-
 program fib(input, output);
 var excessivelyLongIntegerArrayName : array [1..12] of integer;
 
 begin
-    init;
-    writeln(123456789012345);
-    writeln(123456.123456E003);
+    init := 4;
+    call writeln(123456789012345);
+    call writeln(123456.123456E003);
     2.5E-2
     23.47E
-    writeln(01.456200E02);
+    call writeln(01.456200E02);
 
     4E+.
     3.4E+

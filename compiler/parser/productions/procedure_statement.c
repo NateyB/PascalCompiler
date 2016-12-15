@@ -35,7 +35,7 @@ void procedure_statement()
 
                 optional_expressions(NULL, false);
             } else
-               optional_expressions(addition -> left == NULL ? NULL : addition -> left -> param == true ? addition -> left : NULL, true);
+               optional_expressions(addition -> left == NULL ? NULL : addition -> left -> param ? addition -> left : NULL, true);
         } else {
             optional_expressions(NULL, false);
         }

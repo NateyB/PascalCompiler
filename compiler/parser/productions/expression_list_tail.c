@@ -43,9 +43,9 @@ void expression_list_tail(tree_node* to_match, bool should_error)
     // Production 20.2.2
     } else if (tokens_equal(&rparen_tok, current_tok, true))
     {
-        if (to_match != NULL && should_error) {
+        if (to_match != NULL && to_match -> param && should_error) {
             errorMessage  = calloc(100, sizeof(*errorMessage));
-            sprintf(errorMessage, "Expected %s, not the end of the list!",
+            sprintf(errorMessage, "Expected %s, not the end of the parameters!",
                                     typeNames[to_match -> type]);
             throw_sem_error(errorMessage);
         }

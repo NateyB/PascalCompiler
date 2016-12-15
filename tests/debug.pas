@@ -10,10 +10,10 @@ program fib(input, output);
     end;
 
   procedure fib2(a : integer);
-    var b : integer; var c : real; var sum : integer;
+    var b : real; var c : real; var sum : integer;
     var b : real;
     procedure rawr3(b : real);
-      var q : integer;
+      var q : real;
       begin
         q := b + 2.0;
         call fib2(q)
@@ -47,5 +47,5 @@ program fib(input, output);
     begin
       call init;
       call fib2;
-      call rawr3(34)
+      call rawr3(34, 56);
     end.

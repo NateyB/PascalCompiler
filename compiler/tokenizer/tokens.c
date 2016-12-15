@@ -139,8 +139,8 @@ const char* getLexFromToken(Token* token, bool strict) {
         }
 
         case NUM: switch (token -> aspect) {
-            case 0: return "an integer";
-            case 1: return "a real";
+            case 0: return "integer value";
+            case 1: return "real value";
         }
 
         case PUNC: switch (token -> aspect) {

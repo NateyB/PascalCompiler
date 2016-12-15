@@ -41,6 +41,5 @@ void declarations()
                || tokens_equal(&procedure_tok, current_tok, true))
                return; // epsilon
 
-    printf("%s\n",  "hi");
     synch();
 }

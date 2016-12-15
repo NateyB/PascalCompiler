@@ -41,7 +41,7 @@ void expression_list(tree_node* to_match, bool should_error)
                                     typeNames[to_match -> type], typeNames[e_type]);
             throw_sem_error(errorMessage);
         }
-        expression_list_tail(to_match == NULL ? NULL : to_match -> left, should_error);
+        expression_list_tail(to_match == NULL || !to_match -> param ? NULL : to_match -> left, e_type != ERR && should_error);
         return;
     }
 
